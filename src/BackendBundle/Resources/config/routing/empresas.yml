@@ -12,3 +12,13 @@ empresa_find:
     path: /find
     defaults: { _controller: "BackendBundle:Empresas:findByCuit" }
     methods: POST
+
+empresa_del:
+    path: /{id}/del
+    defaults: { _controller: BackendBundle:Empresas:del }
+    methods: GET
+
+empresa_edit:
+    path: /{id}/edit
+    defaults: { _controller: BackendBundle:Empresas:edit }
+    methods: POST

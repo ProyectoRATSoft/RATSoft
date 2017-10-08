@@ -19,6 +19,128 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 class EmpresasController extends Controller
 {
 
+	/**
+	*	@Route("/empresa/{id}/edit",name="empresa_edit")
+	*	@Method({"POST"})
+	*/
+
+	public function editAction($id,Request $request) {
+
+		$respuesta = array (
+			'nombre' => $request->request->get("nombre"),
+			'domicilio' => $request->request->get("domicilio"),
+			'localidad' => $request->request->get("localidad"),
+			'cuit' => $request->request->get("cuit"),
+			'iibb' => $request->request->get("iibb"),
+			'titular' => $request->request->get("titular"),
+			'activo' => $request->request->get("activo"),
+			'iva' => (int)$request->request->get("iva"),
+			'provincia' => $request->request->get("provincia"),
+			'rubro' => $request->request->get("rubro"),
+		);
+		
+		// Me aseguro que no me hayan mandado ningun campo vacío
+
+		if ( empty($respuesta["nombre"])
+			|| empty($respuesta["domicilio"])
+			|| empty($respuesta["localidad"])
+		 	|| empty($respuesta["cuit"])
+			|| empty($respuesta["iibb"])
+			|| empty($respuesta["titular"])
+			|| empty($respuesta["activo"])
+			|| empty($respuesta["iva"])
+			|| empty($respuesta["provincia"])
+			|| empty($respuesta["rubro"])
+			) {
+				$status = "ERROR";
+				$msg = "No se enviaron todos los datos requeridos para completar la solicitud";
+		}
+		$em = $this->getDoctrine()->getManager();
+		// Genero el objeto SituacionIva y lo cargo en base al ID recibido
+		$situacionIva = new TblSituacionIva();
+		$situacionIva = $em->getRepository("BackendBundle:TblSituacionIva")->findOneBy(
+			array(
+				'id' => $respuesta["iva"]
+			)
+		);
+		// Genero el objeto Provincia y lo cargo en base al ID recibido
+		$provincia = new TblProvincias();
+		$provincia = $em->getRepository("BackendBundle:TblProvincias")->findOneBy(
+			array(
+				'id' => $respuesta["provincia"]
+			)
+		);
+		// Genero el objeto Rubro y lo cargo en base al ID recibido
+		$rubro = new TblRubros();
+		$rubro = $em->getRepository("BackendBundle:TblRubros")->findOneBy(
+			array(
+				'id' => $respuesta["rubro"]
+			)
+		);
+
+		// Instanciamos un objeto Empresa y seteamos sus datos.
+		
+		$empresa = $em->getRepository("BackendBundle:TblEmpresas")->findOneBy(
+			array(
+				'id' => $id
+			)
+		);
+		$empresa->setNombre($respuesta["nombre"]);
+		$empresa->setDomicilio($respuesta["domicilio"]);
+		$empresa->setLocalidad($respuesta["localidad"]);
+		$empresa->setCuit($respuesta["cuit"]);
+		$empresa->setIibb($respuesta["iibb"]);
+		$empresa->setTitular($respuesta["titular"]);
+		$empresa->setActivo($respuesta["activo"]);
+		$empresa->setIva($situacionIva);
+		$empresa->setProvincia($provincia);
+		$empresa->setRubro($rubro);	
+
+		$em->persist($empresa);
+		$em->flush();	
+
+		$status = 'OK';
+		$msg = 'La empresa ha sido Modificada con exito';
+		
+		
+		$data = array(
+			'status' => $status,
+			'msg' => $msg
+			);
+
+		$serializer = SerializerBuilder::create()->build();
+		$jsonResponse = $serializer->serialize($data, 'json');
+		return new Response($jsonResponse);
+
+	}
+
+
+	/**
+	*	@Route("/empresa/{id}/del",name="empresa_del")
+	*	@Method({"GET"})
+	*/
+	
+	public function delAction($id, Request $request){
+		$em = $this->getDoctrine()->getManager();
+		$empresa = $em->getRepository("BackendBundle:TblEmpresas")->findOneBy(
+			array(
+				'id' => $id
+			)
+		);
+		$empresa->setActivo(0);
+		$em->persist($empresa);
+		$em->flush();
+
+		$data = array(
+				'status' => 'OK',
+				'msg' => 'La empresa ha sido Eliminada con exito'
+			);
+
+		$serializer = SerializerBuilder::create()->build();
+		$jsonResponse = $serializer->serialize($data, 'json');
+		return new Response($jsonResponse);
+
+	}
 
 	public function newAction(Request $request) {
 
@@ -128,10 +250,14 @@ class EmpresasController extends Controller
 
 	}
 
+	/**
+	*	@Route("/empresa",name="empresa_all")
+	*	@Method({"GET"})
+	*/
 
 	public function allAction(Request $request){
     	$em = $this->getDoctrine()->getManager();
-		$result = $em->getRepository("BackendBundle:TblEmpresas")->findAll();
+		$result = $em->getRepository("BackendBundle:TblEmpresas")->findBy(array('activo' => 1));
 		$empresas = array(
 			'draw' => '',
 			'recordsTotal' => '',
