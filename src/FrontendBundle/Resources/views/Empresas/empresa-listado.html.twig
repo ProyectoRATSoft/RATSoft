@@ -103,26 +103,31 @@
                 var telefono = $('div.modal-body div.form-group #nuevoTelefono');
 
             $.post("/empresa/new",{
-                nombre: "nombre", 
-                domicilio: "domicilio", 
-                localidad: "localidad",
-                provincia: "provincia",
-                iva: "iva", 
-                cuit: "cuit",
-                iibb: "iibb",
-                rubro:"rubro" }, function(response){
+                // nombre: "nombre", 
+                // domicilio: "domicilio", 
+                // localidad: "localidad",
+                // provincia: "provincia",
+                // iva: "iva", 
+                // cuit: "cuit",
+                // iibb: "iibb",
+                // rubro:"rubro" }, function(response){
+                //   console.log(response);
+                //   alert(response);   
+                // });
+
+                "nombre" : nombre , 
+                "domicilio" : domicilio, 
+                "localidad" : localidad,
+                "provincia" : provincia,
+                "iva" : iva, 
+                "cuit" : cuit,
+                "iibb" : iibb,
+                "rubro" : rubro,
+                "titular" : titular },
+                function(response){
                   console.log(response);
                   alert(response);   
                 });
-
-            //     "nombre" : nombre , 
-            //     "domicilio" : domicilio, 
-            //     "localidad" : localidad,
-            //     "provincia" : provincia,
-            //     "iva" : iva, 
-            //     "cuit" : cuit,
-            //     "iibb" : iibb,
-            //     "rubro" : rubro });
 
              
       });

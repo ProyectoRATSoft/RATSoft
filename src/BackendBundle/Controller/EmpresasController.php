@@ -41,6 +41,10 @@ class EmpresasController extends Controller
 		
 		// Me aseguro que no me hayan mandado ningun campo vacío
 
+		$status = 'OK';
+		$msg = 'La empresa ha sido Modificada con exito';
+		
+
 		if ( empty($respuesta["nombre"])
 			|| empty($respuesta["domicilio"])
 			|| empty($respuesta["localidad"])
@@ -96,11 +100,9 @@ class EmpresasController extends Controller
 		$empresa->setProvincia($provincia);
 		$empresa->setRubro($rubro);	
 
-		$em->persist($empresa);
-		$em->flush();	
+		//$em->persist($empresa);
+		//$em->flush();	
 
-		$status = 'OK';
-		$msg = 'La empresa ha sido Modificada con exito';
 		
 		
 		$data = array(
