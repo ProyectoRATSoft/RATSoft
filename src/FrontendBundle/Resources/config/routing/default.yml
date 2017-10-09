@@ -3,15 +3,15 @@ default_index:
     defaults: { _controller: "FrontendBundle:Default:index" }
     methods: GET
 
-default_login1:
-    path: /login-ratsoft
-    defaults: { _controller: "FrontendBundle:Default:login" }
-    methods: GET
+# default_login1:
+#     path: /login-ratsoft
+#     defaults: { _controller: "FrontendBundle:Default:login" }
+#     methods: GET
 
-default_register:
-    path: /register
-    defaults: { _controller: "FrontendBundle:Default:register" }
-    methods: GET
+# default_register:
+#     path: /register
+#     defaults: { _controller: "FrontendBundle:Default:register" }
+#     methods: GET
 
 home_index:
     path: /home
