@@ -93,9 +93,9 @@
                 var domicilio = $('div.modal-body div.form-group #nuevoDomicilio').val();
                 var localidad = $('div.modal-body div.form-group #nuevaLocalidad').val();
                 var provincia = $('div.modal-body div.form-group #nuevaProvincia').val();
-                var iva = $('div.modal-body div.form-group #nuevoIva').val();
+                var iva = $('div.modal-body div.form-group #nuevaSituacionIVA').val();
                 var cuit = $('div.modal-body div.form-group #nuevoCuit').val();
-                var iibb = $('div.modal-body div.form-group #uevoIngresosBrutos').val();
+                var iibb = $('div.modal-body div.form-group #nuevoIngresosBrutos').val();
                 var rubro = $('div.modal-body div.form-group #nuevoRubro').val();
                 var titular = $('div.modal-body div.form-group #nuevoTitular').val();
                 var nuevoMail = $('div.modal-body div.form-group #nuevoEmail').val();
@@ -124,9 +124,9 @@
                 "iibb" : iibb,
                 "rubro" : rubro,
                 "titular" : titular },
-                function(response){
-                  console.log(response);
-                  alert(response);   
+                function(resp,estado,jqXHR){
+                  console.log(resp);
+                  alert(resp);   
                 });
 
              

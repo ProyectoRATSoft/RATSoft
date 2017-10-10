@@ -170,7 +170,7 @@ class EmpresasController extends Controller
 		 	|| empty($respuesta["cuit"])
 			|| empty($respuesta["iibb"])
 			|| empty($respuesta["titular"])
-			|| empty($respuesta["activo"])
+			//|| empty($respuesta["activo"])
 			|| empty($respuesta["iva"])
 			|| empty($respuesta["provincia"])
 			|| empty($respuesta["rubro"])
@@ -227,7 +227,7 @@ class EmpresasController extends Controller
 			$empresa->setCuit($respuesta["cuit"]);
 			$empresa->setIibb($respuesta["iibb"]);
 			$empresa->setTitular($respuesta["titular"]);
-			$empresa->setActivo($respuesta["activo"]);
+			$empresa->setActivo("1");
 			$empresa->setIva($situacionIva);
 			$empresa->setProvincia($provincia);
 			$empresa->setRubro($rubro);	
