@@ -33,7 +33,7 @@ class EmpresasController extends Controller
 			'cuit' => $request->request->get("cuit"),
 			'iibb' => $request->request->get("iibb"),
 			'titular' => $request->request->get("titular"),
-			'activo' => $request->request->get("activo"),
+			'activo' => $request->request->get("activo"),			
 			'iva' => (int)$request->request->get("iva"),
 			'provincia' => $request->request->get("provincia"),
 			'rubro' => $request->request->get("rubro"),
@@ -51,7 +51,7 @@ class EmpresasController extends Controller
 		 	|| empty($respuesta["cuit"])
 			|| empty($respuesta["iibb"])
 			|| empty($respuesta["titular"])
-			|| empty($respuesta["activo"])
+			// || empty($respuesta["activo"])
 			|| empty($respuesta["iva"])
 			|| empty($respuesta["provincia"])
 			|| empty($respuesta["rubro"])
@@ -95,13 +95,14 @@ class EmpresasController extends Controller
 		$empresa->setCuit($respuesta["cuit"]);
 		$empresa->setIibb($respuesta["iibb"]);
 		$empresa->setTitular($respuesta["titular"]);
-		$empresa->setActivo($respuesta["activo"]);
+		$empresa->setActivo("1");
+		// $empresa->setActivo($respuesta["activo"]);
 		$empresa->setIva($situacionIva);
 		$empresa->setProvincia($provincia);
 		$empresa->setRubro($rubro);	
 
-		//$em->persist($empresa);
-		//$em->flush();	
+		$em->persist($empresa);
+		$em->flush();	
 
 		
 		

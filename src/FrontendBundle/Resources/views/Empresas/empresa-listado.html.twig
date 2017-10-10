@@ -23,7 +23,11 @@
 <script>
   $(document).ready(function() {
     // armamos el Datatable para traernos la info desde /empresa
-    var table = $('#tabla-empresas').DataTable({
+    var table = $('#tabla-empresas')
+    // .on( 'processing.dt', function ( e, settings, processing ) {
+    //     $('#processingIndicator').css( 'display', processing ? 'block' : 'none' );
+    // } )
+    .DataTable({
       "processing": true,
       "ajax": "/empresa",
       "columns": [
@@ -64,18 +68,50 @@
           $('div.form-group #rubro').val(arrayResp.data.rubro.nombre);
           $('div.form-group #titular').val(arrayResp.data.titular);
           //console.log(arrayResp.data.cuit);
+
+          //llenamos el modal con los datos de la empresa
+          $('div.modal-body div.form-group #nuevoId').val(arrayResp.data.id);
+          $('div.modal-body div.form-group #nuevoNombre').val(arrayResp.data.nombre);
+          $('div.modal-body div.form-group #nuevoDomicilio').val(arrayResp.data.domicilio);
+          $('div.modal-body div.form-group #nuevaLocalidad').val(arrayResp.data.localidad);
+          $('div.modal-body div.form-group #nuevaProvincia').val(arrayResp.data.provincia.id);
+          $('div.modal-body div.form-group #nuevaSituacionIVA').val(arrayResp.data.iva.id);
+          $('div.modal-body div.form-group #nuevoCuit').val(arrayResp.data.cuit);
+          $('div.modal-body div.form-group #nuevoIngresosBrutos').val(arrayResp.data.iibb);
+          $('div.modal-body div.form-group #nuevoRubro').val(arrayResp.data.rubro.id);
+          $('div.modal-body div.form-group #nuevoTitular').val(arrayResp.data.titular);
+          
+          // $('#nuevaSituacionIVA').change(function(){
+          var option = $('div.modal-body div.form-group #nuevaSituacionIVA').find('option:selected').val();
+            $.get("/iva/"+option,function(resp,estado,jqXHR){
+                    var arrayResp = JSON.parse(resp);
+                    var obj = arrayResp.data[0];
+                    $('#nuevoIva').val(obj["detalle"]);
+                  });
+            // });
         });
       }
     }); 
 
      //llama al modal luego de hacer click en el boton
       $("#addEmpresa").click(function(){
-            $("#modalAddEmpresa").modal();
+        $("#modalAddEmpresa").modal();
+        //edito el titulo del modal
+        $("h4.modal-title").text("Nueva Empresa");
+        //establecemos que botones corresponde poder verse  en este caso, como agregamos no hace falta editar ni borrar
+        $('button#newEmpresa').css("display", "");
+        $('button#editDatesEmpresa').css("display", "none");
+        $('button#deleteEmpresa').css("display", "none");       
       });
 
+      //llenamos el combo pasando 1. url 2. valor 3. descripcion 4. id del campo
       comboFill("/provincias","id","nombre","#nuevaProvincia")
       comboFill("/iva","id","codigo","#nuevaSituacionIVA")
       comboFill("/rubros","id","nombre","#nuevoRubro")
+
+      // llenamos el campo input cuando se detecta un cambio en el dropdownlist, 
+      //hace una busqueda por el codigo seleccionado y va a buscar a la descripcion
+      //a la base para llenar el campo con el texto completo
 
       $('#nuevaSituacionIVA').change(function(){
         var option = $(this).find('option:selected').val();
@@ -86,50 +122,112 @@
         });
       });
 
+      //detecta el evento click
       $("#newEmpresa").click(function(){
             // alert("Guardar");
-
-                var nombre = $('div.modal-body div.form-group #nuevoNombre').val();
-                var domicilio = $('div.modal-body div.form-group #nuevoDomicilio').val();
-                var localidad = $('div.modal-body div.form-group #nuevaLocalidad').val();
-                var provincia = $('div.modal-body div.form-group #nuevaProvincia').val();
-                var iva = $('div.modal-body div.form-group #nuevaSituacionIVA').val();
-                var cuit = $('div.modal-body div.form-group #nuevoCuit').val();
-                var iibb = $('div.modal-body div.form-group #nuevoIngresosBrutos').val();
-                var rubro = $('div.modal-body div.form-group #nuevoRubro').val();
-                var titular = $('div.modal-body div.form-group #nuevoTitular').val();
-                var nuevoMail = $('div.modal-body div.form-group #nuevoEmail').val();
-                var fax = $('div.modal-body div.form-group #nuevoFax');
-                var telefono = $('div.modal-body div.form-group #nuevoTelefono');
-
-            $.post("/empresa/new",{
-                // nombre: "nombre", 
-                // domicilio: "domicilio", 
-                // localidad: "localidad",
-                // provincia: "provincia",
-                // iva: "iva", 
-                // cuit: "cuit",
-                // iibb: "iibb",
-                // rubro:"rubro" }, function(response){
-                //   console.log(response);
-                //   alert(response);   
-                // });
-
-                "nombre" : nombre , 
-                "domicilio" : domicilio, 
-                "localidad" : localidad,
-                "provincia" : provincia,
-                "iva" : iva, 
-                "cuit" : cuit,
-                "iibb" : iibb,
-                "rubro" : rubro,
-                "titular" : titular },
-                function(resp,estado,jqXHR){
-                  console.log(resp);
-                  alert(resp);   
-                });
+            //guardo los valores en cada variable                            
+            var nombre = $('div.modal-body div.form-group #nuevoNombre').val();
+            var domicilio = $('div.modal-body div.form-group #nuevoDomicilio').val();
+            var localidad = $('div.modal-body div.form-group #nuevaLocalidad').val();
+            var provincia = $('div.modal-body div.form-group #nuevaProvincia').val();
+            var iva = $('div.modal-body div.form-group #nuevaSituacionIVA').val();
+            var cuit = $('div.modal-body div.form-group #nuevoCuit').val();
+            var iibb = $('div.modal-body div.form-group #nuevoIngresosBrutos').val();
+            var rubro = $('div.modal-body div.form-group #nuevoRubro').val();
+            var titular = $('div.modal-body div.form-group #nuevoTitular').val();
+            // var nuevoMail = $('div.modal-body div.form-group #nuevoEmail').val();
+            // var fax = $('div.modal-body div.form-group #nuevoFax');
+            // var telefono = $('div.modal-body div.form-group #nuevoTelefono');
+            //realizo un post pasando la url correspondiente al backend, los datos previamente capturados y realizo la funcion correspondiente que me devolvera la respuesta.
+            $.post("/empresa/new",{                  
+              "nombre" : nombre , 
+              "domicilio" : domicilio, 
+              "localidad" : localidad,
+              "provincia" : provincia,
+              "iva" : iva, 
+              "cuit" : cuit,
+              "iibb" : iibb,
+              "rubro" : rubro,
+              "titular" : titular },
+              function(resp,estado,jqXHR){
+                console.log(resp);
+                if(resp.status == 'OK'){
+                  alert("entro al ok!");
+                  // $('div.modal-body div.form-group #nuevoNombre').val('');
+                  // $('div.modal-body div.form-group #nuevoDomicilio').val('');
+                  // $('div.modal-body div.form-group #nuevaLocalidad').val('');
+                  // $('div.modal-body div.form-group #nuevaProvincia').val('');
+                  // $('div.modal-body div.form-group #nuevaSituacionIVA').val('');
+                  // $('div.modal-body div.form-group #nuevoCuit').val('');
+                  // $('div.modal-body div.form-group #nuevoIngresosBrutos').val('');
+                  // $('div.modal-body div.form-group #nuevoRubro').val('');
+                  // $('div.modal-body div.form-group #nuevoTitular').val('');
+                }
+                else{
+                  alert("no entro al ok!");
+                }                   
+                //deberiamos mostrar algun mensaje tanto como de error, como de que todo salio bien. y luego recargar la grilla para que aparezca la nueva empresa en la tabla.
+                //alert(resp);   
+              });
 
              
+      });
+
+      $("#editEmpresa").click(function(){
+        //alert("entro al boton editar!");
+        $("#modalAddEmpresa").modal();
+        $("h4.modal-title").text("Editar Empresa");
+        $('button#newEmpresa').css("display", "none");
+        $('button#editDatesEmpresa').css("display", "");
+        $('button#deleteEmpresa').css("display", "");
+        
+      });
+
+      $("#editDatesEmpresa").click(function(){
+        //guardamos id para pasarlo en la url
+        var id =  $('div.modal-body div.form-group #nuevoId').val();
+        var nombre = $('div.modal-body div.form-group #nuevoNombre').val();
+        var domicilio = $('div.modal-body div.form-group #nuevoDomicilio').val();
+        var localidad = $('div.modal-body div.form-group #nuevaLocalidad').val();
+        var provincia = $('div.modal-body div.form-group #nuevaProvincia').val();
+        var iva = $('div.modal-body div.form-group #nuevaSituacionIVA').val();
+        var cuit = $('div.modal-body div.form-group #nuevoCuit').val();
+        var iibb = $('div.modal-body div.form-group #nuevoIngresosBrutos').val();
+        var rubro = $('div.modal-body div.form-group #nuevoRubro').val();
+        var titular = $('div.modal-body div.form-group #nuevoTitular').val();
+        //realizo un post pasando la url e id correspondiente para el backend, los datos previamente capturados y realizo la funcion correspondiente que me devolvera la respuesta.
+        $.post("/empresa/"+id+"/edit",{
+
+              "nombre" : nombre, 
+              "domicilio" : domicilio, 
+              "localidad" : localidad,
+              "provincia" : provincia,
+              "iva" : iva, 
+              "cuit" : cuit,
+              "iibb" : iibb,
+              "rubro" : rubro,
+              "titular" : titular },
+              function(resp,estado,jqXHR){
+                console.log(resp);
+                alert(resp);
+                // if(resp.status == 'OK'){
+                //   alert("entro al ok!");
+                //   // $('div.modal-body div.form-group #nuevoNombre').val('');
+                //   // $('div.modal-body div.form-group #nuevoDomicilio').val('');
+                //   // $('div.modal-body div.form-group #nuevaLocalidad').val('');
+                //   // $('div.modal-body div.form-group #nuevaProvincia').val('');
+                //   // $('div.modal-body div.form-group #nuevaSituacionIVA').val('');
+                //   // $('div.modal-body div.form-group #nuevoCuit').val('');
+                //   // $('div.modal-body div.form-group #nuevoIngresosBrutos').val('');
+                //   // $('div.modal-body div.form-group #nuevoRubro').val('');
+                //   // $('div.modal-body div.form-group #nuevoTitular').val('');
+                // }
+                // else{
+                //   alert("no entro al ok!");
+                // }                   
+                // //deberiamos mostrar algun mensaje tanto como de error, como de que todo salio bien. y luego recargar la grilla para que aparezca la nueva empresa en la tabla.
+                // alert(resp);   
+              });
       });
 
                   
@@ -297,7 +395,10 @@
           <h4 class="modal-title">Nueva Empresa</h4>
         </div>
         <div class="modal-body">          
-          <h4>Datos de la empresa</h4>                
+          <h4>Datos de la empresa</h4> 
+          <div class="form-group">
+            <input id="nuevoId" style="display: none" enable="true"/>
+          </div>               
           <div class="form-group">
             <label for="nuevoNombre">Nombre: </label>
             <input type="text" required="true" class="form-control input-sm" id="nuevoNombre" name="nuevoNombre"
@@ -358,9 +459,6 @@
                   <select name="nuevoRubro" id="nuevoRubro" required="true" class="selectpicker dropdown-toggle form-control input-sm" 
                   type="button" data-toggle="dropdown">
                     <option disabled selected value>--Seleccione una opcion--</option>  
-                    <!-- <option>Opcion 1</option>
-                    <option>Opcion 2</option>
-                    <option>Opcion 3</option> -->
                   </select>
                 </div>                                
           </div>
@@ -368,7 +466,7 @@
             <label for="nuevoTitular">Titular: </label>
             <input type="text" class="form-control input-sm" id="nuevoTitular" name="nuevoTitular" placeholder="Titular"/>
           </div>
-          <h4>Datos de Contacto</h4>
+          <!-- <h4>Datos de Contacto</h4>
           <div class="form-group">
             <label for="nuevoEmail">Email: </label>
             <input type="email" required="true" class="form-control input-sm" id="nuevoEmail" name="nuevoEmail" placeholder="Email"/>   
@@ -381,10 +479,17 @@
             <label for="nuevoFax">Fax: </label>                    
             <input type="number" required="true" class="form-control input-sm" id="nuevoFax" name="nuevoFax" placeholder="Fax"/> 
           </div>      
-        </div>
+        </div> -->
         <div class="modal-footer">
-          <button type="button" class="btn btn-success" id="newEmpresa" data-dismiss="modal">Guardar</button>
-          <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
+          <div class="col-xs-6 " id="colDelete">
+            <button type="button" class="btn btn-danger pull-left" id="deleteEmpresa" style="display: none">Borrar</button>
+          </div>         
+          <div class="col-xs-6 ">
+            <button type="button" class="btn btn-success" id="editDatesEmpresa" style="display: none">Guardar</button>
+            <button type="button" class="btn btn-success" id="newEmpresa" style="display: none" >Guardar</button>
+            <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
+          </div>
+          
         </div>
       </div>                
     </div>
