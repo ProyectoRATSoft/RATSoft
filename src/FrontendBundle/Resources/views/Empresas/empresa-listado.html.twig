@@ -209,7 +209,7 @@
               "titular" : titular },
               function(resp,estado,jqXHR){
                 console.log(resp);
-                alert(resp);
+                //alert(resp);
                 // if(resp.status == 'OK'){
                 //   alert("entro al ok!");
                 //   // $('div.modal-body div.form-group #nuevoNombre').val('');
@@ -226,10 +226,40 @@
                 //   alert("no entro al ok!");
                 // }                   
                 // //deberiamos mostrar algun mensaje tanto como de error, como de que todo salio bien. y luego recargar la grilla para que aparezca la nueva empresa en la tabla.
-                // alert(resp);   
+                // alert(resp);
+
               });
       });
 
+      $("#deleteEmpresa").click(function(){
+          var id =  $('div.modal-body div.form-group #nuevoId').val();
+          var result = confirm("Esta seguro de que desea borrar la empresa?");
+          if (result) {
+               $.get("/empresa/"+id+"/del",
+                  function(resp,estado,jqXHR){
+                    console.log(resp);
+                    //alert(resp);
+                    // if(resp.status == 'OK'){
+                    //   alert("entro al ok!");
+                    //   // $('div.modal-body div.form-group #nuevoNombre').val('');
+                    //   // $('div.modal-body div.form-group #nuevoDomicilio').val('');
+                    //   // $('div.modal-body div.form-group #nuevaLocalidad').val('');
+                    //   // $('div.modal-body div.form-group #nuevaProvincia').val('');
+                    //   // $('div.modal-body div.form-group #nuevaSituacionIVA').val('');
+                    //   // $('div.modal-body div.form-group #nuevoCuit').val('');
+                    //   // $('div.modal-body div.form-group #nuevoIngresosBrutos').val('');
+                    //   // $('div.modal-body div.form-group #nuevoRubro').val('');
+                    //   // $('div.modal-body div.form-group #nuevoTitular').val('');
+                    // }
+                    // else{
+                    //   alert("no entro al ok!");
+                    // }                   
+                    // //deberiamos mostrar algun mensaje tanto como de error, como de que todo salio bien. y luego recargar la grilla para que aparezca la nueva empresa en la tabla.
+                    // alert(resp);
+                    $("#modalAddEmpresa").modal('toggle'); 
+                    });
+          }                 
+      });
                   
   });
 </script>
