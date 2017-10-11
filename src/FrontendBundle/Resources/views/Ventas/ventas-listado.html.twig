@@ -2,23 +2,24 @@
 {% block title %} Ventas{% endblock %}
 {% block CSs %}
 <link rel="stylesheet" href="{{ asset('public/Buttons-1.4.2/css/buttons.bootstrap.min.css') }}">
-<style>
-                table { width: 50% }
-                tbody tr:hover.active td,
-                tbody tr:hover td {
-                  background-color: #A9D0F5;
-                  cursor: pointer;
-                }               
-                .table>tbody>tr.active>td {
-                  background-color: #A9D0F5;
-                  color: #000000;
-                  font:  bold 12px/18px Georgia, serif;
-                }
-                tr.group,
+<link rel="stylesheet" href="{{ asset('public/responsive/2.2.0/css/responsive.bootstrap.min.css') }}">
+  <style>
+    /*table { width: 50% }*/
+    tbody tr:hover.active td,
+    tbody tr:hover td {
+      background-color: #A9D0F5;
+      cursor: pointer;
+    }               
+    .table>tbody>tr.active>td {
+      background-color: #A9D0F5;
+      color: #000000;
+      font:  bold 12px/18px Georgia, serif;
+    }
+    tr.group,
                 tr.group:hover {
                   background-color: #ddd !important;
                 }
-</style>
+  </style> 
 {% endblock %}
 {% block Scripts %}
  <!-- DataTables -->
@@ -32,21 +33,38 @@
 <script src="{{ asset('public/Buttons-1.4.2/js/buttons.html5.min.js') }}"></script>
 <script src="{{ asset('public/Buttons-1.4.2/js/buttons.print.min.js') }}"></script>
 <script src="{{ asset('public/Buttons-1.4.2/js/buttons.colVis.min.js') }}"></script>
-<!-- <script src="{{ asset('') }}"></script>    
-<script src="{{ asset('') }}"></script>
-<script src="{{ asset('') }}"></script> -->
+<script src="{{ asset('public/responsive/2.2.0/js/dataTables.responsive.min.js') }}"></script>
+<script src="{{ asset('public/responsive/2.2.0/js/responsive.bootstrap.min.js') }}"></script> 
+<!-- <script src="{{ asset('') }}"></script>  --> 
 <script>
-                $(document).ready(function() {
-                  // armamos el Datatable para traernos la info desde /empresa
-                  var table = $('#tabla-empresas').DataTable({
-                    dom: 'Bfrtip',
+  $(document).ready(function() {
+  var table = $('#tabla-ventas').DataTable({
+                    dom: 'f<B>rt<ip>',
+                    //configuramos la cantidad de datos que queremos que nos muestre el menu
                     lengthMenu: [
                         [ 10, 25, 50, -1 ],
                         [ '10 rows', '25 rows', '50 rows', 'Show all' ]
                     ],
+                    //elegis los formatos para exportar los datos de la tabla, colvis (va a servir para seleccionar que columnas queres q se vean o no), pagelenth para seleccionar la cantidad  datos mostrados 
                     buttons: [ 'copy', 'excel', 'pdf', 'csv', 'print', 'colvis', 'pageLength'],
-                    "columnDefs": [ { "visible": false, "targets": 2 }],
-                    "responsive": true,                    
+                    
+                    "columnDefs": [ 
+                                  //con esto podes setear que columnas queres aparezca o no
+                                  //{ "visible": false, "targets": 3 },
+                                    { responsivePriority: 1, targets: 0 },
+                                    { responsivePriority: 2, targets: 3 },
+                                    
+                    ],
+
+                    "responsive":
+                    // {
+                    //       details: {
+                    //          display: $.fn.dataTable.Responsive.display.childRowImmediate,
+                    //                type: ''
+                             
+                    //      }
+                    //  },
+                    true,                    
                     "processing": true,
                     "ajax": "/empresa",
                     "columns": [
@@ -54,48 +72,16 @@
                       { "data": "cuit",
                         "className": "cuit"}, //esto es importante, le ponemos una clase a este campo
                       { "data": "iva.detalle"},
-                      { "data": "provincia.nombre" },
+                      { "data": "provincia.nombre" }
                       ]
                   });
-                  table.buttons().container().appendTo( '#tabla-empresas .col-sm-6:eq(0)' );                  
                   
-                  // A partir de acá metemos lo que pasa cuando picamos sobre alguna empresa
-                  $('#tabla-empresas tbody').on( 'click', 'tr', function () {
-                    if ( $(this).hasClass('active') ) {
-                      $(this).removeClass('active');
-                    }
-                    else {
-                      table.$('tr.active').removeClass('active');
-                      $(this).addClass('active');
-                      // metemos en una variable lo que hay en e campo cuit de la empresa seleccionada
-                      var cuit = table.$("tr.active").find(".cuit").text();
-                      //console.log( cuit );
-                      // Mandamos esta variable por post a /empresa/find para traernos toda la info de la empresa y poder volcarla en el panel de la derecha
-                      $.post("/empresa/find",{"cuit":cuit},function(resp,estado,jqXHR){
-                        //console.log(resp);
-                        // Parseamos la respuesta para que no sea un string y podamos navegarlo
-                        var arrayResp = JSON.parse(resp);
-                        // Aplicamos lo que trajimos para cambiar el valor correspondiente de cada campo donde sea necesario
-                        $('div.form-group #empresaID').val(arrayResp.data.id);
-                        //$('div.form-group #nombre').attr("placeholder",arrayResp.data.nombre);
-                        $('div.form-group #nombre').val(arrayResp.data.nombre);
-                        $('div.form-group #domicilio').val(arrayResp.data.domicilio);
-                        $('div.form-group #localidad').val(arrayResp.data.localidad);
-                        $('div.form-group #provincia').val(arrayResp.data.provincia.nombre);
-                        $('div.form-group #iva').val(arrayResp.data.iva.detalle);
-                        $('div.form-group #cuit').val(arrayResp.data.cuit);
-                        $('div.form-group #ingresosBrutos').val(arrayResp.data.iibb);
-                        $('div.form-group #rubro').val(arrayResp.data.rubro.nombre);
-                        $('div.form-group #titular').val(arrayResp.data.titular);
-                        //console.log(arrayResp.data.cuit);
-
-                      });
-                    }
-
-                  });
+                  table.buttons().container().appendTo( '#tabla-empresas .col-sm-6:eq(0)' );                 
                   
-                });
+ });                               
+                
             </script>
+
 {% endblock %}
 {% block body %}
   <!-- ACA EMPIEZO A TRABAJAR LA INTERFAZ Content Wrapper. Contains page content -->
@@ -109,7 +95,7 @@
       <ol class="breadcrumb">
         <li><a href="/home"><i class="fa fa-home"></i> home</a></li>
         <li><a href="/contable"><i class="fa fa-calculator"></i> contable</a></li>
-        <li class="active">Buscador de ventas</li>
+        <li class="active"><i class="fa fa-search"></i>Buscador de ventas</li>
       </ol>
     </section>    
     <section class="content">
@@ -122,13 +108,13 @@
             </div>
             <!-- /.box-header -->
             <div class="box-body">       
-              <table id="tabla-empresas" class="table table-bordered table-striped table-hover">
+              <table id="tabla-ventas" class="table table-bordered table-striped table-hover dt-responsive nowrap display "> <!-- nowrap -->
                 <thead>                  
                   <tr>
                     <th>Razon Social</th>
                     <th>Cuit</th>
-                    <th>Condicion IVA</th>
-                    <th>Jurisdiccion</th>                    
+                    <th data-priority="1">Condicion IVA</th>
+                    <th data-priority="2">Jurisdiccion</th>                    
                   </tr>
                 </thead>
                 <tbody></tbody>
