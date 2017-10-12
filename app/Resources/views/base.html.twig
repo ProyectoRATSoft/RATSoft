@@ -1,15 +1,13 @@
 <!DOCTYPE html>
-<html data-ng-app="frontApp">
+<html>
     <head>
         <meta charset="UTF-8" />
         <title>{% block title %}Welcome!{% endblock %}</title>
         {% block stylesheets %}{% endblock %}
         <link rel="icon" type="image/x-icon" href="{{ asset('favicon.ico') }}" />
     </head>
-    <body data-ng-controller="frontendController">
+    <body>
         {% block javascripts %}
-            <script src="{{ asset('public/js/angular/angular.min.js') }}"></script>
-            <script src="{{ asset('public/js/angular/front.js') }}"></script>
         {% endblock %}
         {% block body %}{% endblock %}
     </body>
