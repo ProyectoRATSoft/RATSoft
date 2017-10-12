@@ -37,13 +37,31 @@
 <script src="{{ asset('public/responsive/2.2.0/js/responsive.bootstrap.min.js') }}"></script> 
 <!-- <script src="{{ asset('') }}"></script>  --> 
 <script>
+  //con esto bloqueamos la pantalla cuando inicia alguna accion ajax..
+  $(document).ajaxStart(function() {
+            $.blockUI({ css: { 
+                border: 'none', 
+                padding: '15px', 
+                backgroundColor: '#000', 
+                '-webkit-border-radius': '10px', 
+                '-moz-border-radius': '10px', 
+                opacity: .5, 
+                color: '#fff' 
+            },message: 'Por Favor, espere...'})
+        });
+    //cuando termina la accion ajax, se desbloquea..
+    $(document).ajaxStop(function() {
+        $.unblockUI();
+    });
+    
+  $(document).ready(function() {
   $(document).ready(function() {
   var table = $('#tabla-ventas').DataTable({
                     dom: 'f<B>rt<ip>',
                     //configuramos la cantidad de datos que queremos que nos muestre el menu
                     lengthMenu: [
                         [ 10, 25, 50, -1 ],
-                        [ '10 rows', '25 rows', '50 rows', 'Show all' ]
+                        [ '10 Filas', '25 Filas', '50 Filas', 'Todos' ]
                     ],
                     //elegis los formatos para exportar los datos de la tabla, colvis (va a servir para seleccionar que columnas queres q se vean o no), pagelenth para seleccionar la cantidad  datos mostrados 
                     buttons: [ 'copy', 'excel', 'pdf', 'csv', 'print', 'colvis', 'pageLength'],
@@ -68,6 +86,12 @@
                     "processing": true,
                     "ajax": "/empresa",
                     "columns": [
+                              {   // Responsive control column
+                          data: null,
+                          defaultContent: '',
+                          className: 'control',
+                          orderable: false
+                      },
                       { "data": "nombre"},
                       { "data": "cuit",
                         "className": "cuit"}, //esto es importante, le ponemos una clase a este campo
@@ -107,26 +131,28 @@
               <h3 class="box-title">Busque la factura deseada..</h3>
             </div>
             <!-- /.box-header -->
-            <div class="box-body">       
-              <table id="tabla-ventas" class="table table-bordered table-striped table-hover dt-responsive nowrap display "> <!-- nowrap -->
-                <thead>                  
-                  <tr>
-                    <th>Razon Social</th>
-                    <th>Cuit</th>
-                    <th data-priority="1">Condicion IVA</th>
-                    <th data-priority="2">Jurisdiccion</th>                    
-                  </tr>
-                </thead>
-                <tbody></tbody>
-                <tfoot>
-                  <tr>
-                    <th>Razon Social</th>
-                    <th>Cuit</th>
-                    <th>Condicion IVA</th>
-                    <th>Jurisdiccion</th>
-                  </tr>
-                </tfoot>
-              </table>
+            <div class="box-body">
+              <div class="table-responsive">
+                <table id="tabla-ventas" class="table table-bordered table-striped table-hover dt-responsive nowrap"> <!-- nowrap -->
+                  <thead>                  
+                    <tr>
+                      <th>Razon Social</th>
+                      <th>Cuit</th>
+                      <th data-priority="1">Condicion IVA</th>
+                      <th data-priority="2">Jurisdiccion</th>                    
+                    </tr>
+                  </thead>
+                  <tbody></tbody>
+                  <tfoot>
+                    <tr>
+                      <th>Razon Social</th>
+                      <th>Cuit</th>
+                      <th>Condicion IVA</th>
+                      <th>Jurisdiccion</th>
+                    </tr>
+                  </tfoot>
+                </table>
+              </div>
             </div>
             <!-- /.box-body -->
           </div>

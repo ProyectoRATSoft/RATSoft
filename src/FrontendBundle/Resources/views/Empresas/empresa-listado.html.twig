@@ -1,6 +1,9 @@
 {% extends 'FrontendBundle::Default/base.html.twig' %}
 {% block title %} Contable{% endblock %}
 {% block CSs %}
+<link rel="stylesheet" href="{{ asset('public/Buttons-1.4.2/css/buttons.bootstrap.min.css') }}">
+<link rel="stylesheet" href="{{ asset('public/responsive/2.2.0/css/responsive.bootstrap.min.css') }}">
+<link rel="stylesheet" href="{{ asset('public/boostrapvalidator/bootstrapValidator.css') }}">
   <style>
     table { width: 50% }
     tbody tr:hover.active td,
@@ -16,12 +19,43 @@
   </style>              
 {% endblock %}
 {% block Scripts %}
+
  <!-- DataTables -->
 <script src="{{ asset('bower_components/datatables.net/js/jquery.dataTables.min.js') }}"></script>
 <script src="{{ asset('bower_components/datatables.net-bs/js/dataTables.bootstrap.min.js') }}"></script>
+<script src="{{ asset('public/Buttons-1.4.2/js/dataTables.buttons.min.js') }}"></script>
+<script src="{{ asset('public/Buttons-1.4.2/js/buttons.bootstrap.min.js') }}"></script>
+<script src="{{ asset('public/JSZip-2.5.0/jszip.min.js') }}"></script>
+<script src="{{ asset('public/pdfmake-0.1.32/pdfmake.min.js') }}"></script>
+<script src="{{ asset('public/pdfmake-0.1.32/vfs_fonts.js') }}"></script>
+<script src="{{ asset('public/Buttons-1.4.2/js/buttons.html5.min.js') }}"></script>
+<script src="{{ asset('public/Buttons-1.4.2/js/buttons.print.min.js') }}"></script>
+<script src="{{ asset('public/Buttons-1.4.2/js/buttons.colVis.min.js') }}"></script>
+<script src="{{ asset('public/responsive/2.2.0/js/dataTables.responsive.min.js') }}"></script>
+<script src="{{ asset('public/responsive/2.2.0/js/responsive.bootstrap.min.js') }}"></script> 
+<!-- <script src="{{ asset('') }}"></script>  --> 
 <script src="{{ asset('ratsoft/ratsoft.js') }}"></script>
+<script src="{{ asset('public/boostrapvalidator/js/bootstrapValidator.js') }}"></script>
 <script>
-  $(document).ready(function() {
+  //con esto bloqueamos la pantalla cuando inicia alguna accion ajax..
+  $(document).ajaxStart(function() {
+            $.blockUI({ css: { 
+                border: 'none', 
+                padding: '15px', 
+                backgroundColor: '#000', 
+                '-webkit-border-radius': '10px', 
+                '-moz-border-radius': '10px', 
+                opacity: .5, 
+                color: '#fff' 
+            },message: 'Por Favor, espere...'})
+        });    
+  $(document).ready(function(){
+
+    //cuando termina la accion ajax, se desbloquea..
+    $(document).ajaxStop(function() {
+        $.unblockUI();
+    });
+   
     // armamos el Datatable para traernos la info desde /empresa
     var table = $('#tabla-empresas')
     // .on( 'processing.dt', function ( e, settings, processing ) {
@@ -29,7 +63,7 @@
     // } )
     .DataTable({
       "responsive": true,
-      "processing": true,
+      //"processing": true,
       "ajax": "/empresa",
       "columns": [
         { "data": "nombre"},
@@ -163,6 +197,7 @@
                   // $('div.modal-body div.form-group #nuevoIngresosBrutos').val('');
                   // $('div.modal-body div.form-group #nuevoRubro').val('');
                   // $('div.modal-body div.form-group #nuevoTitular').val('');
+                  //table()
                 }
                 else{
                   alert("no entro al ok!");
@@ -181,6 +216,15 @@
         $('button#newEmpresa').css("display", "none");
         $('button#editDatesEmpresa').css("display", "");
         $('button#deleteEmpresa').css("display", "");
+        // $('div.modal-body div.form-group #nuevoNombre').text('');
+        // $('div.modal-body div.form-group #nuevoDomicilio').text('');
+        // $('div.modal-body div.form-group #nuevaLocalidad').text('');
+        // $('div.modal-body div.form-group #nuevaProvincia').val('');
+        // $('div.modal-body div.form-group #nuevaSituacionIVA').text('');
+        // $('div.modal-body div.form-group #nuevoCuit').text('');
+        // $('div.modal-body div.form-group #nuevoIngresosBrutos').text('');
+        // $('div.modal-body div.form-group #nuevoRubro').val('');
+        // $('div.modal-body div.form-group #nuevoTitular').text('');
         
       });
 
@@ -222,6 +266,7 @@
                 //   // $('div.modal-body div.form-group #nuevoIngresosBrutos').val('');
                 //   // $('div.modal-body div.form-group #nuevoRubro').val('');
                 //   // $('div.modal-body div.form-group #nuevoTitular').val('');
+                    //table()
                 // }
                 // else{
                 //   alert("no entro al ok!");
@@ -251,17 +296,47 @@
                     //   // $('div.modal-body div.form-group #nuevoIngresosBrutos').val('');
                     //   // $('div.modal-body div.form-group #nuevoRubro').val('');
                     //   // $('div.modal-body div.form-group #nuevoTitular').val('');
+                        
                     // }
                     // else{
                     //   alert("no entro al ok!");
                     // }                   
                     // //deberiamos mostrar algun mensaje tanto como de error, como de que todo salio bien. y luego recargar la grilla para que aparezca la nueva empresa en la tabla.
                     // alert(resp);
-                    $("#modalAddEmpresa").modal('toggle'); 
+                    $("#modalAddEmpresa").modal('toggle');
+
                     });
           }                 
       });
-                  
+          
+       // bootstrapt validator inicio
+    $("#modal-body").bootstrapValidator({
+        excluded: [':disabled', ':hidden', ':not(:visible)'],
+        feedbackIcons: {
+            valid: 'glyphicon glyphicon-ok',
+            invalid: 'glyphicon glyphicon-remove',
+            validating: 'glyphicon glyphicon-refresh'
+        },
+        // live: 'enabled',
+        // message: 'This value is not valid',
+        // submitButtons: 'button[type="submit"]',
+        // trigger: null,
+        fields:{
+                nuevoNombre: {
+                  // group: "col-sm-10",
+                  validators:{
+                    notEmpty:{
+                      message:"Ingrese un nombre"
+                    }
+                  }
+                }
+
+        }
+    });
+
+
+    // fin de bootstrapt validator 
+        
   });
 </script>
 {% endblock %}
@@ -442,7 +517,7 @@
           </div>
           <div class="form-group">
             <label for="nuevaLocalidad">Localidad: </label>                    
-            <input type="text" class="form-control input-sm" id="nuevaLocalidad" name="nuevaLocalidad" placeholder="Localidad empresa"/>                    
+            <input type="text" class="form-control input-sm" id="nuevaLocalidad" required="true" name="nuevaLocalidad" placeholder="Localidad empresa"/>                    
           </div>
           <div class="form-group">
             <div class="col-xs-3" style="padding-left: 0px">
@@ -495,7 +570,7 @@
           </div>
           <div class="form-group">
             <label for="nuevoTitular">Titular: </label>
-            <input type="text" class="form-control input-sm" id="nuevoTitular" name="nuevoTitular" placeholder="Titular"/>
+            <input type="text" class="form-control input-sm" id="nuevoTitular" name="nuevoTitular" placeholder="Titular" required="true" />
           </div>
           <!-- <h4>Datos de Contacto</h4>
           <div class="form-group">
