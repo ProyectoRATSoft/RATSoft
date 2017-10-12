@@ -19,7 +19,6 @@ class DefaultController extends Controller
 
 	public function loginAction()
 	{
-		// return $this->render('FrontendBundle:Users:login.html.twig');
 		return $this->render('FrontendBundle:Users:login.html.twig');
 	}
 
