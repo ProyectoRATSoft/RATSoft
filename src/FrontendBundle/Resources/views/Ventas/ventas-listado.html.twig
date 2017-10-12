@@ -2,29 +2,31 @@
 {% block title %} Ventas{% endblock %}
 {% block CSs %}
 <link rel="stylesheet" href="{{ asset('public/Buttons-1.4.2/css/buttons.bootstrap.min.css') }}">
-<link rel="stylesheet" href="{{ asset('public/responsive/2.2.0/css/responsive.bootstrap.min.css') }}">
-  <style>
-    /*table { width: 50% }*/
-    tbody tr:hover.active td,
-    tbody tr:hover td {
-      background-color: #A9D0F5;
-      cursor: pointer;
-    }               
-    .table>tbody>tr.active>td {
-      background-color: #A9D0F5;
-      color: #000000;
-      font:  bold 12px/18px Georgia, serif;
-    }
-    tr.group,
-                tr.group:hover {
-                  background-color: #ddd !important;
-                }
-  </style> 
+<link rel="stylesheet" href="{{ asset('public/responsive-2.2.0/css/responsive.bootstrap.min.css') }}">
+<style>
+  /*table { width: 50% }*/
+  tbody tr:hover.active td,
+  tbody tr:hover td {
+    background-color: #A9D0F5;
+    cursor: pointer;
+  }               
+  .table>tbody>tr.active>td {
+    background-color: #A9D0F5;
+    color: #000000;
+    font:  bold Georgia 12px/18px;
+  }
+  tr.group,
+              tr.group:hover {
+                background-color: #ddd !important;
+              }
+</style> 
 {% endblock %}
 {% block Scripts %}
  <!-- DataTables -->
 <script src="{{ asset('bower_components/datatables.net/js/jquery.dataTables.min.js') }}"></script>
 <script src="{{ asset('bower_components/datatables.net-bs/js/dataTables.bootstrap.min.js') }}"></script>
+<script src="{{ asset('public/responsive-2.2.0/js/dataTables.responsive.min.js') }}"></script>
+<script src="{{ asset('public/responsive-2.2.0/js/responsive.bootstrap.min.js') }}"></script>
 <script src="{{ asset('public/Buttons-1.4.2/js/dataTables.buttons.min.js') }}"></script>
 <script src="{{ asset('public/Buttons-1.4.2/js/buttons.bootstrap.min.js') }}"></script>
 <script src="{{ asset('public/JSZip-2.5.0/jszip.min.js') }}"></script>
@@ -32,9 +34,7 @@
 <script src="{{ asset('public/pdfmake-0.1.32/vfs_fonts.js') }}"></script>
 <script src="{{ asset('public/Buttons-1.4.2/js/buttons.html5.min.js') }}"></script>
 <script src="{{ asset('public/Buttons-1.4.2/js/buttons.print.min.js') }}"></script>
-<script src="{{ asset('public/Buttons-1.4.2/js/buttons.colVis.min.js') }}"></script>
-<script src="{{ asset('public/responsive/2.2.0/js/dataTables.responsive.min.js') }}"></script>
-<script src="{{ asset('public/responsive/2.2.0/js/responsive.bootstrap.min.js') }}"></script> 
+<script src="{{ asset('public/Buttons-1.4.2/js/buttons.colVis.min.js') }}"></script> 
 <!-- <script src="{{ asset('') }}"></script>  --> 
 <script>
   //con esto bloqueamos la pantalla cuando inicia alguna accion ajax..
@@ -49,16 +49,20 @@
                 color: '#fff' 
             },message: 'Por Favor, espere...'})
         });
-    //cuando termina la accion ajax, se desbloquea..
+   
+    
+  $(document).ready(function() {
+     //cuando termina la accion ajax, se desbloquea..
     $(document).ajaxStop(function() {
         $.unblockUI();
     });
     
-  $(document).ready(function() {
-  $(document).ready(function() {
-  var table = $('#tabla-ventas').DataTable({
-                    dom: 'f<B>rt<ip>',
-                    //configuramos la cantidad de datos que queremos que nos muestre el menu
+    var table = $('#tabla-ventas').DataTable({
+                    dom: "<'row'<'col-sm-8 text-left'B><'col-sm-4 text-right'f>>" +"<'row'<'col-sm-12't>>" +"<'row'<'col-sm-5 text-left'i><'col-sm-7 text-right'p>>",
+                    //configuramos la cantidad de datos que queremos que nos muestre el menu <lf<t>ip>
+                    // "<'row'<'col-sm-6'l><'col-sm-6'f>>" +
+                    // "<'row'<'col-sm-12'tr>>" +
+                    // "<'row'<'col-sm-5'i><'col-sm-7'p>>",
                     lengthMenu: [
                         [ 10, 25, 50, -1 ],
                         [ '10 Filas', '25 Filas', '50 Filas', 'Todos' ]
@@ -70,28 +74,12 @@
                                   //con esto podes setear que columnas queres aparezca o no
                                   //{ "visible": false, "targets": 3 },
                                     { responsivePriority: 1, targets: 0 },
-                                    { responsivePriority: 2, targets: 3 },
-                                    
+                                    { responsivePriority: 2, targets: 3 },                                    
                     ],
-
-                    "responsive":
-                    // {
-                    //       details: {
-                    //          display: $.fn.dataTable.Responsive.display.childRowImmediate,
-                    //                type: ''
-                             
-                    //      }
-                    //  },
-                    true,                    
-                    "processing": true,
+                    "responsive": true,                    
+                    //"processing": true,
                     "ajax": "/empresa",
-                    "columns": [
-                              {   // Responsive control column
-                          data: null,
-                          defaultContent: '',
-                          className: 'control',
-                          orderable: false
-                      },
+                    "columns": [                             
                       { "data": "nombre"},
                       { "data": "cuit",
                         "className": "cuit"}, //esto es importante, le ponemos una clase a este campo
@@ -100,11 +88,11 @@
                       ]
                   });
                   
-                  table.buttons().container().appendTo( '#tabla-empresas .col-sm-6:eq(0)' );                 
+    table.buttons().container().appendTo( '#tabla-empresas .col-sm-6:eq(0)' );                 
                   
- });                               
+  });                               
                 
-            </script>
+</script>
 
 {% endblock %}
 {% block body %}
@@ -132,14 +120,13 @@
             </div>
             <!-- /.box-header -->
             <div class="box-body">
-              <div class="table-responsive">
-                <table id="tabla-ventas" class="table table-bordered table-striped table-hover dt-responsive nowrap"> <!-- nowrap -->
+                <table id="tabla-ventas" class="table table-bordered table-striped table-hover dt-responsive "> <!-- nowrap -->
                   <thead>                  
                     <tr>
                       <th>Razon Social</th>
                       <th>Cuit</th>
-                      <th data-priority="1">Condicion IVA</th>
-                      <th data-priority="2">Jurisdiccion</th>                    
+                      <th>Condicion IVA</th>
+                      <th>Jurisdiccion</th>                    
                     </tr>
                   </thead>
                   <tbody></tbody>
@@ -152,7 +139,6 @@
                     </tr>
                   </tfoot>
                 </table>
-              </div>
             </div>
             <!-- /.box-body -->
           </div>

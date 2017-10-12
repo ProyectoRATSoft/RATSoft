@@ -2,8 +2,7 @@
 {% block title %} Contable{% endblock %}
 {% block CSs %}
 <link rel="stylesheet" href="{{ asset('public/Buttons-1.4.2/css/buttons.bootstrap.min.css') }}">
-<link rel="stylesheet" href="{{ asset('public/responsive/2.2.0/css/responsive.bootstrap.min.css') }}">
-<link rel="stylesheet" href="{{ asset('public/boostrapvalidator/bootstrapValidator.css') }}">
+<link rel="stylesheet" href="{{ asset('public/responsive-2.2.0/css/responsive.bootstrap.min.css') }}">
   <style>
     table { width: 50% }
     tbody tr:hover.active td,
@@ -23,19 +22,9 @@
  <!-- DataTables -->
 <script src="{{ asset('bower_components/datatables.net/js/jquery.dataTables.min.js') }}"></script>
 <script src="{{ asset('bower_components/datatables.net-bs/js/dataTables.bootstrap.min.js') }}"></script>
-<script src="{{ asset('public/Buttons-1.4.2/js/dataTables.buttons.min.js') }}"></script>
-<script src="{{ asset('public/Buttons-1.4.2/js/buttons.bootstrap.min.js') }}"></script>
-<script src="{{ asset('public/JSZip-2.5.0/jszip.min.js') }}"></script>
-<script src="{{ asset('public/pdfmake-0.1.32/pdfmake.min.js') }}"></script>
-<script src="{{ asset('public/pdfmake-0.1.32/vfs_fonts.js') }}"></script>
-<script src="{{ asset('public/Buttons-1.4.2/js/buttons.html5.min.js') }}"></script>
-<script src="{{ asset('public/Buttons-1.4.2/js/buttons.print.min.js') }}"></script>
-<script src="{{ asset('public/Buttons-1.4.2/js/buttons.colVis.min.js') }}"></script>
-<script src="{{ asset('public/responsive/2.2.0/js/dataTables.responsive.min.js') }}"></script>
-<script src="{{ asset('public/responsive/2.2.0/js/responsive.bootstrap.min.js') }}"></script> 
 <!-- <script src="{{ asset('') }}"></script>  --> 
 <script src="{{ asset('ratsoft/ratsoft.js') }}"></script>
-<script src="{{ asset('public/boostrapvalidator/js/bootstrapValidator.js') }}"></script>
+
 <script>
   //con esto bloqueamos la pantalla cuando inicia alguna accion ajax..
   $(document).ajaxStart(function() {
@@ -57,11 +46,7 @@
     });
    
     // armamos el Datatable para traernos la info desde /empresa
-    var table = $('#tabla-empresas')
-    // .on( 'processing.dt', function ( e, settings, processing ) {
-    //     $('#processingIndicator').css( 'display', processing ? 'block' : 'none' );
-    // } )
-    .DataTable({
+    var table = $('#tabla-empresas').DataTable({
       "responsive": true,
       //"processing": true,
       "ajax": "/empresa",
@@ -116,14 +101,14 @@
           $('div.modal-body div.form-group #nuevoRubro').val(arrayResp.data.rubro.id);
           $('div.modal-body div.form-group #nuevoTitular').val(arrayResp.data.titular);
           
-          // $('#nuevaSituacionIVA').change(function(){
+          
           var option = $('div.modal-body div.form-group #nuevaSituacionIVA').find('option:selected').val();
             $.get("/iva/"+option,function(resp,estado,jqXHR){
                     var arrayResp = JSON.parse(resp);
                     var obj = arrayResp.data[0];
                     $('#nuevoIva').val(obj["detalle"]);
                   });
-            // });
+            
         });
       }
     }); 
@@ -188,16 +173,7 @@
                 console.log(resp);
                 if(resp.status == 'OK'){
                   alert("entro al ok!");
-                  // $('div.modal-body div.form-group #nuevoNombre').val('');
-                  // $('div.modal-body div.form-group #nuevoDomicilio').val('');
-                  // $('div.modal-body div.form-group #nuevaLocalidad').val('');
-                  // $('div.modal-body div.form-group #nuevaProvincia').val('');
-                  // $('div.modal-body div.form-group #nuevaSituacionIVA').val('');
-                  // $('div.modal-body div.form-group #nuevoCuit').val('');
-                  // $('div.modal-body div.form-group #nuevoIngresosBrutos').val('');
-                  // $('div.modal-body div.form-group #nuevoRubro').val('');
-                  // $('div.modal-body div.form-group #nuevoTitular').val('');
-                  //table()
+                  
                 }
                 else{
                   alert("no entro al ok!");
@@ -210,22 +186,11 @@
       });
 
       $("#editEmpresa").click(function(){
-        //alert("entro al boton editar!");
         $("#modalAddEmpresa").modal();
         $("h4.modal-title").text("Editar Empresa");
         $('button#newEmpresa').css("display", "none");
         $('button#editDatesEmpresa').css("display", "");
         $('button#deleteEmpresa').css("display", "");
-        // $('div.modal-body div.form-group #nuevoNombre').text('');
-        // $('div.modal-body div.form-group #nuevoDomicilio').text('');
-        // $('div.modal-body div.form-group #nuevaLocalidad').text('');
-        // $('div.modal-body div.form-group #nuevaProvincia').val('');
-        // $('div.modal-body div.form-group #nuevaSituacionIVA').text('');
-        // $('div.modal-body div.form-group #nuevoCuit').text('');
-        // $('div.modal-body div.form-group #nuevoIngresosBrutos').text('');
-        // $('div.modal-body div.form-group #nuevoRubro').val('');
-        // $('div.modal-body div.form-group #nuevoTitular').text('');
-        
       });
 
       $("#editDatesEmpresa").click(function(){
@@ -253,27 +218,7 @@
               "rubro" : rubro,
               "titular" : titular },
               function(resp,estado,jqXHR){
-                console.log(resp);
-                //alert(resp);
-                // if(resp.status == 'OK'){
-                //   alert("entro al ok!");
-                //   // $('div.modal-body div.form-group #nuevoNombre').val('');
-                //   // $('div.modal-body div.form-group #nuevoDomicilio').val('');
-                //   // $('div.modal-body div.form-group #nuevaLocalidad').val('');
-                //   // $('div.modal-body div.form-group #nuevaProvincia').val('');
-                //   // $('div.modal-body div.form-group #nuevaSituacionIVA').val('');
-                //   // $('div.modal-body div.form-group #nuevoCuit').val('');
-                //   // $('div.modal-body div.form-group #nuevoIngresosBrutos').val('');
-                //   // $('div.modal-body div.form-group #nuevoRubro').val('');
-                //   // $('div.modal-body div.form-group #nuevoTitular').val('');
-                    //table()
-                // }
-                // else{
-                //   alert("no entro al ok!");
-                // }                   
-                // //deberiamos mostrar algun mensaje tanto como de error, como de que todo salio bien. y luego recargar la grilla para que aparezca la nueva empresa en la tabla.
-                // alert(resp);
-
+                console.log(resp);                
               });
       });
 
@@ -283,60 +228,12 @@
           if (result) {
                $.get("/empresa/"+id+"/del",
                   function(resp,estado,jqXHR){
-                    console.log(resp);
-                    //alert(resp);
-                    // if(resp.status == 'OK'){
-                    //   alert("entro al ok!");
-                    //   // $('div.modal-body div.form-group #nuevoNombre').val('');
-                    //   // $('div.modal-body div.form-group #nuevoDomicilio').val('');
-                    //   // $('div.modal-body div.form-group #nuevaLocalidad').val('');
-                    //   // $('div.modal-body div.form-group #nuevaProvincia').val('');
-                    //   // $('div.modal-body div.form-group #nuevaSituacionIVA').val('');
-                    //   // $('div.modal-body div.form-group #nuevoCuit').val('');
-                    //   // $('div.modal-body div.form-group #nuevoIngresosBrutos').val('');
-                    //   // $('div.modal-body div.form-group #nuevoRubro').val('');
-                    //   // $('div.modal-body div.form-group #nuevoTitular').val('');
-                        
-                    // }
-                    // else{
-                    //   alert("no entro al ok!");
-                    // }                   
-                    // //deberiamos mostrar algun mensaje tanto como de error, como de que todo salio bien. y luego recargar la grilla para que aparezca la nueva empresa en la tabla.
-                    // alert(resp);
+                    console.log(resp);                    
                     $("#modalAddEmpresa").modal('toggle');
 
                     });
           }                 
-      });
-          
-       // bootstrapt validator inicio
-    $("#modal-body").bootstrapValidator({
-        excluded: [':disabled', ':hidden', ':not(:visible)'],
-        feedbackIcons: {
-            valid: 'glyphicon glyphicon-ok',
-            invalid: 'glyphicon glyphicon-remove',
-            validating: 'glyphicon glyphicon-refresh'
-        },
-        // live: 'enabled',
-        // message: 'This value is not valid',
-        // submitButtons: 'button[type="submit"]',
-        // trigger: null,
-        fields:{
-                nuevoNombre: {
-                  // group: "col-sm-10",
-                  validators:{
-                    notEmpty:{
-                      message:"Ingrese un nombre"
-                    }
-                  }
-                }
-
-        }
-    });
-
-
-    // fin de bootstrapt validator 
-        
+      });     
   });
 </script>
 {% endblock %}
@@ -526,9 +423,6 @@
               <div class="col-xs-9  input-sm">                             
                 <select name="nuevaProvincia" id="nuevaProvincia" required="true" class="selectpicker dropdown-toggle form-control input-sm" type="button" data-toggle="dropdown">
                   <option disabled selected value>--Seleccione una opcion--</option>  
-                 <!--  <option>Opcion 1</option>
-                  <option>Opcion 2</option>
-                  <option>Opcion 3</option> -->
                 </select>
               </div>                     
           </div>
@@ -539,10 +433,7 @@
               </div>
               <div class="col-xs-9  input-sm">                             
                 <select name="nuevaSituacionIVA" id="nuevaSituacionIVA" required="true" class="selectpicker dropdown-toggle form-control input-sm" type="button" data-toggle="dropdown">
-                  <option disabled selected value>--Seleccione una opcion--</option>  
-                  <!-- <option>Opcion 1</option>
-                  <option>Opcion 2</option>
-                  <option>Opcion 3</option> -->
+                  <option disabled selected value>--Seleccione una opcion--</option>                   
                 </select>
               </div> 
               &nbsp                                                           
@@ -572,20 +463,7 @@
             <label for="nuevoTitular">Titular: </label>
             <input type="text" class="form-control input-sm" id="nuevoTitular" name="nuevoTitular" placeholder="Titular" required="true" />
           </div>
-          <!-- <h4>Datos de Contacto</h4>
-          <div class="form-group">
-            <label for="nuevoEmail">Email: </label>
-            <input type="email" required="true" class="form-control input-sm" id="nuevoEmail" name="nuevoEmail" placeholder="Email"/>   
-          </div>
-          <div class="form-group">
-            <label for="nuevoTelefono">Telefono: </label>
-            <input type="number" required="true" class="form-control input-sm" id="nuevoTelefono" name="nuevoTelefono" placeholder="Telefono"/>  
-          </div>
-          <div class="form-group">
-            <label for="nuevoFax">Fax: </label>                    
-            <input type="number" required="true" class="form-control input-sm" id="nuevoFax" name="nuevoFax" placeholder="Fax"/> 
-          </div>      
-        </div> -->
+        </div>
         <div class="modal-footer">
           <div class="col-xs-6 " id="colDelete">
             <button type="button" class="btn btn-danger pull-left" id="deleteEmpresa" style="display: none">Borrar</button>
@@ -595,7 +473,6 @@
             <button type="button" class="btn btn-success" id="newEmpresa" style="display: none" >Guardar</button>
             <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
           </div>
-          
         </div>
       </div>                
     </div>
