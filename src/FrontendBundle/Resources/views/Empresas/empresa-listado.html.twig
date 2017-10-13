@@ -22,6 +22,16 @@
  <!-- DataTables -->
 <script src="{{ asset('bower_components/datatables.net/js/jquery.dataTables.min.js') }}"></script>
 <script src="{{ asset('bower_components/datatables.net-bs/js/dataTables.bootstrap.min.js') }}"></script>
+<script src="{{ asset('public/responsive-2.2.0/js/dataTables.responsive.min.js') }}"></script>
+<script src="{{ asset('public/responsive-2.2.0/js/responsive.bootstrap.min.js') }}"></script>
+<script src="{{ asset('public/Buttons-1.4.2/js/dataTables.buttons.min.js') }}"></script>
+<script src="{{ asset('public/Buttons-1.4.2/js/buttons.bootstrap.min.js') }}"></script>
+<script src="{{ asset('public/JSZip-2.5.0/jszip.min.js') }}"></script>
+<script src="{{ asset('public/pdfmake-0.1.32/pdfmake.min.js') }}"></script>
+<script src="{{ asset('public/pdfmake-0.1.32/vfs_fonts.js') }}"></script>
+<script src="{{ asset('public/Buttons-1.4.2/js/buttons.html5.min.js') }}"></script>
+<script src="{{ asset('public/Buttons-1.4.2/js/buttons.print.min.js') }}"></script>
+<script src="{{ asset('public/Buttons-1.4.2/js/buttons.colVis.min.js') }}"></script> 
 <!-- <script src="{{ asset('') }}"></script>  --> 
 <script src="{{ asset('ratsoft/ratsoft.js') }}"></script>
 
@@ -44,11 +54,59 @@
     $(document).ajaxStop(function() {
         $.unblockUI();
     });
-   
+
+    //llenamos el combo pasando 1. url 2. valor 3. descripcion 4. id del campo
+    comboFill("/provincias","id","nombre","#nuevaProvincia")
+    comboFill("/iva","id","codigo","#nuevaSituacionIVA")
+    comboFill("/rubros","id","nombre","#nuevoRubro")
+
     // armamos el Datatable para traernos la info desde /empresa
     var table = $('#tabla-empresas').DataTable({
       "responsive": true,
-      //"processing": true,
+       dom: "<'row'<'col-sm-7 text-left'B><'col-sm-5 text-right'f>>" +"<'row'<'col-sm-12't>>" +"<'row'<'col-sm-5 text-left'i><'col-sm-7 text-right'p>>",
+       "language": {
+            "sProcessing":     "Procesando...",
+            "sLengthMenu":     "Mostrar _MENU_ registros",
+            "sZeroRecords":    "No se encontraron resultados",
+            "sEmptyTable":     "Ningún dato disponible en esta tabla",
+            "sInfo":           "Mostrando registros del _START_ al _END_ de un total de _TOTAL_ registros",
+            "sInfoEmpty":      "Mostrando registros del 0 al 0 de un total de 0 registros",
+            "sInfoFiltered":   "(filtrado de un total de _MAX_ registros)",
+            "sInfoPostFix":    "",
+            "sSearch":         "Buscar:",
+            "sUrl":            "",
+            "sInfoThousands":  ",",
+            "sLoadingRecords": "Cargando...",
+            "oPaginate": {
+                "sFirst":    "Primero",
+                "sLast":     "Último",
+                "sNext":     "Siguiente",
+                "sPrevious": "Anterior"
+            },
+            "oAria": {
+                "sSortAscending":  ": Activar para ordenar la columna de manera ascendente",
+                "sSortDescending": ": Activar para ordenar la columna de manera descendente"
+            }
+        },
+       lengthMenu: [
+                        [ 10, 25, 50, -1 ],
+                        [ '10 Filas', '25 Filas', '50 Filas', 'Todos' ]
+                    ],
+      //elegis los formatos para exportar los datos de la tabla, colvis (va a servir para seleccionar que columnas queres q se vean o no), pagelenth para seleccionar la cantidad  datos mostrados 
+       buttons: [
+                                {
+                                    extend: 'collection',
+                                    text: 'Exportar',
+                                    //elegis los formatos para exportar los datos de la tabla, colvis (va a servir para seleccionar que columnas queres q se vean o no), pagelenth para seleccionar la cantidad  datos mostrados 
+                                    buttons: [ 'copy', 'excel', 'pdf', 'csv', 'print'] 
+                                }, 'pageLength'
+                              ],
+      "columnDefs": [ 
+                                  //con esto podes setear que columnas queres aparezca o no
+                                  //{ "visible": false, "targets": 3 },
+                                    { responsivePriority: 1, targets: 0 },
+                                    { responsivePriority: 2, targets: 3 },                                    
+                    ],
       "ajax": "/empresa",
       "columns": [
         { "data": "nombre"},
@@ -123,11 +181,6 @@
         $('button#editDatesEmpresa').css("display", "none");
         $('button#deleteEmpresa').css("display", "none");       
       });
-
-      //llenamos el combo pasando 1. url 2. valor 3. descripcion 4. id del campo
-      comboFill("/provincias","id","nombre","#nuevaProvincia")
-      comboFill("/iva","id","codigo","#nuevaSituacionIVA")
-      comboFill("/rubros","id","nombre","#nuevoRubro")
 
       // llenamos el campo input cuando se detecta un cambio en el dropdownlist, 
       //hace una busqueda por el codigo seleccionado y va a buscar a la descripcion
