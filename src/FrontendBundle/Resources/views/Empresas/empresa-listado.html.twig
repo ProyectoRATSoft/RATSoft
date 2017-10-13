@@ -172,8 +172,18 @@
     }); 
 
      //llama al modal luego de hacer click en el boton
-      $("#addEmpresa").click(function(){
+      $("#addEmpresa").click(function(){        
         $("#modalAddEmpresa").modal();
+        $('input#nuevoNombre').val('');
+        $('input#nuevoId').val('');
+        $('input#nuevoDomicilio').val('');
+        $('input#nuevaLocalidad').val('');
+        $('select#nuevaProvincia').val('1');
+        $('select#nuevaSituacionIVA').val('1');
+        $('input#nuevoCuit').val('');
+        $('input#nuevoIngresosBrutos').val('');
+        $('select#nuevoRubro').val('1');
+        $('input#nuevoTitular').val('');
         //edito el titulo del modal
         $("h4.modal-title").text("Nueva Empresa");
         //establecemos que botones corresponde poder verse  en este caso, como agregamos no hace falta editar ni borrar
@@ -329,7 +339,7 @@
             </div>
             <!-- /.box-header -->
             <div class="box-body">              
-              <table id="tabla-empresas" class="table table-bordered table-striped table-hover">
+              <table id="tabla-empresas" class="table table-bordered table-striped table-hover dt-responsive">
                 <thead>                  
                   <tr>
                     <th>Razon Social</th>
