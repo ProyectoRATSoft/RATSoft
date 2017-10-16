@@ -13,7 +13,7 @@
     .table>tbody>tr.active>td {
       background-color: #A9D0F5;
       color: #000000;
-      font:  bold 12px/18px Georgia, serif;
+      font:  bold 12px/18px Times, "Times New Roman", serif;
     }
   </style>              
 {% endblock %}
@@ -59,6 +59,7 @@
     comboFill("/jurisdicciones","id","nombre","#nuevaProvincia")
     comboFill("/iva","id","codigo","#nuevaSituacionIVA")
     comboFill("/rubros","id","nombre","#nuevoRubro")
+    comboFill("/iibb","id","nombre","#nuevoIngresosBrutos")
 
     // armamos el Datatable para traernos la info desde /empresa
     var table = $('#tabla-empresas').DataTable({
@@ -142,7 +143,7 @@
           $('div.form-group #provincia').val(arrayResp.data.provincia.nombre);
           $('div.form-group #iva').val(arrayResp.data.iva.detalle);
           $('div.form-group #cuit').val(arrayResp.data.cuit);
-          $('div.form-group #ingresosBrutos').val(arrayResp.data.iibb);
+          $('div.form-group #ingresosBrutos').val(arrayResp.data.iibb_cod.nombre);
           $('div.form-group #rubro').val(arrayResp.data.rubro.nombre);
           $('div.form-group #titular').val(arrayResp.data.titular);
           //console.log(arrayResp.data.cuit);
@@ -155,7 +156,7 @@
           $('div.modal-body div.form-group #nuevaProvincia').val(arrayResp.data.provincia.id);
           $('div.modal-body div.form-group #nuevaSituacionIVA').val(arrayResp.data.iva.id);
           $('div.modal-body div.form-group #nuevoCuit').val(arrayResp.data.cuit);
-          $('div.modal-body div.form-group #nuevoIngresosBrutos').val(arrayResp.data.iibb);
+          $('div.modal-body div.form-group #nuevoIngresosBrutos').val(arrayResp.data.iibb_cod.id);
           $('div.modal-body div.form-group #nuevoRubro').val(arrayResp.data.rubro.id);
           $('div.modal-body div.form-group #nuevoTitular').val(arrayResp.data.titular);
           
@@ -174,23 +175,41 @@
      //llama al modal luego de hacer click en el boton
       $("#addEmpresa").click(function(){        
         $("#modalAddEmpresa").modal();
+        //limpio los campos del modal
         $('input#nuevoNombre').val('');
         $('input#nuevoId').val('');
         $('input#nuevoDomicilio').val('');
         $('input#nuevaLocalidad').val('');
-        $('select#nuevaProvincia').val('1');
-        $('select#nuevaSituacionIVA').val('1');
+        $('select#nuevaProvincia').val('');
+        $('select#nuevaSituacionIVA').val('');
+        $('input#nuevoIva').val('');
         $('input#nuevoCuit').val('');
-        $('input#nuevoIngresosBrutos').val('');
-        $('select#nuevoRubro').val('1');
+        $('select#nuevoIngresosBrutos').val('');
+        $('select#nuevoRubro').val('');     
         $('input#nuevoTitular').val('');
+        //limpio los campos de la tabla del costado para arreglar efecto visual y evitar confusiones
+        $('div.form-group #empresaID').val('');
+        $('div.form-group #nombre').val('');
+        $('div.form-group #domicilio').val('');
+        $('div.form-group #localidad').val('');
+        $('div.form-group #provincia').val('');
+        $('div.form-group #iva').val('');
+        $('div.form-group #cuit').val('');
+        $('div.form-group #ingresosBrutos').val('');
+        $('div.form-group #rubro').val('');
+        $('div.form-group #titular').val('');
+        //deselecciono la empresa de la tabla
+        $('#tabla-empresas tbody tr').removeClass('active');
+        //si esta en modo responsive hay q ver como hacer para que quede cerrado el "+" con sus campos
         //edito el titulo del modal
         $("h4.modal-title").text("Nueva Empresa");
         //establecemos que botones corresponde poder verse  en este caso, como agregamos no hace falta editar ni borrar
         $('button#newEmpresa').css("display", "");
         $('button#editDatesEmpresa').css("display", "none");
-        $('button#deleteEmpresa').css("display", "none");       
+        $('button#deleteEmpresa').css("display", "none");
+             
       });
+
 
       // llenamos el campo input cuando se detecta un cambio en el dropdownlist, 
       //hace una busqueda por el codigo seleccionado y va a buscar a la descripcion
@@ -240,7 +259,8 @@
                 }
                 else{
                   alert("no entro al ok!");
-                }                   
+                }
+
                 //deberiamos mostrar algun mensaje tanto como de error, como de que todo salio bien. y luego recargar la grilla para que aparezca la nueva empresa en la tabla.
                 //alert(resp);   
               });
@@ -250,6 +270,12 @@
 
       $("#editEmpresa").click(function(){
         $("#modalAddEmpresa").modal();
+        //con esto remuevo el seleccionar del dropdown
+        $('select#nuevaProvincia :contains(--seleccionar--)').attr("disabled","true");
+        $('select#nuevaSituacionIVA :contains(--seleccionar--)').attr("disabled","true");
+        $('select#nuevoRubro :contains(--seleccionar--)').attr("disabled","true");
+        $('select#nuevoIngresosBrutos :contains(--seleccionar--)').attr("disabled","true");
+
         $("h4.modal-title").text("Editar Empresa");
         $('button#newEmpresa').css("display", "none");
         $('button#editDatesEmpresa').css("display", "");
@@ -457,7 +483,6 @@
       <!-- Modal content-->
       <div class="modal-content">
         <div class="modal-header">
-          <button type="button" class="close" data-dismiss="modal">&times;</button>
           <h4 class="modal-title">Nueva Empresa</h4>
         </div>
         <div class="modal-body">          
@@ -507,10 +532,17 @@
             <label for="nuevoCuit">Cuit: </label>                    
             <input type="number" required="true" class="form-control input-sm" id="nuevoCuit" name="nuevoCuit" placeholder="Cuit"/>
           </div> 
-          <div class="form-group">
-            <label for="nuevoIngresosBrutos">Ingresos Brutos: </label>                  
-            <input type="text" required="true" class="form-control input-sm" id="nuevoIngresosBrutos" name="nuevoIngresosBrutos" placeholder="Ingresos Brutos"/>  
+           <div class="form-group">
+            <div class="col-xs-3" style="padding-left: 0px">
+                   <label for="nuevoIngresosBrutos">Ingresos Brutos: </label> 
+              </div>
+              <div class="col-xs-9  input-sm">                             
+                <select id="nuevoIngresosBrutos" name="nuevoIngresosBrutos" class="selectpicker dropdown-toggle form-control input-sm" type="button" data-toggle="dropdown" required="true">
+                  <option disabled selected value>--Seleccione una opcion--</option>  
+                </select>
+              </div>                     
           </div>
+          &nbsp 
           <div class="form-group">               
                 <div class="col-xs-3" style="padding-left: 0px;">
                     <label for="nuevoRubro">Rubro: </label>

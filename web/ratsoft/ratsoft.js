@@ -23,6 +23,8 @@ var comboFill = function(url,value,text,cssid) {
                         opciones = opciones + "<option value='"+obj[value]+"'>"+obj[text]+"</option>";
                     }
                 );
+                //agrego la opcion generica "--seleccionar--" al combo
+                opciones = opciones + '<option value="">--seleccionar--</option>';
                 $(cssid).html(opciones);
             });
        };
