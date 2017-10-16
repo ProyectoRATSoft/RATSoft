@@ -41,27 +41,38 @@ class EmpresasController extends Controller
 			'rubro' => $request->request->get("rubro"),
 		);
 		
-		// Me aseguro que no me hayan mandado ningun campo vacío
+		$data = array(
+				'status' => 'OK',
+				'msg' => 'La empresa ha sido registrada con exito'
+			);
 
-		$status = 'OK';
-		$msg = 'La empresa ha sido Modificada con exito';
-		
+		$serializer = SerializerBuilder::create()->build();
+
+		// Me aseguro que no me hayan mandado ningun campo vacío
 
 		if ( empty($respuesta["nombre"])
 			|| empty($respuesta["domicilio"])
 			|| empty($respuesta["localidad"])
 		 	|| empty($respuesta["cuit"])
 		 	|| empty($respuesta["iibbtipo"])
-			|| empty($respuesta["iibb"])
+			//|| empty($respuesta["iibb"])
 			|| empty($respuesta["titular"])
-			// || empty($respuesta["activo"])
+			//|| empty($respuesta["activo"])
 			|| empty($respuesta["iva"])
 			|| empty($respuesta["provincia"])
 			|| empty($respuesta["rubro"])
 			) {
-				$status = "ERROR";
-				$msg = "No se enviaron todos los datos requeridos para completar la solicitud";
+				$data = array(
+					'status' => 'ERROR',
+					'msg' => 'Hubo campos mandatorios que se enviaron vacios'
+					);
+				//$data = empty($respuesta["nombre"]);
+				$jsonResponse = $serializer->serialize($data, 'json');
+				return new Response($jsonResponse);
+				exit();
 		}
+
+
 		$em = $this->getDoctrine()->getManager();
 		// Genero el objeto SituacionIva y lo cargo en base al ID recibido
 		$situacionIva = new TblSituacionIva();
@@ -122,7 +133,6 @@ class EmpresasController extends Controller
 			'msg' => $msg
 			);
 
-		$serializer = SerializerBuilder::create()->build();
 		$jsonResponse = $serializer->serialize($data, 'json');
 		return new Response($jsonResponse);
 
@@ -171,9 +181,12 @@ class EmpresasController extends Controller
 			'provincia' => $request->request->get("provincia"),
 			'rubro' => $request->request->get("rubro"),
 		);
-		
-		$status = "SUCCESS";
-		$msg = $respuesta;
+		$data = array(
+				'status' => 'OK',
+				'msg' => 'La empresa ha sido registrada con exito'
+			);
+
+		$serializer = SerializerBuilder::create()->build();
 
 		// Me aseguro que no me hayan mandado ningun campo vacío
 
@@ -182,24 +195,23 @@ class EmpresasController extends Controller
 			|| empty($respuesta["localidad"])
 		 	|| empty($respuesta["cuit"])
 		 	|| empty($respuesta["iibbtipo"])
-			|| empty($respuesta["iibb"])
+			//|| empty($respuesta["iibb"])
 			|| empty($respuesta["titular"])
 			//|| empty($respuesta["activo"])
 			|| empty($respuesta["iva"])
 			|| empty($respuesta["provincia"])
 			|| empty($respuesta["rubro"])
 			) {
-				$status = "ERROR";
-				$msg = "No se enviaron todos los datos requeridos para completar la solicitud";
+				$data = array(
+					'status' => 'ERROR',
+					'msg' => 'Hubo campos mandatorios que se enviaron vacios'
+					);
+				//$data = empty($respuesta["nombre"]);
+				$jsonResponse = $serializer->serialize($data, 'json');
+				return new Response($jsonResponse);
+				exit();
 		}
 		
-		$serializer = SerializerBuilder::create()->build();
-
-		$data = array(
-			'status' => $status,
-			'msg' => $msg
-			);
-
 		// Busco en la DB si existe una empresa con el cuit ingresado.
 		$em = $this->getDoctrine()->getManager();
 		$isset_empresa = $em->getRepository("BackendBundle:TblEmpresas")->findOneBy(
@@ -254,13 +266,8 @@ class EmpresasController extends Controller
 			$empresa->setProvincia($provincia);
 			$empresa->setRubro($rubro);	
 
-			$em->persist($empresa);
-			$em->flush();	
-
-			$data = array(
-				'status' => 'OK',
-				'msg' => 'La empresa ha sido registrada con exito'
-			);
+			//$em->persist($empresa);
+			//$em->flush();	
 		} else {
 			$data = array(
 				'status' => 'ERROR',
