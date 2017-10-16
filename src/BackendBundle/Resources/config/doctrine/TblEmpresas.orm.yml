@@ -11,6 +11,9 @@ BackendBundle\Entity\TblEmpresas:
         FK_JURISD_EMPRESAS_idx:
             columns:
                 - provincia
+        FK_TIPOS_IIBB_idx:
+            columns:
+                - iibb_cod
     id:
         id:
             type: integer
@@ -60,12 +63,6 @@ BackendBundle\Entity\TblEmpresas:
             nullable: true
             options:
                 unsigned: false
-        iibbCod:
-            type: integer
-            nullable: true
-            options:
-                unsigned: false
-            column: iibb_cod
     manyToOne:
         iva:
             targetEntity: TblSituacionIva
@@ -95,6 +92,16 @@ BackendBundle\Entity\TblEmpresas:
             inversedBy: null
             joinColumns:
                 rubro:
+                    referencedColumnName: id
+            orphanRemoval: false
+        iibbCod:
+            targetEntity: TblTiposiibb
+            cascade: {  }
+            fetch: LAZY
+            mappedBy: null
+            inversedBy: null
+            joinColumns:
+                iibb_cod:
                     referencedColumnName: id
             orphanRemoval: false
     lifecycleCallbacks: {  }

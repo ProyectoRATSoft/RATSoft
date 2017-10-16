@@ -24,4 +24,14 @@ class User extends BaseUser
         parent::__construct();
         // your own logic
     }
+
+    /**
+     * Get enabled
+     *
+     * @return boolean
+     */
+    public function getEnabled()
+    {
+        return $this->enabled;
+    }
 }

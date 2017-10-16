@@ -12,6 +12,7 @@ use BackendBundle\Entity\TblEmpresas;
 use BackendBundle\Entity\TblSituacionIva;
 use BackendBundle\Entity\TblRubros;
 use BackendBundle\Entity\TblJurisdicciones;
+use BackendBundle\Entity\TblTiposiibb;
 
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
@@ -31,6 +32,7 @@ class EmpresasController extends Controller
 			'domicilio' => $request->request->get("domicilio"),
 			'localidad' => $request->request->get("localidad"),
 			'cuit' => $request->request->get("cuit"),
+			'iibbtipo' => $request->request->get("iibbtipo"),
 			'iibb' => $request->request->get("iibb"),
 			'titular' => $request->request->get("titular"),
 			'activo' => $request->request->get("activo"),			
@@ -49,6 +51,7 @@ class EmpresasController extends Controller
 			|| empty($respuesta["domicilio"])
 			|| empty($respuesta["localidad"])
 		 	|| empty($respuesta["cuit"])
+		 	|| empty($respuesta["iibbtipo"])
 			|| empty($respuesta["iibb"])
 			|| empty($respuesta["titular"])
 			// || empty($respuesta["activo"])
@@ -81,6 +84,13 @@ class EmpresasController extends Controller
 				'id' => $respuesta["rubro"]
 			)
 		);
+		// Genero el objeto Tiposiibb y lo cargo en base al ID recibido
+		$tipoiibb = new TblRubros();
+		$tipoiibb = $em->getRepository("BackendBundle:TblTiposiibb")->findOneBy(
+			array(
+				'id' => $respuesta["iibbtipo"]
+			)
+		);
 
 		// Instanciamos un objeto Empresa y seteamos sus datos.
 		
@@ -93,6 +103,7 @@ class EmpresasController extends Controller
 		$empresa->setDomicilio($respuesta["domicilio"]);
 		$empresa->setLocalidad($respuesta["localidad"]);
 		$empresa->setCuit($respuesta["cuit"]);
+		$empresa->setIibbCod($tipoiibb);
 		$empresa->setIibb($respuesta["iibb"]);
 		$empresa->setTitular($respuesta["titular"]);
 		$empresa->setActivo("1");
@@ -152,6 +163,7 @@ class EmpresasController extends Controller
 			'domicilio' => $request->request->get("domicilio"),
 			'localidad' => $request->request->get("localidad"),
 			'cuit' => $request->request->get("cuit"),
+			'iibbtipo' => $request->request->get("iibbtipo"),
 			'iibb' => $request->request->get("iibb"),
 			'titular' => $request->request->get("titular"),
 			'activo' => $request->request->get("activo"),
@@ -169,6 +181,7 @@ class EmpresasController extends Controller
 			|| empty($respuesta["domicilio"])
 			|| empty($respuesta["localidad"])
 		 	|| empty($respuesta["cuit"])
+		 	|| empty($respuesta["iibbtipo"])
 			|| empty($respuesta["iibb"])
 			|| empty($respuesta["titular"])
 			//|| empty($respuesta["activo"])
@@ -216,6 +229,13 @@ class EmpresasController extends Controller
 				'id' => $respuesta["rubro"]
 			)
 		);
+		// Genero el objeto Tiposiibb y lo cargo en base al ID recibido
+		$tipoiibb = new TblRubros();
+		$tipoiibb = $em->getRepository("BackendBundle:TblTiposiibb")->findOneBy(
+			array(
+				'id' => $respuesta["iibbtipo"]
+			)
+		);
 
     	// Si el cuit no existe, se inserta en la DB.
 		if (empty($isset_empresa)) {
@@ -226,6 +246,7 @@ class EmpresasController extends Controller
 			$empresa->setDomicilio($respuesta["domicilio"]);
 			$empresa->setLocalidad($respuesta["localidad"]);
 			$empresa->setCuit($respuesta["cuit"]);
+			$empresa->setIibbCod($tipoiibb);
 			$empresa->setIibb($respuesta["iibb"]);
 			$empresa->setTitular($respuesta["titular"]);
 			$empresa->setActivo("1");

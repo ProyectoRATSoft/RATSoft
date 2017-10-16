@@ -81,4 +81,3 @@ class TblTiposiibb
         return $this->numero;
     }
 }
-
