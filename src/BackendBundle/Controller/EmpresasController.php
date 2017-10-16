@@ -10,8 +10,8 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Validator\Constraints as Assert;
 use BackendBundle\Entity\TblEmpresas;
 use BackendBundle\Entity\TblSituacionIva;
-use BackendBundle\Entity\TblProvincias;
 use BackendBundle\Entity\TblRubros;
+use BackendBundle\Entity\TblJurisdicciones;
 
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
@@ -68,8 +68,8 @@ class EmpresasController extends Controller
 			)
 		);
 		// Genero el objeto Provincia y lo cargo en base al ID recibido
-		$provincia = new TblProvincias();
-		$provincia = $em->getRepository("BackendBundle:TblProvincias")->findOneBy(
+		$provincia = new TblJurisdicciones();
+		$provincia = $em->getRepository("BackendBundle:TblJurisdicciones")->findOneBy(
 			array(
 				'id' => $respuesta["provincia"]
 			)
@@ -203,8 +203,8 @@ class EmpresasController extends Controller
 			)
 		);
 		// Genero el objeto Provincia y lo cargo en base al ID recibido
-		$provincia = new TblProvincias();
-		$provincia = $em->getRepository("BackendBundle:TblProvincias")->findOneBy(
+		$provincia = new TblJurisdicciones();
+		$provincia = $em->getRepository("BackendBundle:TblJurisdicciones")->findOneBy(
 			array(
 				'id' => $respuesta["provincia"]
 			)

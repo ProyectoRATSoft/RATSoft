@@ -29,3 +29,7 @@ backend_provincias:
 backend_iva:
   resource: "@BackendBundle/Resources/config/routing/iva.yml"
   prefix: /iva
+
+backend_jurisdicciones:
+  resource: "@BackendBundle/Resources/config/routing/jurisdicciones.yml"
+  prefix: /jurisdicciones

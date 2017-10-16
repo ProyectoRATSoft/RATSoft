@@ -24,6 +24,15 @@ PASOS:
 	b) Ubicarse dentro de la carpeta del proyecto (ratsoft)
 	c) Ejecutar el comando: php bin/console doctrine:generate:entities BackendBundle
 
+NO REGENERAR LA ENTIDAD user.php
+
+4) Revisar que esta todo mapeado OK
+PASOS:
+	a) Abrir la consola CMD
+	b) Ubicarse dentro de la carpeta del proyecto (ratsoft)
+	c) Ejecutar el comando: php bin/console doctrine:schema:validate
+
+
 ------------------------------------------------------------------------------------------------------------|
 ------------------------------------------------------------------------------------------------------------|
 

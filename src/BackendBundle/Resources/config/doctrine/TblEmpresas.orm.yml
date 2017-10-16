@@ -2,15 +2,15 @@ BackendBundle\Entity\TblEmpresas:
     type: entity
     table: tbl_empresas
     indexes:
-        FK_PROVINCIA_idx:
-            columns:
-                - provincia
         FK_IVA_idx:
             columns:
                 - iva
         FK_RUBRO_idx:
             columns:
                 - rubro
+        FK_JURISD_EMPRESAS_idx:
+            columns:
+                - provincia
     id:
         id:
             type: integer
@@ -72,7 +72,7 @@ BackendBundle\Entity\TblEmpresas:
                     referencedColumnName: id
             orphanRemoval: false
         provincia:
-            targetEntity: TblProvincias
+            targetEntity: TblJurisdicciones
             cascade: {  }
             fetch: LAZY
             mappedBy: null
