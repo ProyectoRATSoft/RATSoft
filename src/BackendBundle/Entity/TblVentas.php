@@ -574,4 +574,3 @@ class TblVentas
         return $this->tipoComprobante;
     }
 }
-

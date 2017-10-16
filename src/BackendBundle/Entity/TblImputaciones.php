@@ -52,4 +52,3 @@ class TblImputaciones
         return $this->nombre;
     }
 }
-

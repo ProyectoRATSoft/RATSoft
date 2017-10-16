@@ -255,4 +255,3 @@ class TblUser
         return $this->createDate;
     }
 }
-

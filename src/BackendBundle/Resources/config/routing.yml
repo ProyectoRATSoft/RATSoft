@@ -33,3 +33,7 @@ backend_iva:
 backend_jurisdicciones:
   resource: "@BackendBundle/Resources/config/routing/jurisdicciones.yml"
   prefix: /jurisdicciones
+
+backend_tiposiibb:
+  resource: "@BackendBundle/Resources/config/routing/iibb.yml"
+  prefix: /iibb

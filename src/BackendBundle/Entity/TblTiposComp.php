@@ -81,4 +81,3 @@ class TblTiposComp
         return $this->codComp;
     }
 }
-

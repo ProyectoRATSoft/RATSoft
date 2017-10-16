@@ -81,4 +81,3 @@ class TblImputProv
         return $this->idImp;
     }
 }
-

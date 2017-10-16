@@ -3,9 +3,9 @@
 namespace BackendBundle\Entity;
 
 /**
- * TblJurisdicciones
+ * TblTiposiibb
  */
-class TblJurisdicciones
+class TblTiposiibb
 {
     /**
      * @var integer
@@ -16,6 +16,11 @@ class TblJurisdicciones
      * @var string
      */
     private $nombre;
+
+    /**
+     * @var integer
+     */
+    private $numero;
 
 
     /**
@@ -33,7 +38,7 @@ class TblJurisdicciones
      *
      * @param string $nombre
      *
-     * @return TblJurisdicciones
+     * @return TblTiposiibb
      */
     public function setNombre($nombre)
     {
@@ -51,4 +56,29 @@ class TblJurisdicciones
     {
         return $this->nombre;
     }
+
+    /**
+     * Set numero
+     *
+     * @param integer $numero
+     *
+     * @return TblTiposiibb
+     */
+    public function setNumero($numero)
+    {
+        $this->numero = $numero;
+
+        return $this;
+    }
+
+    /**
+     * Get numero
+     *
+     * @return integer
+     */
+    public function getNumero()
+    {
+        return $this->numero;
+    }
 }
+

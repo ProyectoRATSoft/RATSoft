@@ -81,4 +81,3 @@ class TblSituacionIva
         return $this->detalle;
     }
 }
-

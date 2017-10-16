@@ -81,4 +81,3 @@ class TblComprobantes
         return $this->detalle;
     }
 }
-

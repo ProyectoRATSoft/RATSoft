@@ -81,4 +81,3 @@ class TblRubros
         return $this->servicio;
     }
 }
-

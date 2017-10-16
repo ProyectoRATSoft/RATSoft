@@ -60,6 +60,12 @@ BackendBundle\Entity\TblEmpresas:
             nullable: true
             options:
                 unsigned: false
+        iibbCod:
+            type: integer
+            nullable: true
+            options:
+                unsigned: false
+            column: iibb_cod
     manyToOne:
         iva:
             targetEntity: TblSituacionIva

@@ -312,5 +312,33 @@ class TblEmpresas
     {
         return $this->rubro;
     }
-}
+    /**
+     * @var integer
+     */
+    private $iibbCod;
 
+
+    /**
+     * Set iibbCod
+     *
+     * @param integer $iibbCod
+     *
+     * @return TblEmpresas
+     */
+    public function setIibbCod($iibbCod)
+    {
+        $this->iibbCod = $iibbCod;
+
+        return $this;
+    }
+
+    /**
+     * Get iibbCod
+     *
+     * @return integer
+     */
+    public function getIibbCod()
+    {
+        return $this->iibbCod;
+    }
+}

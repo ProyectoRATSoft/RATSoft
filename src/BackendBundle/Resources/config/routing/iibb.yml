@@ -1,0 +1,4 @@
+iibb_all:
+    path: /
+    defaults: { _controller: BackendBundle:IIBB:all }
+    methods: GET

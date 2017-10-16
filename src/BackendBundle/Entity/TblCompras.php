@@ -690,4 +690,3 @@ class TblCompras
         return $this->tipoComprobante;
     }
 }
-
