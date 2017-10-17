@@ -31,9 +31,13 @@
 <script src="{{ asset('public/pdfmake-0.1.32/vfs_fonts.js') }}"></script>
 <script src="{{ asset('public/Buttons-1.4.2/js/buttons.html5.min.js') }}"></script>
 <script src="{{ asset('public/Buttons-1.4.2/js/buttons.print.min.js') }}"></script>
-<script src="{{ asset('public/Buttons-1.4.2/js/buttons.colVis.min.js') }}"></script> 
+<script src="{{ asset('public/Buttons-1.4.2/js/buttons.colVis.min.js') }}"></script>
+
 <!-- <script src="{{ asset('') }}"></script>  --> 
 <script src="{{ asset('ratsoft/ratsoft.js') }}"></script>
+
+<script src="https://cdn.jsdelivr.net/npm/jquery-validation@1.17.0/dist/jquery.validate.min.js">
+</script>
 
 <script>
   //con esto bloqueamos la pantalla cuando inicia alguna accion ajax..
@@ -323,6 +327,53 @@
                     });
           }                 
       });     
+  
+      $("#modal-formulario").validate({
+          rules: {
+              nuevoNombre: { 
+                required: true,
+                minlength: 3
+              },
+              nuevoDomicilio: { 
+                required: true,
+                minlength: 3
+              },
+              nuevaLocalidad: { 
+                required: true,
+                minlength: 3
+              },
+              nuevaProvincia: { 
+                required: true
+                //minlength: 3
+              },
+              nuevaSituacionIVA: { 
+                required: true
+                //minlength: 3
+              },
+              nuevoCuit: { 
+                required: true,
+                minlength: 11,
+                maxlength: 11
+              },
+              nuevoIngresosBrutos: { 
+                required: true
+                //minlength: 3
+              },
+              nuevoRubro: { 
+                required: true
+                //minlength: 3
+              },
+              nuevoTitular: { 
+                required: true,
+                minlength: 3
+              },
+              //email: { email: true},                    
+          },
+          submitHandler: function(form) {
+              form.submit();
+          }
+      });
+
   });
 </script>
 {% endblock %}
@@ -481,12 +532,13 @@
   <div class="modal fade" id="modalAddEmpresa" role="dialog">
     <div class="modal-dialog">              
       <!-- Modal content-->
+      <form id="modal-formulario">          
       <div class="modal-content">
         <div class="modal-header">
           <h4 class="modal-title">Nueva Empresa</h4>
         </div>
-        <div class="modal-body">          
-          <h4>Datos de la empresa</h4> 
+        <div class="modal-body">
+        <h4>Datos de la empresa</h4> 
           <div class="form-group">
             <input id="nuevoId" style="display: none" enable="true"/>
           </div>               
@@ -564,12 +616,13 @@
             <button type="button" class="btn btn-danger pull-left" id="deleteEmpresa" style="display: none">Borrar</button>
           </div>         
           <div class="col-xs-6 ">
-            <button type="button" class="btn btn-success" id="editDatesEmpresa" style="display: none">Guardar</button>
-            <button type="button" class="btn btn-success" id="newEmpresa" style="display: none" >Guardar</button>
-            <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
+            <button type="submit" class="btn btn-success" id="editDatesEmpresa" style="display: none">Guardar</button>
+            <button type="submit" class="btn btn-success" id="newEmpresa" style="display: none" >Guardar</button>
+            <button type="submit" class="btn btn-default" data-dismiss="modal">Cerrar</button>
           </div>
         </div>
-      </div>                
+      </div>
+      </form>                
     </div>
   </div>
   <!-- /MODAL ADD EMPRESA -->
