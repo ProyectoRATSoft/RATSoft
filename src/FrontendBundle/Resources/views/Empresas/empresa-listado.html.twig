@@ -367,7 +367,48 @@
                 required: true,
                 minlength: 3
               },
-              //email: { email: true},                    
+                                
+          },
+          messages: {
+              nuevoNombre: { 
+                required: "Este campo no puede dejarse en vacío",
+                minlength: "Este campo de contener al menos 3 caracteres"
+              },
+              /*
+              nuevoDomicilio: { 
+                required: true,
+                minlength: 3
+              },
+              nuevaLocalidad: { 
+                required: true,
+                minlength: 3
+              },
+              nuevaProvincia: { 
+                required: true
+                //minlength: 3
+              },
+              nuevaSituacionIVA: { 
+                required: true
+                //minlength: 3
+              },
+              nuevoCuit: { 
+                required: true,
+                minlength: 11,
+                maxlength: 11
+              },
+              nuevoIngresosBrutos: { 
+                required: true
+                //minlength: 3
+              },
+              nuevoRubro: { 
+                required: true
+                //minlength: 3
+              },
+              nuevoTitular: { 
+                required: true,
+                minlength: 3
+              },
+              */                      
           },
           submitHandler: function(form) {
               form.submit();
