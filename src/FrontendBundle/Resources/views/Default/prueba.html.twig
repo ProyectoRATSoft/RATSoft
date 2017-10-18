@@ -1,29 +1,32 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<title>prueba de datatable</title>
+	<title>prueba de validacion</title>
 </head>
 <body>
 	<script src="https://code.jquery.com/jquery-1.12.4.min.js"></script>
 	<script src="https://cdn.datatables.net/1.10.16/js/jquery.dataTables.min.js"></script>
-    
+    <script src="https://cdn.jsdelivr.net/npm/jquery-validation@1.17.0/dist/jquery.validate.min.js"></script>  
 
-
-
-
-    <script src="{{ asset('ratsoft/ratsoft.js') }}"></script>
     <script>
-        $(document).ready(comboFill("/rubros","id","nombre","#combo"));
-        
-
-        $.get("/iva/1",function(resp,estado,jqXHR){
-                var arrayResp = JSON.parse(resp);
-                var obj = arrayResp.data[0];
-                console.log(obj["detalle"]);
+        $(document).ready(function(){
+            $("#myform").validate({
+                rules: {
+                    nombre: { required: true},
+                    email: { email: true},                    
+                },
+                submitHandler: function(form) {
+                    form.submit();
+                }
+            });
         });
-
-    </script>
-    <select id="combo"></select>
+    </script>  
+    
+    <form id="myform">
+        <label>nombre</label><input type="text" name="nombre"><br>
+        <label>email</label><input type="email" name="email"><br>
+        <input type="submit" name="aceptar">
+    </form>
 
     
 </body>
