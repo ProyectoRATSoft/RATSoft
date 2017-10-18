@@ -24,7 +24,7 @@ var comboFill = function(url,value,text,cssid) {
                     }
                 );
                 //agrego la opcion generica "--seleccionar--" al combo
-                opciones = opciones + '<option value="">--seleccionar--</option>';
+                opciones = opciones + '<option value="" selected="selected">--seleccionar--</option>';
                 $(cssid).html(opciones);
             });
        };

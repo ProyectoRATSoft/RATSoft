@@ -13,7 +13,7 @@
     .table>tbody>tr.active>td {
       background-color: #A9D0F5;
       color: #000000;
-      font:  bold 12px/18px Times, "Times New Roman", serif;
+      font:  bold 12px/18px;
     }
   </style>              
 {% endblock %}
@@ -59,7 +59,7 @@
     comboFill("/jurisdicciones","id","nombre","#nuevaProvincia")
     comboFill("/iva","id","codigo","#nuevaSituacionIVA")
     comboFill("/rubros","id","nombre","#nuevoRubro")
-    comboFill("/iibb","id","nombre","#nuevoIngresosBrutos")
+    comboFill("/iibb","id","nombre","#nuevoCodIngresosBrutos")
 
     // armamos el Datatable para traernos la info desde /empresa
     var table = $('#tabla-empresas').DataTable({
@@ -136,14 +136,14 @@
           var arrayResp = JSON.parse(resp);
           // Aplicamos lo que trajimos para cambiar el valor correspondiente de cada campo donde sea necesario
           $('div.form-group #empresaID').val(arrayResp.data.id);
-          //$('div.form-group #nombre').attr("placeholder",arrayResp.data.nombre);
           $('div.form-group #nombre').val(arrayResp.data.nombre);
           $('div.form-group #domicilio').val(arrayResp.data.domicilio);
           $('div.form-group #localidad').val(arrayResp.data.localidad);
           $('div.form-group #provincia').val(arrayResp.data.provincia.nombre);
           $('div.form-group #iva').val(arrayResp.data.iva.detalle);
           $('div.form-group #cuit').val(arrayResp.data.cuit);
-          $('div.form-group #ingresosBrutos').val(arrayResp.data.iibb_cod.nombre);
+          $('div.form-group #ingresosBrutos').val(arrayResp.data.iibb);
+          $('div.form-group #codIngresosBrutos').val(arrayResp.data.iibb_cod.nombre);
           $('div.form-group #rubro').val(arrayResp.data.rubro.nombre);
           $('div.form-group #titular').val(arrayResp.data.titular);
           //console.log(arrayResp.data.cuit);
@@ -156,7 +156,8 @@
           $('div.modal-body div.form-group #nuevaProvincia').val(arrayResp.data.provincia.id);
           $('div.modal-body div.form-group #nuevaSituacionIVA').val(arrayResp.data.iva.id);
           $('div.modal-body div.form-group #nuevoCuit').val(arrayResp.data.cuit);
-          $('div.modal-body div.form-group #nuevoIngresosBrutos').val(arrayResp.data.iibb_cod.id);
+          $('div.modal-body div.form-group #nuevoIngresosBrutos').val(arrayResp.data.iibb);
+          $('div.modal-body div.form-group #nuevoCodIngresosBrutos').val(arrayResp.data.iibb_cod.id);
           $('div.modal-body div.form-group #nuevoRubro').val(arrayResp.data.rubro.id);
           $('div.modal-body div.form-group #nuevoTitular').val(arrayResp.data.titular);
           
@@ -184,7 +185,8 @@
         $('select#nuevaSituacionIVA').val('');
         $('input#nuevoIva').val('');
         $('input#nuevoCuit').val('');
-        $('select#nuevoIngresosBrutos').val('');
+        $('input#nuevoIngresosBrutos').val('');
+        $('select#nuevoCodIngresosBrutos').val('');
         $('select#nuevoRubro').val('');     
         $('input#nuevoTitular').val('');
         //limpio los campos de la tabla del costado para arreglar efecto visual y evitar confusiones
@@ -196,6 +198,7 @@
         $('div.form-group #iva').val('');
         $('div.form-group #cuit').val('');
         $('div.form-group #ingresosBrutos').val('');
+        $('div.form-group #CodIngresosBrutos').val('');
         $('div.form-group #rubro').val('');
         $('div.form-group #titular').val('');
         //deselecciono la empresa de la tabla
@@ -235,6 +238,7 @@
             var iva = $('div.modal-body div.form-group #nuevaSituacionIVA').val();
             var cuit = $('div.modal-body div.form-group #nuevoCuit').val();
             var iibb = $('div.modal-body div.form-group #nuevoIngresosBrutos').val();
+            var iibb_cod = $('div.modal-body div.form-group #nuevoCodIngresosBrutos').val();
             var rubro = $('div.modal-body div.form-group #nuevoRubro').val();
             var titular = $('div.modal-body div.form-group #nuevoTitular').val();
             // var nuevoMail = $('div.modal-body div.form-group #nuevoEmail').val();
@@ -249,6 +253,7 @@
               "iva" : iva, 
               "cuit" : cuit,
               "iibb" : iibb,
+              "iibb_cod" : iibb_cod,
               "rubro" : rubro,
               "titular" : titular },
               function(resp,estado,jqXHR){
@@ -260,6 +265,18 @@
                 else{
                   alert("no entro al ok!");
                 }
+                table.ajax.reload();
+                $('div.form-group #empresaID').val('');
+                $('div.form-group #nombre').val('');
+                $('div.form-group #domicilio').val('');
+                $('div.form-group #localidad').val('');
+                $('div.form-group #provincia').val('');
+                $('div.form-group #iva').val('');
+                $('div.form-group #cuit').val('');
+                $('div.form-group #ingresosBrutos').val('');
+                $('div.form-group #codIngresosBrutos').val('');
+                $('div.form-group #rubro').val('');
+                $('div.form-group #titular').val('');
 
                 //deberiamos mostrar algun mensaje tanto como de error, como de que todo salio bien. y luego recargar la grilla para que aparezca la nueva empresa en la tabla.
                 //alert(resp);   
@@ -271,10 +288,10 @@
       $("#editEmpresa").click(function(){
         $("#modalAddEmpresa").modal();
         //con esto remuevo el seleccionar del dropdown
-        $('select#nuevaProvincia :contains(--seleccionar--)').attr("disabled","true");
-        $('select#nuevaSituacionIVA :contains(--seleccionar--)').attr("disabled","true");
-        $('select#nuevoRubro :contains(--seleccionar--)').attr("disabled","true");
-        $('select#nuevoIngresosBrutos :contains(--seleccionar--)').attr("disabled","true");
+        $('select#nuevaProvincia :contains(--seleccionar--)').attr("disabled","true").removeAttr("selected");
+        $('select#nuevaSituacionIVA :contains(--seleccionar--)').attr("disabled","true").removeAttr("selected");
+        $('select#nuevoRubro :contains(--seleccionar--)').attr("disabled","true").removeAttr("selected");
+        $('select#nuevoCodIngresosBrutos :contains(--seleccionar--)').attr("disabled","true").removeAttr("selected");
 
         $("h4.modal-title").text("Editar Empresa");
         $('button#newEmpresa').css("display", "none");
@@ -292,6 +309,7 @@
         var iva = $('div.modal-body div.form-group #nuevaSituacionIVA').val();
         var cuit = $('div.modal-body div.form-group #nuevoCuit').val();
         var iibb = $('div.modal-body div.form-group #nuevoIngresosBrutos').val();
+        var iibbtipo = $('div.modal-body div.form-group #nuevoCodIngresosBrutos').val();
         var rubro = $('div.modal-body div.form-group #nuevoRubro').val();
         var titular = $('div.modal-body div.form-group #nuevoTitular').val();
         //realizo un post pasando la url e id correspondiente para el backend, los datos previamente capturados y realizo la funcion correspondiente que me devolvera la respuesta.
@@ -304,10 +322,24 @@
               "iva" : iva, 
               "cuit" : cuit,
               "iibb" : iibb,
+              "iibbtipo" : iibbtipo,
               "rubro" : rubro,
               "titular" : titular },
-              function(resp,estado,jqXHR){
-                console.log(resp);                
+              function(resp,estado,jqXHR){ 
+              $("#modalAddEmpresa").modal('toggle');               
+                //console.log(resp);
+                table.ajax.reload();
+                $('div.form-group #empresaID').val('');
+                $('div.form-group #nombre').val('');
+                $('div.form-group #domicilio').val('');
+                $('div.form-group #localidad').val('');
+                $('div.form-group #provincia').val('');
+                $('div.form-group #iva').val('');
+                $('div.form-group #cuit').val('');
+                $('div.form-group #ingresosBrutos').val('');
+                $('div.form-group #codIngresosBrutos').val('');
+                $('div.form-group #rubro').val('');
+                $('div.form-group #titular').val('');             
               });
       });
 
@@ -317,8 +349,20 @@
           if (result) {
                $.get("/empresa/"+id+"/del",
                   function(resp,estado,jqXHR){
-                    console.log(resp);                    
+                    //console.log(resp);                    
                     $("#modalAddEmpresa").modal('toggle');
+                    table.ajax.reload();
+                    $('div.form-group #empresaID').val('');
+                    $('div.form-group #nombre').val('');
+                    $('div.form-group #domicilio').val('');
+                    $('div.form-group #localidad').val('');
+                    $('div.form-group #provincia').val('');
+                    $('div.form-group #iva').val('');
+                    $('div.form-group #cuit').val('');
+                    $('div.form-group #ingresosBrutos').val('');
+                    $('div.form-group #codIngresosBrutos').val('');
+                    $('div.form-group #rubro').val('');
+                    $('div.form-group #titular').val('');
 
                     });
           }                 
@@ -434,6 +478,10 @@
                       <input type="text" required="true" class="form-control input-sm" id="ingresosBrutos" name="ingresosBrutos" placeholder="Ingresos Brutos" disabled="true"/>  
                     </div>
                     <div class="form-group">
+                      <label for="codIngresosBrutos">Tipo Ingresos Brutos: </label>                  
+                      <input type="text" required="true" class="form-control input-sm" id="codIngresosBrutos" name="codIngresosBrutos" placeholder="Ingresos Brutos" disabled="true"/>  
+                    </div>
+                    <div class="form-group">
                       <label for="rubro">Rubro: </label>
                       <input type="text" class="form-control input-sm" id="rubro" name="rubro" placeholder="Rubro" disabled="true" />
                     </div>
@@ -534,15 +582,19 @@
           </div> 
            <div class="form-group">
             <div class="col-xs-3" style="padding-left: 0px">
-                   <label for="nuevoIngresosBrutos">Ingresos Brutos: </label> 
+                   <label for="nuevoCodIngresosBrutos">Tipo Ingreso Bruto: </label> 
               </div>
               <div class="col-xs-9  input-sm">                             
-                <select id="nuevoIngresosBrutos" name="nuevoIngresosBrutos" class="selectpicker dropdown-toggle form-control input-sm" type="button" data-toggle="dropdown" required="true">
+                <select id="nuevoCodIngresosBrutos" name="nuevoCodIngresosBrutos" class="selectpicker dropdown-toggle form-control input-sm" type="button" data-toggle="dropdown" required="true">
                   <option disabled selected value>--Seleccione una opcion--</option>  
                 </select>
               </div>                     
           </div>
           &nbsp 
+          <div class="form-group">
+            <label for="nuevoIngresosBrutos">Ingresos Brutos: </label>                    
+            <input type="text" required="true" class="form-control input-sm" id="nuevoIngresosBrutos" name="nuevoIngresosBrutos" placeholder="Ingresos Brutos"/>
+          </div>
           <div class="form-group">               
                 <div class="col-xs-3" style="padding-left: 0px;">
                     <label for="nuevoRubro">Rubro: </label>

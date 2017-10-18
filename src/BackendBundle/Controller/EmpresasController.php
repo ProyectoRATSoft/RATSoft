@@ -35,7 +35,7 @@ class EmpresasController extends Controller
 			'iibbtipo' => $request->request->get("iibbtipo"),
 			'iibb' => $request->request->get("iibb"),
 			'titular' => $request->request->get("titular"),
-			'activo' => $request->request->get("activo"),			
+			//'activo' => $request->request->get("activo"),			
 			'iva' => (int)$request->request->get("iva"),
 			'provincia' => $request->request->get("provincia"),
 			'rubro' => $request->request->get("rubro"),
@@ -68,7 +68,7 @@ class EmpresasController extends Controller
 					);
 				//$data = empty($respuesta["nombre"]);
 				$jsonResponse = $serializer->serialize($data, 'json');
-				return new Response($jsonResponse);
+				return new Response($request);
 				exit();
 		}
 
@@ -128,13 +128,9 @@ class EmpresasController extends Controller
 
 		
 		
-		$data = array(
-			'status' => $status,
-			'msg' => $msg
-			);
 
 		$jsonResponse = $serializer->serialize($data, 'json');
-		return new Response($jsonResponse);
+		return new Response($request);
 
 	}
 
