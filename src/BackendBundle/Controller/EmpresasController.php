@@ -130,7 +130,7 @@ class EmpresasController extends Controller
 		
 
 		$jsonResponse = $serializer->serialize($data, 'json');
-		return new Response($request);
+		return new Response($jsonResponse);
 
 	}
 
@@ -262,8 +262,8 @@ class EmpresasController extends Controller
 			$empresa->setProvincia($provincia);
 			$empresa->setRubro($rubro);	
 
-			//$em->persist($empresa);
-			//$em->flush();	
+			$em->persist($empresa);
+			$em->flush();	
 		} else {
 			$data = array(
 				'status' => 'ERROR',

@@ -242,7 +242,7 @@
             var iva = $('div.modal-body div.form-group #nuevaSituacionIVA').val();
             var cuit = $('div.modal-body div.form-group #nuevoCuit').val();
             var iibb = $('div.modal-body div.form-group #nuevoIngresosBrutos').val();
-            var iibb_cod = $('div.modal-body div.form-group #nuevoCodIngresosBrutos').val();
+            var iibbtipo = $('div.modal-body div.form-group #nuevoCodIngresosBrutos').val();
             var rubro = $('div.modal-body div.form-group #nuevoRubro').val();
             var titular = $('div.modal-body div.form-group #nuevoTitular').val();
             // var nuevoMail = $('div.modal-body div.form-group #nuevoEmail').val();
@@ -257,12 +257,12 @@
               "iva" : iva, 
               "cuit" : cuit,
               "iibb" : iibb,
-              "iibb_cod" : iibb_cod,
+              "iibbtipo" : iibbtipo,
               "rubro" : rubro,
               "titular" : titular },
               function(resp,estado,jqXHR){
                 console.log(resp);
-                if(resp.status == 'OK'){
+                if(resp.status = 'OK'){
                   alert("entro al ok!");
                   
                 }
@@ -529,87 +529,61 @@
             <div class="panel panel-default">
               <div class="panel-heading">
                 <h4 class="panel-title">
-                  <a data-toggle="collapse" data-parent="#accordion" href="#collapse1">
-                    Datos de la empresa</a>
+                   Datos de la empresa
                   </h4>
                 </div>
                 <div id="collapse1" class="panel-collapse collapse in">
                   <div class="box-body">                 
                     <div class="form-group">
                       <label for="empresaID">ID: </label>
-                      <input type="number" required="true" class="form-control input-sm" id="empresaID" name="empresaID" disabled="true" placeholder="ID Empresa" />
+                      <input type="number" required="true" class="form-control input-sm" id="empresaID" name="empresaID" disabled="true"  />
                     </div>
                     <div class="form-group">
                       <label for="nombre">Nombre: </label>
                       <input type="text" required="true" class="form-control input-sm" id="nombre" name="nombre"
-                      placeholder="Nombre Empresa" disabled="true"/>   
+                       disabled="true"/>   
                     </div>
                     <div class="form-group">
                       <label for="domicilio">Domicilio: </label>                  
                       <input type="text" required="true" class="form-control input-sm" id="domicilio" name="domicilio"
-                      placeholder="Domicilio Empresa" disabled="true" />
+                       disabled="true" />
                     </div>
                     <div class="form-group">
                       <label for="localidad">Localidad: </label>                    
-                      <input type="text" class="form-control input-sm" id="localidad" name="localidad" placeholder="Localidad empresa" disabled="true" />                    
+                      <input type="text" class="form-control input-sm" id="localidad" name="localidad"  disabled="true" />                    
                     </div>
                     <div class="form-group">
                       <label for="provincia">Provincia: </label>                    
-                      <input type="text" class="form-control input-sm" id="provincia" name="provincia" placeholder="provincia empresa" disabled="true"/>                      
+                      <input type="text" class="form-control input-sm" id="provincia" name="provincia" disabled="true"/>                      
                     </div>
                     <div class="form-group">
                       <label for="situacionIVACompleto">Situacion IVA: </label>
-                      <input type="text" class="form-control input-sm" id="iva" name="situacionIVACompleto" disabled="true" placeholder="Situacion IVA descripcion completa" /> 
+                      <input type="text" class="form-control input-sm" id="iva" name="situacionIVACompleto" disabled="true" /> 
                     </div>
                     <div class="form-group">
                       <label for="cuit">Cuit: </label>                    
-                      <input type="number" required="true" class="form-control input-sm" id="cuit" name="cuit" placeholder="Cuit" disabled="true"/>
+                      <input type="number" required="true" class="form-control input-sm" id="cuit" name="cuit"  disabled="true"/>
                     </div> 
                     <div class="form-group">
                       <label for="ingresosBrutos">Ingresos Brutos: </label>                  
-                      <input type="text" required="true" class="form-control input-sm" id="ingresosBrutos" name="ingresosBrutos" placeholder="Ingresos Brutos" disabled="true"/>  
+                      <input type="text" required="true" class="form-control input-sm" id="ingresosBrutos" name="ingresosBrutos"  disabled="true"/>  
                     </div>
                     <div class="form-group">
                       <label for="codIngresosBrutos">Tipo Ingresos Brutos: </label>                  
-                      <input type="text" required="true" class="form-control input-sm" id="codIngresosBrutos" name="codIngresosBrutos" placeholder="Ingresos Brutos" disabled="true"/>  
+                      <input type="text" required="true" class="form-control input-sm" id="codIngresosBrutos" name="codIngresosBrutos" disabled="true"/>  
                     </div>
                     <div class="form-group">
                       <label for="rubro">Rubro: </label>
-                      <input type="text" class="form-control input-sm" id="rubro" name="rubro" placeholder="Rubro" disabled="true" />
+                      <input type="text" class="form-control input-sm" id="rubro" name="rubro"  disabled="true" />
                     </div>
                     <div class="form-group">
                       <label for="titular">Titular: </label>
-                      <input type="text" class="form-control input-sm" id="titular" name="titular" placeholder="Titular" disabled="true" />
+                      <input type="text" class="form-control input-sm" id="titular" name="titular" disabled="true" />
                     </div>     
                   </div>
                 </div>  
               </div>
-            </div>
-            <div class="panel panel-default">
-              <div class="panel-heading">
-                <h4 class="panel-title">
-                  <a data-toggle="collapse" data-parent="#accordion" href="#collapse2">
-                    Datos de Contacto</a>
-                  </h4>
-                </div>
-                <div id="collapse2" class="panel-collapse collapse">
-                  <div class="box-body">
-                    <div class="form-group">
-                      <label for="email">Email: </label>
-                      <input type="email" required="true" class="form-control input-sm" id="email" name="email" placeholder="Email" disabled="true" />   
-                    </div>
-                    <div class="form-group">
-                      <label for="telefono">Telefono: </label>
-                      <input type="number" required="true" class="form-control input-sm" id="telefono" name="telefono" placeholder="Telefono" disabled="True" />  
-                    </div>
-                    <div class="form-group">
-                      <label for="fax">Fax: </label>                    
-                      <input type="number" required="true" class="form-control input-sm" id="fax" name="fax" placeholder="Fax" disabled="true" /> 
-                    </div>    
-                  </div>
-                </div>
-              </div>          
-            </div>
+            </div>            
           </div>
         </div>
       </div>
