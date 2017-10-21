@@ -138,9 +138,6 @@
             })};
 
     loadTable();
-    //$('#tabla-empresas').DataTable().destroy();
-    
-    
     var tableReload = function(datosnuevos){
       window.arrayrespuesta = datosnuevos;
       $('#tabla-empresas').DataTable().clear().draw();
@@ -621,7 +618,7 @@
           <h4 class="modal-title">Nueva Empresa</h4>
         </div>
         <div class="modal-body">
-        <h4>Datos de la empresa</h4> 
+          <h4>Datos de la empresa</h4> 
           <div class="form-group">
             <input id="nuevoId" style="display: none" enable="true"/>
           </div>               
