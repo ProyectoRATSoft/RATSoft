@@ -138,71 +138,10 @@
     
     
     var tableReload = function(datosnuevos){
-      //console.log("recargamos la tabla");
-      //console.log(datosnuevos);
-      window.table = $('#tabla-empresas').DataTable({
-                "responsive": true,
-                 dom: "<'row'<'col-sm-7 text-left'B><'col-sm-5 text-right'f>>" +"<'row'<'col-sm-12't>>" +"<'row'<'col-sm-5 text-left'i><'col-sm-7 text-right'p>>",
-                "language": {
-                    "sProcessing":     "Procesando...",
-                    "sLengthMenu":     "Mostrar _MENU_ registros",
-                    "sZeroRecords":    "No se encontraron resultados",
-                    "sEmptyTable":     "Ningún dato disponible en esta tabla",
-                    "sInfo":           "Mostrando registros del _START_ al _END_ de un total de _TOTAL_ registros",
-                    "sInfoEmpty":      "Mostrando registros del 0 al 0 de un total de 0 registros",
-                    "sInfoFiltered":   "(filtrado de un total de _MAX_ registros)",
-                    "sInfoPostFix":    "",
-                    "sSearch":         "Buscar:",
-                    "sUrl":            "",
-                    "sInfoThousands":  ",",
-                    "sLoadingRecords": "Cargando...",
-                    "oPaginate": {
-                      "sFirst":    "Primero",
-                      "sLast":     "Último",
-                      "sNext":     "Siguiente",
-                      "sPrevious": "Anterior"
-                    },
-                    "oAria": {
-                      "sSortAscending":  ": Activar para ordenar la columna de manera ascendente",
-                      "sSortDescending": ": Activar para ordenar la columna de manera descendente"
-                    }
-                },
-                lengthMenu: [
-                    [ 10, 25, 50, -1 ],
-                    [ '10 Filas', '25 Filas', '50 Filas', 'Todos' ]
-                ],
-      //elegis los formatos para exportar los datos de la tabla, colvis (va a servir para seleccionar que columnas queres q se vean o no), pagelenth para seleccionar la cantidad  datos mostrados 
-                buttons: [
-                  {
-                    extend: 'collection',
-                    text: 'Exportar',
-                    //elegis los formatos para exportar los datos de la tabla, colvis (va a seleccionar que mnas queres q se vean o no), pagelenth pla cantidad  datos mostrados              ons: [ 'copy', 'excel', 'pdf', 'csv', 'print']          }, 'pageLength'
-                  }
-                ],
-                "columnDefs": [ 
-                    //con esto podes setear que columnas queres aparezca o no
-                    //{ "visible": false, "targets": 3 },
-                      { responsivePriority: 1, targets: 0 },
-                      { responsivePriority: 2, targets: 3 },                                    
-                ],
-                retrieve: true,
-                data : datosnuevos,
-                "columns": [
-                  { "data": "nombre"},
-                  { "data": "cuit",
-                    "className": "cuit"}, //esto es importante, le ponemos una clase a este campo
-                  { "data": "iva.detalle"},
-                  { "data": "provincia.nombre" }
-                  ]
-              });
-
-      //window.table.clear();
-      //loadTable();
-    };
-
-    
-    
-
+      window.arrayrespuesta = datosnuevos;
+      $('#tabla-empresas').DataTable().clear().draw();
+      $('#tabla-empresas').DataTable().rows.add(datosnuevos).draw();
+      };
     // A partir de acá metemos lo que pasa cuando picamos sobre alguna empresa
 
     $('#tabla-empresas tbody').on( 'click', 'tr', function () {
@@ -348,7 +287,7 @@
                 alert("va como piña");
               }else{
               }
-              //$("#modalAddEmpresa").modal('toggle');
+              $("#modalAddEmpresa").modal('toggle');
               tableReload(respuesta.data);
               $('div.form-group #empresaID').val('');
               $('div.form-group #nombre').val('');
@@ -417,7 +356,7 @@
                 alert("va como piña");
               }else{
               }
-              //$("#modalAddEmpresa").modal('toggle');
+              $("#modalAddEmpresa").modal('toggle');
               tableReload(respuesta.data);
               $('div.form-group #empresaID').val('');
               $('div.form-group #nombre').val('');
@@ -448,7 +387,7 @@
             .done(function(respuesta){
               //console.log("entramos");
               //console.log(respuesta.data);
-              //$("#modalAddEmpresa").modal('toggle');
+              $("#modalAddEmpresa").modal('toggle');
               tableReload(respuesta.data);
               $('div.form-group #empresaID').val('');
               $('div.form-group #nombre').val('');
@@ -798,12 +737,12 @@
         </div>
         <div class="modal-footer">
           <div class="col-xs-6 " id="colDelete">
-            <button type="submit" class="btn btn-danger pull-left" id="deleteEmpresa" style="display: none">Borrar</button>
+            <button type="submit" onclick="return false" class="btn btn-danger pull-left" id="deleteEmpresa" style="display: none">Borrar</button>
           </div>         
           <div class="col-xs-6 ">
-            <button type="submit" class="btn btn-success" id="editDatesEmpresa" style="display: none">Guardar</button>
-            <button type="submit" class="btn btn-success" id="newEmpresa" style="display: none" >Guardar</button>
-            <button type="submit" class="btn btn-default" data-dismiss="modal">Cerrar</button>
+            <button type="submit" onclick="return false" class="btn btn-success" id="editDatesEmpresa" style="display: none">Guardar</button>
+            <button type="submit" onclick="return false" class="btn btn-success" id="newEmpresa" style="display: none" >Guardar</button>
+            <button type="submit" onclick="return false" class="btn btn-default" data-dismiss="modal">Cerrar</button>
           </div>
         </div>
       </div>
