@@ -249,6 +249,48 @@
             // var fax = $('div.modal-body div.form-group #nuevoFax');
             // var telefono = $('div.modal-body div.form-group #nuevoTelefono');
             //realizo un post pasando la url correspondiente al backend, los datos previamente capturados y realizo la funcion correspondiente que me devolvera la respuesta.
+            $.ajax({
+              type: "POST",
+              url: "/empresa/new",
+              async: false,
+              data: {                  
+                "nombre" : nombre , 
+                "domicilio" : domicilio, 
+                "localidad" : localidad,
+                "provincia" : provincia,
+                "iva" : iva, 
+                "cuit" : cuit,
+                "iibb" : iibb,
+                "iibbtipo" : iibbtipo,
+                "rubro" : rubro,
+                "titular" : titular },
+              dataType: "json"
+            })
+            .done(function(respuesta){
+              alert(respuesta.msg);
+              if(respuesta.status = 'OK'){
+                  alert("entro al ok!");
+              }else{
+                alert("no entro al ok!");
+              }
+              table.ajax.reload();
+              $('div.form-group #empresaID').val('');
+              $('div.form-group #nombre').val('');
+              $('div.form-group #domicilio').val('');
+              $('div.form-group #localidad').val('');
+              $('div.form-group #provincia').val('');
+              $('div.form-group #iva').val('');
+              $('div.form-group #cuit').val('');
+              $('div.form-group #ingresosBrutos').val('');
+              $('div.form-group #codIngresosBrutos').val('');
+              $('div.form-group #rubro').val('');
+              $('div.form-group #titular').val('');
+                //deberiamos mostrar algun mensaje tanto como de error, como de que todo salio bien. y luego recargar la grilla para que aparezca la nueva empresa en la tabla.
+                //alert(resp);
+            });
+
+
+/*
             $.post("/empresa/new",{                  
               "nombre" : nombre , 
               "domicilio" : domicilio, 
@@ -260,8 +302,8 @@
               "iibbtipo" : iibbtipo,
               "rubro" : rubro,
               "titular" : titular },
-              function(resp,estado,jqXHR){
-                console.log(resp);
+              function(data){
+                alert(data);
                 if(resp.status = 'OK'){
                   alert("entro al ok!");
                   
@@ -284,9 +326,11 @@
 
                 //deberiamos mostrar algun mensaje tanto como de error, como de que todo salio bien. y luego recargar la grilla para que aparezca la nueva empresa en la tabla.
                 //alert(resp);   
-              });
+              },"json")
+                .done(function(){alert("Bien");})
+                .fail(alert("falló"));
 
-             
+*/             
       });
 
       $("#editEmpresa").click(function(){
@@ -353,7 +397,6 @@
           if (result) {
                $.get("/empresa/"+id+"/del",
                   function(resp,estado,jqXHR){
-                    //console.log(resp);                    
                     $("#modalAddEmpresa").modal('toggle');
                     table.ajax.reload();
                     $('div.form-group #empresaID').val('');

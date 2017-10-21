@@ -202,7 +202,7 @@ class EmpresasController extends Controller
 					'status' => 'ERROR',
 					'msg' => 'Hubo campos mandatorios que se enviaron vacios'
 					);
-				//w$data = empty($respuesta["nombre"]);
+				
 				$jsonResponse = $serializer->serialize($data, 'json');
 				return new Response($jsonResponse);
 				exit();
@@ -271,10 +271,12 @@ class EmpresasController extends Controller
 			);
 		}
 		
-
 		$jsonResponse = $serializer->serialize($data, 'json');
-		return new Response($jsonResponse);
-
+		$response = new Response ();
+		$response->setContent($jsonResponse);
+		$response->headers->set('Content-Type', 'application/json');
+		return $response;
+		
 	}
 
 	/**
