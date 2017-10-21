@@ -43,7 +43,11 @@ class EmpresasController extends Controller
 		
 		$data = array(
 				'status' => 'OK',
-				'msg' => 'La empresa ha sido registrada con exito'
+				'msg' => 'La empresa ha sido registrada con exito',
+				'draw' => '',
+				'recordsTotal' => '',
+				'recordsFiltered' => '',
+				'data' => '',
 			);
 
 		$serializer = SerializerBuilder::create()->build();
@@ -64,7 +68,11 @@ class EmpresasController extends Controller
 			) {
 				$data = array(
 					'status' => 'ERROR',
-					'msg' => 'Hubo campos mandatorios que se enviaron vacios'
+					'msg' => 'Hubo campos mandatorios que se enviaron vacios',
+					'draw' => '',
+					'recordsTotal' => '',
+					'recordsFiltered' => '',
+					'data' => '',
 					);
 				//$data = empty($respuesta["nombre"]);
 				$jsonResponse = $serializer->serialize($data, 'json');
@@ -126,7 +134,8 @@ class EmpresasController extends Controller
 		$em->persist($empresa);
 		$em->flush();	
 
-		
+		$result = $em->getRepository("BackendBundle:TblEmpresas")->findBy(array('activo' => 1));
+		$data["data"] = $result;
 		
 
 		$jsonResponse = $serializer->serialize($data, 'json');
@@ -153,8 +162,15 @@ class EmpresasController extends Controller
 
 		$data = array(
 				'status' => 'OK',
-				'msg' => 'La empresa ha sido Eliminada con exito'
+				'msg' => 'La empresa ha sido Eliminada con exito',
+				'draw' => '',
+				'recordsTotal' => '',
+				'recordsFiltered' => '',
+				'data' => '',
 			);
+		$em = $this->getDoctrine()->getManager();
+		$result = $em->getRepository("BackendBundle:TblEmpresas")->findBy(array('activo' => 1));
+		$data["data"] = $result;
 
 		$serializer = SerializerBuilder::create()->build();
 		$jsonResponse = $serializer->serialize($data, 'json');
@@ -179,7 +195,11 @@ class EmpresasController extends Controller
 		);
 		$data = array(
 				'status' => 'OK',
-				'msg' => 'La empresa ha sido registrada con exito'
+				'msg' => 'La empresa ha sido registrada con exito',
+				'draw' => '',
+				'recordsTotal' => '',
+				'recordsFiltered' => '',
+				'data' => '',
 			);
 
 		$serializer = SerializerBuilder::create()->build();
@@ -200,7 +220,11 @@ class EmpresasController extends Controller
 			) {
 				$data = array(
 					'status' => 'ERROR',
-					'msg' => 'Hubo campos mandatorios que se enviaron vacios'
+					'msg' => 'Hubo campos mandatorios que se enviaron vacios',
+					'draw' => '',
+					'recordsTotal' => '',
+					'recordsFiltered' => '',
+					'data' => '',
 					);
 				
 				$jsonResponse = $serializer->serialize($data, 'json');
@@ -267,10 +291,17 @@ class EmpresasController extends Controller
 		} else {
 			$data = array(
 				'status' => 'ERROR',
-				'msg' => 'Ya existe una empresa registrada con el cuit ingresado'
+				'msg' => 'Ya existe una empresa registrada con el cuit ingresado',
+				'draw' => '',
+				'recordsTotal' => '',
+				'recordsFiltered' => '',
+				'data' => '',
 			);
 		}
 		
+		$result = $em->getRepository("BackendBundle:TblEmpresas")->findBy(array('activo' => 1));
+		$data["data"] = $result;
+
 		$jsonResponse = $serializer->serialize($data, 'json');
 		$response = new Response ();
 		$response->setContent($jsonResponse);
