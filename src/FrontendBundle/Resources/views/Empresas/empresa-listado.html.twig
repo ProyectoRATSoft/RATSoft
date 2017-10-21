@@ -65,13 +65,17 @@
     comboFill("/rubros","id","nombre","#nuevoRubro")
     comboFill("/iibb","id","nombre","#nuevoCodIngresosBrutos")
 
+    //window.arrayIva = new Array();
+    $.get("/iva",function(resp,estado,jqXHR){
+      var arrayResp = JSON.parse(resp);
+      window.arrayIva = arrayResp.data;
+    });
     // Vamos a traer el json para laburar con ajax
     window.arrayrespuesta = new Array();
     var loadTable = function(){
       $.ajax({
               type: "GET",
               url: "/empresa",
-              //async: false,
               dataType: "json",
             })
             .done(function(respuesta){
@@ -107,17 +111,17 @@
                     [ 10, 25, 50, -1 ],
                     [ '10 Filas', '25 Filas', '50 Filas', 'Todos' ]
                 ],
-      //elegis los formatos para exportar los datos de la tabla, colvis (va a servir para seleccionar que columnas queres q se vean o no), pagelenth para seleccionar la cantidad  datos mostrados 
+    //elegis los formatos para exportar los datos de la tabla, colvis (va a servir para seleccionar que columnas queres q se vean o no), pagelenth para seleccionar la cantidad  datos mostrados 
                 buttons: [
                   {
                     extend: 'collection',
                     text: 'Exportar',
-                    //elegis los formatos para exportar los datos de la tabla, colvis (va a seleccionar que mnas queres q se vean o no), pagelenth pla cantidad  datos mostrados              ons: [ 'copy', 'excel', 'pdf', 'csv', 'print']          }, 'pageLength'
+    //elegis los formatos para exportar los datos de la tabla, colvis (va a seleccionar que mnas queres q se vean o no), pagelenth pla cantidad  datos mostrados              ons: [ 'copy', 'excel', 'pdf', 'csv', 'print']          }, 'pageLength'
                   }
                 ],
                 "columnDefs": [ 
-                    //con esto podes setear que columnas queres aparezca o no
-                    //{ "visible": false, "targets": 3 },
+    //con esto podes setear que columnas queres aparezca o no
+    //{ "visible": false, "targets": 3 },
                       { responsivePriority: 1, targets: 0 },
                       { responsivePriority: 2, targets: 3 },                                    
                 ],
@@ -151,11 +155,10 @@
       else {
         window.table.$('tr.active').removeClass('active');
         $(this).addClass('active');
-        // metemos en una variable lo que hay en e campo cuit de la empresa seleccionada
+    // metemos en una variable lo que hay en e campo cuit de la empresa seleccionada
         var cuit = window.table.$("tr.active").find(".cuit").text();
         window.arrayrespuesta.forEach(function(item,index,arr){
           if (item.cuit == cuit){
-          //console.log(item);
           $('div.form-group #empresaID').val(item.id);
           $('div.form-group #nombre').val(item.nombre);
           $('div.form-group #domicilio').val(item.domicilio);
@@ -180,27 +183,15 @@
           $('div.modal-body div.form-group #nuevoCodIngresosBrutos').val(item.iibb_cod.id);
           $('div.modal-body div.form-group #nuevoRubro').val(item.rubro.id);
           $('div.modal-body div.form-group #nuevoTitular').val(item.titular);
-/*
-          Esto me parece que esta al pedo lo cambie por la linea que mete directamente el dato desde el array
-
-          var option = $('div.modal-body div.form-group #nuevaSituacionIVA').find('option:selected').val();
-            $.get("/iva/"+option,function(resp,estado,jqXHR){
-                    var arrayResp = JSON.parse(resp);
-                    var obj = arrayResp.data[0];
-                    $('#nuevoIva').val(obj["detalle"]);
-                  });
-*/
           }
-
         });
-        
       }
     }); 
 
-     //llama al modal luego de hacer click en el boton
+    //llama al modal luego de hacer click en el boton
       $("#addEmpresa").click(function(){        
         $("#modalAddEmpresa").modal();
-        //limpio los campos del modal
+    //limpio los campos del modal
         $('input#nuevoNombre').val('');
         $('input#nuevoId').val('');
         $('input#nuevoDomicilio').val('');
@@ -213,7 +204,7 @@
         $('select#nuevoCodIngresosBrutos').val('');
         $('select#nuevoRubro').val('');     
         $('input#nuevoTitular').val('');
-        //limpio los campos de la tabla del costado para arreglar efecto visual y evitar confusiones
+    //limpio los campos de la tabla del costado para arreglar efecto visual y evitar confusiones
         $('div.form-group #empresaID').val('');
         $('div.form-group #nombre').val('');
         $('div.form-group #domicilio').val('');
@@ -225,12 +216,12 @@
         $('div.form-group #CodIngresosBrutos').val('');
         $('div.form-group #rubro').val('');
         $('div.form-group #titular').val('');
-        //deselecciono la empresa de la tabla
+    //deselecciono la empresa de la tabla
         $('#tabla-empresas tbody tr').removeClass('active');
-        //si esta en modo responsive hay q ver como hacer para que quede cerrado el "+" con sus campos
-        //edito el titulo del modal
+    //si esta en modo responsive hay q ver como hacer para que quede cerrado el "+" con sus campos
+    //edito el titulo del modal
         $("h4.modal-title").text("Nueva Empresa");
-        //establecemos que botones corresponde poder verse  en este caso, como agregamos no hace falta editar ni borrar
+    //establecemos que botones corresponde poder verse  en este caso, como agregamos no hace falta editar ni borrar
         $('button#newEmpresa').css("display", "");
         $('button#editDatesEmpresa').css("display", "none");
         $('button#deleteEmpresa').css("display", "none");
@@ -238,22 +229,21 @@
       });
 
 
-      // llenamos el campo input cuando se detecta un cambio en el dropdownlist, 
-      //hace una busqueda por el codigo seleccionado y va a buscar a la descripcion
-      //a la base para llenar el campo con el texto completo
+    // llenamos el campo input cuando se detecta un cambio en el dropdownlist, 
+    //hace una busqueda por el codigo seleccionado y va a buscar a la descripcion
+    //a la base para llenar el campo con el texto completo
 
       $('#nuevaSituacionIVA').change(function(){
         var option = $(this).find('option:selected').val();
-        $.get("/iva/"+option,function(resp,estado,jqXHR){
-                var arrayResp = JSON.parse(resp);
-                var obj = arrayResp.data[0];
-                $('#nuevoIva').val(obj["detalle"]);
-        });
+        window.arrayIva.forEach(function(item,index,arr){
+          if(option == item.id){
+            $('#nuevoIva').val(item.detalle);
+          }
+        })
       });
-
-      //detecta el evento click
+    //detecta el evento click
       $("#newEmpresa").click(function(){
-            //guardo los valores en cada variable                            
+    //guardo los valores en cada variable                            
             var nombre = $('div.modal-body div.form-group #nuevoNombre').val();
             var domicilio = $('div.modal-body div.form-group #nuevoDomicilio').val();
             var localidad = $('div.modal-body div.form-group #nuevaLocalidad').val();
@@ -264,7 +254,7 @@
             var iibbtipo = $('div.modal-body div.form-group #nuevoCodIngresosBrutos').val();
             var rubro = $('div.modal-body div.form-group #nuevoRubro').val();
             var titular = $('div.modal-body div.form-group #nuevoTitular').val();
-            //realizo un post pasando la url correspondiente al backend, los datos previamente capturados y realizo la funcion correspondiente que me devolvera la respuesta.
+    //realizo un post pasando la url correspondiente al backend, los datos previamente capturados y realizo la funcion correspondiente que me devolvera la respuesta.
             $.ajax({
               type: "POST",
               url: "/empresa/new",
@@ -300,8 +290,8 @@
               $('div.form-group #codIngresosBrutos').val('');
               $('div.form-group #rubro').val('');
               $('div.form-group #titular').val('');
-                //deberiamos mostrar algun mensaje tanto como de error, como de que todo salio bien. y luego recargar la grilla para que aparezca la nueva empresa en la tabla.
-                //alert(resp);
+    //deberiamos mostrar algun mensaje tanto como de error, como de que todo salio bien. y luego recargar la grilla para que aparezca la nueva empresa en la tabla.
+    //alert(resp);
             });
           });
 
@@ -320,7 +310,7 @@
       });
 
       $("#editDatesEmpresa").click(function(){
-        //guardamos id para pasarlo en la url
+    //guardamos id para pasarlo en la url
         var id =  $('div.modal-body div.form-group #nuevoId').val();
         var nombre = $('div.modal-body div.form-group #nuevoNombre').val();
         var domicilio = $('div.modal-body div.form-group #nuevoDomicilio').val();
@@ -332,7 +322,7 @@
         var iibbtipo = $('div.modal-body div.form-group #nuevoCodIngresosBrutos').val();
         var rubro = $('div.modal-body div.form-group #nuevoRubro').val();
         var titular = $('div.modal-body div.form-group #nuevoTitular').val();
-        //realizo un post pasando la url e id correspondiente para el backend, los datos previamente capturados y realizo la funcion correspondiente que me devolvera la respuesta.
+    //realizo un post pasando la url e id correspondiente para el backend, los datos previamente capturados y realizo la funcion correspondiente que me devolvera la respuesta.
         
         $.ajax({
               type: "POST",
@@ -369,8 +359,8 @@
               $('div.form-group #codIngresosBrutos').val('');
               $('div.form-group #rubro').val('');
               $('div.form-group #titular').val('');
-                //deberiamos mostrar algun mensaje tanto como de error, como de que todo salio bien. y luego recargar la grilla para que aparezca la nueva empresa en la tabla.
-                //alert(resp);
+    //deberiamos mostrar algun mensaje tanto como de error, como de que todo salio bien. y luego recargar la grilla para que aparezca la nueva empresa en la tabla.
+    //alert(resp);
             });
       });
 
@@ -385,8 +375,6 @@
               dataType: "json",
             })
             .done(function(respuesta){
-              //console.log("entramos");
-              //console.log(respuesta.data);
               $("#modalAddEmpresa").modal('toggle');
               tableReload(respuesta.data);
               $('div.form-group #empresaID').val('');
@@ -401,31 +389,6 @@
               $('div.form-group #rubro').val('');
               $('div.form-group #titular').val('');
             });
-
-
-/*
-
-               $.get("/empresa/"+id+"/del",
-                  function(respuesta){
-                    $("#modalAddEmpresa").modal('toggle');
-                    console.log(respuesta.data);
-                    debugger; 
-                    tableReload(respuesta.data);
-                    $('div.form-group #empresaID').val('');
-                    $('div.form-group #nombre').val('');
-                    $('div.form-group #domicilio').val('');
-                    $('div.form-group #localidad').val('');
-                    $('div.form-group #provincia').val('');
-                    $('div.form-group #iva').val('');
-                    $('div.form-group #cuit').val('');
-                    $('div.form-group #ingresosBrutos').val('');
-                    $('div.form-group #codIngresosBrutos').val('');
-                    $('div.form-group #rubro').val('');
-                    $('div.form-group #titular').val('');
-
-                    });
-*/
-
           }                 
       });     
   
