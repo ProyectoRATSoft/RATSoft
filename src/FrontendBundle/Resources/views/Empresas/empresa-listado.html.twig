@@ -111,17 +111,18 @@
                     [ 10, 25, 50, -1 ],
                     [ '10 Filas', '25 Filas', '50 Filas', 'Todos' ]
                 ],
-    //elegis los formatos para exportar los datos de la tabla, colvis (va a servir para seleccionar que columnas queres q se vean o no), pagelenth para seleccionar la cantidad  datos mostrados 
+                  //elegis los formatos para exportar los datos de la tabla, colvis (va a servir para seleccionar que columnas queres q se vean o no), pagelenth para seleccionar la cantidad  datos mostrados 
                 buttons: [
                   {
                     extend: 'collection',
                     text: 'Exportar',
-    //elegis los formatos para exportar los datos de la tabla, colvis (va a seleccionar que mnas queres q se vean o no), pagelenth pla cantidad  datos mostrados              ons: [ 'copy', 'excel', 'pdf', 'csv', 'print']          }, 'pageLength'
-                  }
+                    //elegis los formatos para exportar los datos de la tabla, colvis (va a seleccionar que mnas queres q se vean o no), pagelenth pla cantidad  datos mostrados             
+                    buttons: [ 'copy', 'excel', 'pdf', 'csv', 'print']         
+                     }, 'pageLength'    
                 ],
                 "columnDefs": [ 
-    //con esto podes setear que columnas queres aparezca o no
-    //{ "visible": false, "targets": 3 },
+                //con esto podes setear que columnas queres aparezca o no
+                //{ "visible": false, "targets": 3 },
                       { responsivePriority: 1, targets: 0 },
                       { responsivePriority: 2, targets: 3 },                                    
                 ],
@@ -136,7 +137,6 @@
                   ]
               });
             })};
-
     loadTable();
     var tableReload = function(datosnuevos){
       window.arrayrespuesta = datosnuevos;
