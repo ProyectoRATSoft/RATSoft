@@ -188,7 +188,7 @@
     //llama al modal luego de hacer click en el boton
       $("#addEmpresa").click(function(){        
         $("#modalAddEmpresa").modal();
-    //limpio los campos del modal
+          //limpio los campos del modal
         $('input#nuevoNombre').val('');
         $('input#nuevoId').val('');
         $('input#nuevoDomicilio').val('');
@@ -201,7 +201,7 @@
         $('select#nuevoCodIngresosBrutos').val('');
         $('select#nuevoRubro').val('');     
         $('input#nuevoTitular').val('');
-    //limpio los campos de la tabla del costado para arreglar efecto visual y evitar confusiones
+         //limpio los campos de la tabla del costado para arreglar efecto visual y evitar confusiones
         $('div.form-group #empresaID').val('');
         $('div.form-group #nombre').val('');
         $('div.form-group #domicilio').val('');
@@ -213,12 +213,12 @@
         $('div.form-group #CodIngresosBrutos').val('');
         $('div.form-group #rubro').val('');
         $('div.form-group #titular').val('');
-    //deselecciono la empresa de la tabla
+           //deselecciono la empresa de la tabla
         $('#tabla-empresas tbody tr').removeClass('active');
-    //si esta en modo responsive hay q ver como hacer para que quede cerrado el "+" con sus campos
-    //edito el titulo del modal
+         //si esta en modo responsive hay q ver como hacer para que quede cerrado el "+" con sus campos
+          //edito el titulo del modal
         $("h4.modal-title").text("Nueva Empresa");
-    //establecemos que botones corresponde poder verse  en este caso, como agregamos no hace falta editar ni borrar
+       //establecemos que botones corresponde poder verse  en este caso, como agregamos no hace falta editar ni borrar
         $('button#newEmpresa').css("display", "");
         $('button#editDatesEmpresa').css("display", "none");
         $('button#deleteEmpresa').css("display", "none");
