@@ -65,6 +65,18 @@
     comboFill("/rubros","id","nombre","#nuevoRubro")
     comboFill("/iibb","id","nombre","#nuevoCodIngresosBrutos")
 
+    $("#nuevoCodIngresosBrutos").change(function(){
+      var option = $(this).find('option:selected').val();
+      if(option == "4"){
+        $("#nuevoIngresosBrutos").attr("disabled","true");
+        $("#nuevoIngresosBrutos").removeAttr("required");
+        $("#nuevoIngresosBrutos").val('');
+      }else{
+        $("#nuevoIngresosBrutos").removeAttr("disabled");
+        $("#nuevoIngresosBrutos").attr("required","true");
+      }
+    });
+
     //window.arrayIva = new Array();
     $.get("/iva",function(resp,estado,jqXHR){
       var arrayResp = JSON.parse(resp);
@@ -92,7 +104,7 @@
                     "sInfoEmpty":      "Mostrando registros del 0 al 0 de un total de 0 registros",
                     "sInfoFiltered":   "(filtrado de un total de _MAX_ registros)",
                     "sInfoPostFix":    "",
-                    "sSearch":         "Buscar:",
+                    "sSearch":         "Buscar: ",
                     "sUrl":            "",
                     "sInfoThousands":  ",",
                     "sLoadingRecords": "Cargando...",
@@ -188,6 +200,8 @@
     //llama al modal luego de hacer click en el boton
       $("#addEmpresa").click(function(){        
         $("#modalAddEmpresa").modal();
+        $("#modal-formulario").validate().resetForm();
+        
     //limpio los campos del modal
         $('input#nuevoNombre').val('');
         $('input#nuevoId').val('');
@@ -241,6 +255,8 @@
     //detecta el evento click
       $("#newEmpresa").click(function(){
     //guardo los valores en cada variable                            
+        if ($("#modal-formulario").valid()){
+
             var nombre = $('div.modal-body div.form-group #nuevoNombre').val();
             var domicilio = $('div.modal-body div.form-group #nuevoDomicilio').val();
             var localidad = $('div.modal-body div.form-group #nuevaLocalidad').val();
@@ -252,6 +268,7 @@
             var rubro = $('div.modal-body div.form-group #nuevoRubro').val();
             var titular = $('div.modal-body div.form-group #nuevoTitular').val();
     //realizo un post pasando la url correspondiente al backend, los datos previamente capturados y realizo la funcion correspondiente que me devolvera la respuesta.
+            
             $.ajax({
               type: "POST",
               url: "/empresa/new",
@@ -290,10 +307,12 @@
     //deberiamos mostrar algun mensaje tanto como de error, como de que todo salio bien. y luego recargar la grilla para que aparezca la nueva empresa en la tabla.
     //alert(resp);
             });
-          });
+        }
+      });
 
       $("#editEmpresa").click(function(){
         $("#modalAddEmpresa").modal();
+        $("#modal-formulario").validate().resetForm();
         //con esto remuevo el seleccionar del dropdown
         $('select#nuevaProvincia :contains(--seleccionar--)').attr("disabled","true").removeAttr("selected");
         $('select#nuevaSituacionIVA :contains(--seleccionar--)').attr("disabled","true").removeAttr("selected");
@@ -307,6 +326,7 @@
       });
 
       $("#editDatesEmpresa").click(function(){
+        if ($("#modal-formulario").valid()){
     //guardamos id para pasarlo en la url
         var id =  $('div.modal-body div.form-group #nuevoId').val();
         var nombre = $('div.modal-body div.form-group #nuevoNombre').val();
@@ -357,8 +377,8 @@
               $('div.form-group #rubro').val('');
               $('div.form-group #titular').val('');
     //deberiamos mostrar algun mensaje tanto como de error, como de que todo salio bien. y luego recargar la grilla para que aparezca la nueva empresa en la tabla.
-    //alert(resp);
             });
+          }
       });
 
       $("#deleteEmpresa").click(function(){
@@ -416,7 +436,7 @@
                 minlength: 11,
                 maxlength: 11
               },
-              nuevoIngresosBrutos: { 
+              nuevoCodIngresosBrutos: { 
                 required: true
                 //minlength: 3
               },
@@ -435,47 +455,49 @@
                 required: "Este campo no puede dejarse en vacío",
                 minlength: "Este campo de contener al menos 3 caracteres"
               },
-              /*
+              
               nuevoDomicilio: { 
-                required: true,
-                minlength: 3
+                required: "Este campo no puede dejarse en vacío",
+                minlength: "Este campo de contener al menos 3 caracteres"
               },
               nuevaLocalidad: { 
-                required: true,
-                minlength: 3
+                required: "Este campo no puede dejarse en vacío",
+                minlength: "Este campo de contener al menos 3 caracteres"
               },
               nuevaProvincia: { 
-                required: true
+                required: "Este campo no puede dejarse en vacío",
                 //minlength: 3
               },
               nuevaSituacionIVA: { 
-                required: true
+                required: "Este campo no puede dejarse en vacío",
                 //minlength: 3
               },
               nuevoCuit: { 
-                required: true,
-                minlength: 11,
-                maxlength: 11
+                required: "Este campo no puede dejarse en vacío",
+                minlength: "Este campo de contener al menos 11 caracteres",
+                maxlength: "Este campo no puede contener más de 11 caracteres"
+              },
+              nuevoCodIngresosBrutos: { 
+                required: "Este campo no puede dejarse en vacío",
+                //minlength: 3
               },
               nuevoIngresosBrutos: { 
-                required: true
+                required: "Este campo no puede dejarse en vacío",
                 //minlength: 3
               },
               nuevoRubro: { 
-                required: true
+                required: "Este campo no puede dejarse en vacío",
                 //minlength: 3
               },
               nuevoTitular: { 
-                required: true,
-                minlength: 3
+                required: "Este campo no puede dejarse en vacío",
+                minlength: "Este campo de contener al menos 3 caracteres"
               },
-              */                      
+                                   
           },
-          submitHandler: function(form) {
-              form.submit();
-          }
+          
       });
-
+      
   });
 </script>
 {% endblock %}
@@ -582,13 +604,15 @@
                       <input type="number" required="true" class="form-control input-sm" id="cuit" name="cuit"  disabled="true"/>
                     </div> 
                     <div class="form-group">
-                      <label for="ingresosBrutos">Ingresos Brutos: </label>                  
-                      <input type="text" required="true" class="form-control input-sm" id="ingresosBrutos" name="ingresosBrutos"  disabled="true"/>  
-                    </div>
-                    <div class="form-group">
                       <label for="codIngresosBrutos">Tipo Ingresos Brutos: </label>                  
                       <input type="text" required="true" class="form-control input-sm" id="codIngresosBrutos" name="codIngresosBrutos" disabled="true"/>  
                     </div>
+
+                    <div class="form-group">
+                      <label for="ingresosBrutos">Ingresos Brutos: </label>                  
+                      <input type="text" required="true" class="form-control input-sm" id="ingresosBrutos" name="ingresosBrutos"  disabled="true"/>  
+                    </div>
+                    
                     <div class="form-group">
                       <label for="rubro">Rubro: </label>
                       <input type="text" class="form-control input-sm" id="rubro" name="rubro"  disabled="true" />
@@ -677,7 +701,7 @@
           &nbsp 
           <div class="form-group">
             <label for="nuevoIngresosBrutos">Ingresos Brutos: </label>                    
-            <input type="text" required="true" class="form-control input-sm" id="nuevoIngresosBrutos" name="nuevoIngresosBrutos" placeholder="Ingresos Brutos"/>
+            <input type="text" class="form-control input-sm" id="nuevoIngresosBrutos" name="nuevoIngresosBrutos" placeholder="Ingresos Brutos"/>
           </div>
           <div class="form-group">               
                 <div class="col-xs-3" style="padding-left: 0px;">
