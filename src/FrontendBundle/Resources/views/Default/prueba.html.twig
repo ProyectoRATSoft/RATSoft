@@ -10,14 +10,52 @@
 
     <script>
         $(document).ready(function(){
+            function validaCuit(cuit) {
+                if (typeof (cuit) == 'undefined'){
+                    return true;
+                }
+                cuit = cuit.toString().replace(/[-_]/g, "");
+                if (cuit == ''){
+                    return true;
+                }
+                if (cuit.length != 11){
+                    return false;
+                }else{
+                    var mult = [5, 4, 3, 2, 7, 6, 5, 4, 3, 2];
+                    var total = 0;
+                    for (var i = 0; i < mult.length; i++) {
+                        total += parseInt(cuit[i]) * mult[i];
+                    };
+                    var mod = total % 11;
+                    var digito = mod == 0 ? 0 : mod == 1 ? 9 : 11 - mod;
+                }
+                return digito == parseInt(cuit[10]);
+            };
+            $.validator.addMethod("cuit", validaCuit, 'CUIT/CUIT Inválido');
+
             $("#myform").validate({
                 rules: {
-                    nombre: { required: true},
-                    email: { email: true},                    
+                    nombre: { 
+                        required: true,
+                        cuit: true
+                    },
+                    email: { 
+                        email: true,
+                        required: true
+                    },                    
                 },
-                submitHandler: function(form) {
-                    form.submit();
-                }
+                messages:{
+                    nombre: {
+                        required: "este campo es obligatorio"
+                    },
+                    email: {
+                        required: "este campo es obligatorio",
+                        email: "no tiene formato de mail"
+                    },
+                },
+            });
+            $("#boton").click(function(){
+                $("#myform").valid();
             });
         });
     </script>  
@@ -25,7 +63,7 @@
     <form id="myform">
         <label>nombre</label><input type="text" name="nombre"><br>
         <label>email</label><input type="email" name="email"><br>
-        <input type="submit" name="aceptar">
+        <input type="submit" name="aceptar" id="boton">
     </form>
 
     
