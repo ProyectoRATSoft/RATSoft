@@ -76,6 +76,8 @@
         $("#nuevoIngresosBrutos").attr("required","true");
       }
     });
+    // Hacemos que la interfaz arranque con el boton de edición dehabilitado, porque no hay ninguna empresa seleccionada aún.
+    $("#boton-editar").attr("disabled","true");
 
     //window.arrayIva = new Array();
     $.get("/iva",function(resp,estado,jqXHR){
@@ -164,6 +166,8 @@
       else {
         window.table.$('tr.active').removeClass('active');
         $(this).addClass('active');
+        $("#boton-editar").removeAttr("disabled");
+        $("#boton-editar").attr("enabled","true");
     // metemos en una variable lo que hay en e campo cuit de la empresa seleccionada
         var cuit = window.table.$("tr.active").find(".cuit").text();
         window.arrayrespuesta.forEach(function(item,index,arr){
@@ -309,8 +313,10 @@
             });
         }
       });
-
-      $("#editEmpresa").click(function(){
+      $("#boton-editar").click(function(){
+      //if ( $("#editEmpresa").prop("enabled")) {
+        
+      
         $("#modalAddEmpresa").modal();
         $("#modal-formulario").validate().resetForm();
         //con esto remuevo el seleccionar del dropdown
@@ -323,6 +329,7 @@
         $('button#newEmpresa').css("display", "none");
         $('button#editDatesEmpresa').css("display", "");
         $('button#deleteEmpresa').css("display", "");
+      //}
       });
 
       $("#editDatesEmpresa").click(function(){
