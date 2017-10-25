@@ -14,13 +14,13 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 class ComprasController extends Controller
 {
 	/**
-	*	@Route("/compras",name="compras_all")
+	*	@Route("/compras/{id}",name="compras_all")
 	*	@Method({"GET"})
 	*/
 
 	public function allAction($id,Request $request){
     	$em = $this->getDoctrine()->getManager();
-		$result = $em->getRepository("BackendBundle:TblCompras")->findBy(array('cuit' => $id));
+		$result = $em->getRepository("BackendBundle:TblCompras")->findBy(array('id' => $id));
 		$empresas = array(
 			'draw' => '',
 			'recordsTotal' => '',

@@ -1,0 +1,320 @@
+{% extends 'FrontendBundle::Default/base.html.twig' %}
+{% block title %} Ventas{% endblock %}
+{% block CSs %}
+<link rel="stylesheet" href="{{ asset('public/Buttons-1.4.2/css/buttons.bootstrap.min.css') }}">
+<link rel="stylesheet" href="{{ asset('public/responsive-2.2.0/css/responsive.bootstrap.min.css') }}">
+<style>
+  /*table { width: 50% }*/
+  tbody tr:hover.active td,
+  tbody tr:hover td {
+    background-color: #A9D0F5;
+    cursor: pointer;
+  }               
+  .table>tbody>tr.active>td {
+    background-color: #A9D0F5;
+    color: #000000;
+    font:  bold Georgia 12px/18px;
+  }
+  tr.group,
+              tr.group:hover {
+                background-color: #ddd !important;
+              }
+</style> 
+{% endblock %}
+{% block Scripts %}
+ <!-- DataTables -->
+<script src="{{ asset('bower_components/datatables.net/js/jquery.dataTables.min.js') }}"></script>
+<script src="{{ asset('bower_components/datatables.net-bs/js/dataTables.bootstrap.min.js') }}"></script>
+<script src="{{ asset('public/responsive-2.2.0/js/dataTables.responsive.min.js') }}"></script>
+<script src="{{ asset('public/responsive-2.2.0/js/responsive.bootstrap.min.js') }}"></script>
+<script src="{{ asset('public/Buttons-1.4.2/js/dataTables.buttons.min.js') }}"></script>
+<script src="{{ asset('public/Buttons-1.4.2/js/buttons.bootstrap.min.js') }}"></script>
+<script src="{{ asset('public/JSZip-2.5.0/jszip.min.js') }}"></script>
+<script src="{{ asset('public/pdfmake-0.1.32/pdfmake.min.js') }}"></script>
+<script src="{{ asset('public/pdfmake-0.1.32/vfs_fonts.js') }}"></script>
+<script src="{{ asset('public/Buttons-1.4.2/js/buttons.html5.min.js') }}"></script>
+<script src="{{ asset('public/Buttons-1.4.2/js/buttons.print.min.js') }}"></script>
+<script src="{{ asset('public/Buttons-1.4.2/js/buttons.colVis.min.js') }}"></script> 
+<!-- <script src="{{ asset('') }}"></script>  --> 
+<script>
+  //con esto bloqueamos la pantalla cuando inicia alguna accion ajax..
+  $(document).ajaxStart(function() {
+            $.blockUI({ css: { 
+                border: 'none', 
+                padding: '15px', 
+                backgroundColor: '#000', 
+                '-webkit-border-radius': '10px', 
+                '-moz-border-radius': '10px', 
+                opacity: .5, 
+                color: '#fff' 
+            },message: 'Por Favor, espere...'})
+        });
+   
+    
+  $(document).ready(function() {
+     //cuando termina la accion ajax, se desbloquea..
+    $(document).ajaxStop(function() {
+        $.unblockUI();
+
+    $("#addVenta").click(function(){
+      //alert("entre");
+      $("#tablaDeProveedores").modal();
+    });  
+
+    });
+    
+    var table = $('#tabla-ventas').DataTable({
+                    dom: "<'row'<'col-sm-8 text-left'B><'col-sm-4 text-right'f>>" +"<'row'<'col-sm-12't>>" +"<'row'<'col-sm-5 text-left'i><'col-sm-7 text-right'p>>",
+                    //configuramos la cantidad de datos que queremos que nos muestre el menu <lf<t>ip>
+                    // "<'row'<'col-sm-6'l><'col-sm-6'f>>" +
+                    // "<'row'<'col-sm-12'tr>>" +
+                    // "<'row'<'col-sm-5'i><'col-sm-7'p>>",
+                    "language": {
+                        "sProcessing":     "Procesando...",
+                        "sLengthMenu":     "Mostrar _MENU_ registros",
+                        "sZeroRecords":    "No se encontraron resultados",
+                        "sEmptyTable":     "Ningún dato disponible en esta tabla",
+                        "sInfo":           "Mostrando registros del _START_ al _END_ de un total de _TOTAL_ registros",
+                        "sInfoEmpty":      "Mostrando registros del 0 al 0 de un total de 0 registros",
+                        "sInfoFiltered":   "(filtrado de un total de _MAX_ registros)",
+                        "sInfoPostFix":    "",
+                        "sSearch":         "Buscar:",
+                        "sUrl":            "",
+                        "sInfoThousands":  ",",
+                        "sLoadingRecords": "Cargando...",
+                        "oPaginate": {
+                            "sFirst":    "Primero",
+                            "sLast":     "Último",
+                            "sNext":     "Siguiente",
+                            "sPrevious": "Anterior"
+                        },
+                        "oAria": {
+                            "sSortAscending":  ": Activar para ordenar la columna de manera ascendente",
+                            "sSortDescending": ": Activar para ordenar la columna de manera descendente"
+                        }
+                    },
+                    lengthMenu: [
+                        [ 10, 25, 50, -1 ],
+                        [ '10 Filas', '25 Filas', '50 Filas', 'Todos' ]
+                    ],
+                    buttons: [
+                                {
+                                    extend: 'collection',
+                                    text: 'Exportar',
+                                    //elegis los formatos para exportar los datos de la tabla, colvis (va a servir para seleccionar que columnas queres q se vean o no), pagelenth para seleccionar la cantidad  datos mostrados 
+                                    buttons: [ 'copy', 'excel', 'pdf', 'csv', 'print'] 
+                                }, 'colvis', 'pageLength'
+                              ],
+                                    
+                    "columnDefs": [ 
+                                  //con esto podes setear que columnas queres aparezca o no
+                                  //{ "visible": false, "targets": 3 },
+                                    { responsivePriority: 1, targets: 0 },
+                                    { responsivePriority: 2, targets: 3 },                                    
+                    ],
+                    "responsive": true,   
+                    "ajax": "/empresa",
+                    "columns": [                             
+                      { "data": "nombre"},
+                      { "data": "cuit",
+                        "className": "cuit"}, //esto es importante, le ponemos una clase a este campo
+                      { "data": "iva.detalle"},
+                      { "data": "provincia.nombre" }
+                      ]
+                  }); 
+    table.buttons().container().appendTo( '#tabla-empresas .col-sm-6:eq(0)' );                 
+    
+    
+
+  });  
+
+                             
+                
+</script>
+
+{% endblock %}
+{% block body %}
+  <!-- ACA EMPIEZO A TRABAJAR LA INTERFAZ Content Wrapper. Contains page content -->
+  <div class="content-wrapper">
+    <!-- Content Header (Page header) -->
+    <section class="content-header">
+       <h2>
+        Ventas
+        <small>Buscador</small>
+      </h2>
+      <ol class="breadcrumb">
+        <li><a href="/home"><i class="fa fa-home"></i> home</a></li>
+        <li><a href="/contable"><i class="fa fa-calculator"></i> contable</a></li>
+        <li class="active"><i class="fa fa-search"></i>Buscador de ventas</li>
+      </ol>
+    </section>    
+    <section class="content">
+      <!-- Small boxes (Stat box) -->                                                          
+      <div class="row">
+        <div class="col-xs-12">
+          <div class="box">
+            <div class="box-header">
+              <h3 class="box-title">Busque la factura deseada..</h3>
+            </div>
+            <!-- /.box-header -->
+            <div class="box-body">
+                <table id="tabla-ventas" class="table table-bordered table-striped table-hover dt-responsive"> <!-- nowrap -->
+                  <thead>                  
+                    <tr>
+                      <th>Razon Social</th>
+                      <th>Cuit</th>
+                      <th>Condicion IVA</th>
+                      <th>Jurisdiccion</th>                    
+                    </tr>
+                  </thead>
+                  <tbody></tbody>
+                  <tfoot>
+                    <tr>
+                      <th>Razon Social</th>
+                      <th>Cuit</th>
+                      <th>Condicion IVA</th>
+                      <th>Jurisdiccion</th>
+                    </tr>
+                  </tfoot>
+                </table>
+            </div>
+            <!-- /.box-body -->
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-xs-12">
+            {% block botones %}            
+            {% endblock %} 
+    <!-- Main content -->        
+          </div>
+        </div>
+      </div>
+    </section>    
+    <!-- /.content -->
+  </div>
+
+  <div class="modal fade" id="tablaDeProveedores" tabindex="-1" role="dialog" aria-labelledby="modalProveedores">
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <div class="col-xs-12">
+          <div class="col-xs-6">
+            <h4 class="modal-title" id="modalProveedores">Datos del comprobante </h4>
+          </div>
+          <div class="col-xs-6">
+            <h4 class="modal-title" id="modalProveedores">Importes: </h4>
+          </div>   
+        </div>             
+      </div>
+      <div class="modal-body">
+        <div class="box-body">
+          <div class="col-xs-6">          
+            <div class="form-group">
+              <label for="periodo">Período: </label>                    
+              <input type="text" class="form-control input-sm" id="periodo" name="periodo" />
+            </div>            
+            <div class="form-group">
+              <label for="fechaVenta">Fecha de venta: </label>                    
+              <input type="text" class="form-control input-sm" id="fechaVenta" name="fechaVenta" />
+            </div>
+            <div class="form-group">
+              <label for="nombre">Cuit: </label>
+              <input type="text" required="true" class="form-control input-sm" id="cuit" name="cuit" />   
+            </div>
+            <div class="form-group">
+              <label for="nombre">Razón social: </label>
+              <input type="text" required="true" class="form-control input-sm" id="nombre" name="nombre" disabled="true" />   
+            </div>                 
+            <div class="form-group" style="display: none">
+              <label for="empresaID">ID: </label>
+              <input type="number" required="true" class="form-control input-sm" id="empresaID" name="empresaID" disabled="true"  />
+            </div>
+            <div class="form-group">
+              <div class="col-xs-6">
+                <div class="col-xs-12" style="padding-left: 0px">
+                   <label for="comprobante">Comprobante: </label>
+                </div>
+                <div class="col-xs-12  input-sm">                             
+                  <select name="comprobante" id="comprobante" required="true" class="selectpicker dropdown-toggle form-control input-sm" type="button" data-toggle="dropdown">
+                    <option disabled selected value>--Seleccione una opcion--</option>  
+                  </select>
+                </div>     
+              </div>
+              <div class="col-xs-6">
+                <div class="col-xs-12" style="padding-left: 0px">
+                   <label for="tipoComprobante">Tipo Comprobante: </label>
+                </div>
+                <div class="col-xs-12  input-sm">                             
+                  <select name="tipoComprobante" id="tipoComprobante" required="true" class="selectpicker dropdown-toggle form-control input-sm" type="button" data-toggle="dropdown">
+                    <option disabled selected value>--Seleccione una opcion--</option>  
+                  </select>
+                </div>
+              </div>     
+            </div>
+            &nbsp
+            <div class="form-group">
+              <label for="comprobanteNumero">Nro. de Comprobante: </label>                    
+              <input type="text" class="form-control input-sm" id="comprobanteNumero" name="comprobanteNumero" />
+            </div>            
+            <div class="form-group">
+              <label for="situacionIVACompleto">Situacion IVA: </label>
+              <input type="text" class="form-control input-sm" id="iva" name="situacionIVACompleto" disabled="true" /> 
+            </div>
+            <div class="form-group">
+              <label for="jurisdiccion">Jurisdiccion: </label>                    
+              <input type="text" class="form-control input-sm" id="jurisdiccion" name="jurisdiccion" disabled="true"/>
+            </div> 
+            <div class="form-group">
+              <label for="imputacion">Imputacion: </label>                    
+              <input type="text" class="form-control input-sm" id="imputacion" name="imputacion" disabled="true"/>
+            </div>                      
+          </div>
+          <div class="col-xs-6">            
+            <div class="form-group">
+              <label for="netoReventa">Neto Reventa :</label>                    
+              <input type="text" class="form-control input-sm" id="netoReventa" name="netoReventa" />
+            </div>
+            <div class="form-group">
+              <label for="netoExento">Neto Exento :</label>                    
+              <input type="text" class="form-control input-sm" id="netoExento" name="netoExento" />
+            </div>
+            <div class="form-group">
+              <label for="ivaRi">Iva Ri :</label>                    
+              <input type="text" class="form-control input-sm" id="ivaRi" name="ivaRi" />
+            </div>
+            <div class="form-group">
+              <label for="ivaMon">Iva Mon : </label>                    
+              <input type="text" class="form-control input-sm" id="ivaMon" name="ivaMon" />
+            </div>
+            <div class="form-group">
+              <label for="ivaCf">Iva Cf: </label>                    
+              <input type="text" class="form-control input-sm" id="ivaCf" name="ivaCf" />
+            </div>
+            <div class="form-group">
+              <label for="retGanancias">Ret Ganancias : </label>                    
+              <input type="text" class="form-control input-sm" id="retGanancias" name="retGanancias" />
+            </div>
+            <div class="form-group">
+              <label for="retIva">Ret IVA: </label>                    
+              <input type="text" class="form-control input-sm" id="retIva" name="retIva" />
+            </div>
+            <div class="form-group">
+              <label for="retIibb">Ret IIBB : </label>                    
+              <input type="text" class="form-control input-sm" id="retIibb" name="retIibb" />
+            </div>
+            <div class="form-group">
+              <label for="total">Total : </label>                    
+              <input type="text" class="form-control input-sm" id="total" name="total" />
+            </div>
+          </div>                    
+        </div>      
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-success">Guardar</button>
+      </div>
+    </div>
+  </div>
+</div>
+  <!-- /.content-wrapper -->
+{% endblock %}

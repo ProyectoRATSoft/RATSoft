@@ -16,7 +16,7 @@ backend_empresas:
 
 backend_compras:
   resource: "@BackendBundle/Resources/config/routing/compras.yml"
-  prefix: /compras
+  prefix: /contable/compras
 
 backend_rubros:
   resource: "@BackendBundle/Resources/config/routing/rubros.yml"

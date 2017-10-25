@@ -8,3 +8,15 @@ frontend_prueba:
 
 fos_user:
     resource: "@FOSUserBundle/Resources/config/routing/all.xml"
+
+fontend_home:
+    resource: "@FrontendBundle/Resources/config/routing/home.yml"
+    prefix: /home    
+
+frontend_contable:
+    resource: "@FrontendBundle/Resources/config/routing/contable.yml"
+    prefix: /contable    
+
+frontend_impositivo:
+    resource: "@FrontendBundle/Resources/config/routing/impositivo.yml"
+    prefix: /impositivo 

@@ -1,0 +1,11 @@
+contable_index:
+    path: /
+    defaults: { _controller: "FrontendBundle:Modulos:contable" } 
+                              # bundle, dps controler y funcion que llama 
+    methods: GET
+
+contable_ventas:
+    path: /ventas/{id}
+    defaults: { _controller: "FrontendBundle:Ventas:index" } 
+                              # bundle, dps controler y funcion que llama 
+    methods: GET
