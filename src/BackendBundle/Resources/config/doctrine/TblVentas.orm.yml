@@ -11,6 +11,9 @@ BackendBundle\Entity\TblVentas:
         FK_CLIENTES_idx:
             columns:
                 - cliente
+        FK_EMPRESA_VENTA_idx:
+            columns:
+                - empresa
     id:
         id:
             type: integer
@@ -37,80 +40,63 @@ BackendBundle\Entity\TblVentas:
             type: date
             nullable: false
         nroComprobante:
-            type: integer
+            type: string
             nullable: false
+            length: 50
             options:
-                unsigned: false
+                fixed: false
             column: nro_comprobante
-        netoReventa:
+        neto105:
             type: decimal
             nullable: false
             precision: 10
-            scale: 0
-            column: neto_reventa
-        netoFabric:
+            scale: 2
+            column: neto_105
+        neto21:
             type: decimal
             nullable: false
             precision: 10
-            scale: 0
-            column: neto_fabric
+            scale: 2
+            column: neto_21
         netoExento:
             type: decimal
             nullable: false
             precision: 10
-            scale: 0
+            scale: 2
             column: neto_exento
-        ivaRi:
+        iva105:
             type: decimal
             nullable: false
             precision: 10
-            scale: 0
-            column: iva_ri
-        ivaRni:
+            scale: 2
+            column: iva_105
+        iva21:
             type: decimal
             nullable: false
             precision: 10
-            scale: 0
-            column: iva_rni
-        ivaSnc:
+            scale: 2
+            column: iva_21
+        retGan:
             type: decimal
             nullable: false
             precision: 10
-            scale: 0
-            column: iva_snc
-        ivaMon:
-            type: decimal
-            nullable: false
-            precision: 10
-            scale: 0
-            column: iva_mon
-        ivaCf:
-            type: decimal
-            nullable: false
-            precision: 10
-            scale: 0
-            column: iva_cf
-        ivaExento:
-            type: decimal
-            nullable: false
-            precision: 10
-            scale: 0
-            column: iva_exento
+            scale: 2
+            column: ret_gan
         retencion:
             type: decimal
             nullable: false
             precision: 10
-            scale: 0
+            scale: 2
         percepcion:
             type: decimal
             nullable: false
             precision: 10
-            scale: 0
+            scale: 2
         total:
             type: decimal
             nullable: false
             precision: 10
-            scale: 0
+            scale: 2
     manyToOne:
         cliente:
             targetEntity: TblProveedores
@@ -130,6 +116,16 @@ BackendBundle\Entity\TblVentas:
             inversedBy: null
             joinColumns:
                 cod_comprobante:
+                    referencedColumnName: id
+            orphanRemoval: false
+        empresa:
+            targetEntity: TblEmpresas
+            cascade: {  }
+            fetch: LAZY
+            mappedBy: null
+            inversedBy: null
+            joinColumns:
+                empresa:
                     referencedColumnName: id
             orphanRemoval: false
         tipoComprobante:
