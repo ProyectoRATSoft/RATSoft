@@ -20,7 +20,7 @@ class ComprasController extends Controller
 
 	public function allAction($id,Request $request){
     	$em = $this->getDoctrine()->getManager();
-		$result = $em->getRepository("BackendBundle:TblCompras")->findBy(array('id' => $id));
+		$result = $em->getRepository("BackendBundle:TblCompras")->findBy(array('empresa' => $id));
 		$empresas = array(
 			'draw' => '',
 			'recordsTotal' => '',
