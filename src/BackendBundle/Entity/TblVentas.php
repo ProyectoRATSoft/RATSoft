@@ -747,4 +747,62 @@ class TblVentas
     {
         return $this->empresa;
     }
+    /**
+     * @var \DateTime
+     */
+    private $fechaIngreso;
+
+    /**
+     * @var \BackendBundle\Entity\User
+     */
+    private $usuario;
+
+
+    /**
+     * Set fechaIngreso
+     *
+     * @param \DateTime $fechaIngreso
+     *
+     * @return TblVentas
+     */
+    public function setFechaIngreso($fechaIngreso)
+    {
+        $this->fechaIngreso = $fechaIngreso;
+
+        return $this;
+    }
+
+    /**
+     * Get fechaIngreso
+     *
+     * @return \DateTime
+     */
+    public function getFechaIngreso()
+    {
+        return $this->fechaIngreso;
+    }
+
+    /**
+     * Set usuario
+     *
+     * @param \BackendBundle\Entity\User $usuario
+     *
+     * @return TblVentas
+     */
+    public function setUsuario(\BackendBundle\Entity\User $usuario = null)
+    {
+        $this->usuario = $usuario;
+
+        return $this;
+    }
+
+    /**
+     * Get usuario
+     *
+     * @return \BackendBundle\Entity\User
+     */
+    public function getUsuario()
+    {
+        return $this->usuario;
+    }
 }

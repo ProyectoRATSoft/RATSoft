@@ -14,6 +14,9 @@ BackendBundle\Entity\TblVentas:
         FK_EMPRESA_VENTA_idx:
             columns:
                 - empresa
+        FK_USER_VENTA_idx:
+            columns:
+                - usuario
     id:
         id:
             type: integer
@@ -97,6 +100,10 @@ BackendBundle\Entity\TblVentas:
             nullable: false
             precision: 10
             scale: 2
+        fechaIngreso:
+            type: date
+            nullable: false
+            column: fecha_ingreso
     manyToOne:
         cliente:
             targetEntity: TblProveedores
@@ -136,6 +143,16 @@ BackendBundle\Entity\TblVentas:
             inversedBy: null
             joinColumns:
                 tipo_comprobante:
+                    referencedColumnName: id
+            orphanRemoval: false
+        usuario:
+            targetEntity: User
+            cascade: {  }
+            fetch: LAZY
+            mappedBy: null
+            inversedBy: null
+            joinColumns:
+                usuario:
                     referencedColumnName: id
             orphanRemoval: false
     lifecycleCallbacks: {  }
