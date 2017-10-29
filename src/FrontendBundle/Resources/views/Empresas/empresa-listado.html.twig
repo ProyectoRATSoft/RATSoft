@@ -78,6 +78,8 @@
     });
     // Hacemos que la interfaz arranque con el boton de edición dehabilitado, porque no hay ninguna empresa seleccionada aún.
     $("#boton-editar").attr("disabled","true");
+    $("#boton-compras").attr("disabled","true");
+    $("#boton-ventas").attr("disabled","true");
 
     //window.arrayIva = new Array();
     $.get("/iva",function(resp,estado,jqXHR){
@@ -168,11 +170,17 @@
         $(this).addClass('active');
         $("#boton-editar").removeAttr("disabled");
         $("#boton-editar").attr("enabled","true");
+        $("#boton-compras").removeAttr("disabled");
+        $("#boton-compras").attr("enabled","true");
+        $("#boton-ventas").removeAttr("disabled");
+        $("#boton-ventas").attr("enabled","true");
     // metemos en una variable lo que hay en e campo cuit de la empresa seleccionada
         var cuit = window.table.$("tr.active").find(".cuit").text();
         window.arrayrespuesta.forEach(function(item,index,arr){
           if (item.cuit == cuit){
           $('div.form-group #empresaID').val(item.id);
+          $('#link-compras').removeAttr('href');
+          $('#link-compras').attr('href',"/contable/compras/"+item.id);
           $('div.form-group #nombre').val(item.nombre);
           $('div.form-group #domicilio').val(item.domicilio);
           $('div.form-group #localidad').val(item.localidad);
