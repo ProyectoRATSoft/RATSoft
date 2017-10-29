@@ -1,5 +1,5 @@
 {% extends 'FrontendBundle::Default/base.html.twig' %}
-{% block title %} Ventas{% endblock %}
+{% block title %} Compras{% endblock %}
 {% block CSs %}
 <link rel="stylesheet" href="{{ asset('public/Buttons-1.4.2/css/buttons.bootstrap.min.css') }}">
 <link rel="stylesheet" href="{{ asset('public/responsive-2.2.0/css/responsive.bootstrap.min.css') }}">
@@ -56,14 +56,18 @@
     $(document).ajaxStop(function() {
         $.unblockUI();
 
-    $("#addVenta").click(function(){
+    $("#addCompra").click(function(){
       //alert("entre");
       $("#tablaDeProveedores").modal();
     });  
 
     });
+    //window.arrayrespuesta = new Array();
+    window.arrayrespuesta = {{ respuesta|raw }};
+
+    console.log(window.arrayrespuesta.data);
     
-    var table = $('#tabla-ventas').DataTable({
+    var table = $('#tabla-compras').DataTable({
                     dom: "<'row'<'col-sm-8 text-left'B><'col-sm-4 text-right'f>>" +"<'row'<'col-sm-12't>>" +"<'row'<'col-sm-5 text-left'i><'col-sm-7 text-right'p>>",
                     //configuramos la cantidad de datos que queremos que nos muestre el menu <lf<t>ip>
                     // "<'row'<'col-sm-6'l><'col-sm-6'f>>" +
@@ -113,13 +117,101 @@
                                     { responsivePriority: 2, targets: 3 },                                    
                     ],
                     "responsive": true,   
-                    "ajax": "/empresa",
-                    "columns": [                             
-                      { "data": "nombre"},
-                      { "data": "cuit",
-                        "className": "cuit"}, //esto es importante, le ponemos una clase a este campo
-                      { "data": "iva.detalle"},
-                      { "data": "provincia.nombre" }
+                    retrieve: true,
+                    data : window.arrayrespuesta.data,
+                     "columns": [                             
+                      { 
+                        "data": "proveedor.nombre",
+                        "title": "Razon Social"
+                      },
+                      { 
+                        "data": "proveedor.cuit",
+                        "title": "C.U.I.T"
+                      },
+                      { 
+                        "data": "proveedor.iva.detalle",
+                        "title": "Situación de IVA"
+                      },
+                      { 
+                        "data": "periodo_ano",
+                        "title": "Período Año"
+                      },
+                      { 
+                        "data": "fecha",
+                        "title": "Fecha"
+                      },
+                      { 
+                        "data": "cod_comprobante.detalle",
+                        "title": "Comprobante"
+                      },
+                      { 
+                        "data": "tipo_comprobante.tipo_comp",
+                        "title": "Tipo de Comprobante"
+                      },
+                      { 
+                        "data": "nro_comprobante",
+                        "title": "Número de Comprobante"
+                      },
+                      { 
+                        "data": "cai",
+                        "title": "CAI"
+                      },
+                      { 
+                        "data": "proveedor.jurisdiccion.nombre",
+                        "title": "Jurisdicción"
+                      },
+                      { 
+                        "data": "imputacion.id",
+                        "title": "Código de imputación"
+                      },                      
+                      { 
+                        "data": "imputacion.nombre",
+                        "title": "Detalle de imputación"
+                      },                      
+                      { 
+                        "data": "neto105",
+                        "title": "Neto 10.5%"
+                      },
+                      { 
+                        "data": "neto21",
+                        "title": "Neto 21%"
+                      },
+                      { 
+                        "data": "neto27",
+                        "title": "Neto 27%"
+                      },
+                      { 
+                        "data": "nogravado",
+                        "title": "No Gravado"
+                      },
+                      { 
+                        "data": "iva105",
+                        "title": "IVA 10.5%"
+                      },
+                      { 
+                        "data": "iva21",
+                        "title": "IVA 21%"
+                      },
+                      { 
+                        "data": "iva27",
+                        "title": "IVA 27%"
+                      },
+                      { 
+                        "data": "perc_iva",
+                        "title": "Percepciones de IVA"
+                      },
+                      { 
+                        "data": "perc_iibb",
+                        "title": "Percepciones de IIBB"
+                      },
+                      { 
+                        "data": "ret_ganancia",
+                        "title": "Retenciones de Ganancias"
+                      },                      
+                      { 
+                        "data": "total",
+                        "title": "Total"
+                      },                      
                       ]
                   }); 
     table.buttons().container().appendTo( '#tabla-empresas .col-sm-6:eq(0)' );                 
@@ -139,13 +231,13 @@
     <!-- Content Header (Page header) -->
     <section class="content-header">
        <h2>
-        Ventas
+        Compras
         <small>Buscador</small>
       </h2>
       <ol class="breadcrumb">
         <li><a href="/home"><i class="fa fa-home"></i> home</a></li>
         <li><a href="/contable"><i class="fa fa-calculator"></i> contable</a></li>
-        <li class="active"><i class="fa fa-search"></i>Buscador de ventas</li>
+        <li class="active"><i class="fa fa-search"></i>Buscador de compras</li>
       </ol>
     </section>    
     <section class="content">
@@ -154,28 +246,12 @@
         <div class="col-xs-12">
           <div class="box">
             <div class="box-header">
-              <h3 class="box-title">Busque la factura deseada..</h3>
+              <h3 class="box-title">Busque el comprobante deseado..</h3>
             </div>
             <!-- /.box-header -->
             <div class="box-body">
-                <table id="tabla-ventas" class="table table-bordered table-striped table-hover dt-responsive"> <!-- nowrap -->
-                  <thead>                  
-                    <tr>
-                      <th>Razon Social</th>
-                      <th>Cuit</th>
-                      <th>Condicion IVA</th>
-                      <th>Jurisdiccion</th>                    
-                    </tr>
-                  </thead>
+                <table id="tabla-compras" class="table table-bordered table-striped table-hover dt-responsive"> <!-- nowrap -->
                   <tbody></tbody>
-                  <tfoot>
-                    <tr>
-                      <th>Razon Social</th>
-                      <th>Cuit</th>
-                      <th>Condicion IVA</th>
-                      <th>Jurisdiccion</th>
-                    </tr>
-                  </tfoot>
                 </table>
             </div>
             <!-- /.box-body -->
