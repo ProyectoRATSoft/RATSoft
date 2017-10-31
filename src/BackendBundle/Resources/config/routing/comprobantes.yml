@@ -1,0 +1,9 @@
+comprobantes_all:
+    path: /
+    defaults: { _controller: BackendBundle:Comprobantes:all }
+    methods: GET
+
+comprobantes_tipos:
+    path: /tipos
+    defaults: { _controller: BackendBundle:Comprobantes:tipos }
+    methods: GET

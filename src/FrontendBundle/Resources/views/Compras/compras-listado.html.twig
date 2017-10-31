@@ -35,8 +35,14 @@
 <script src="{{ asset('public/Buttons-1.4.2/js/buttons.html5.min.js') }}"></script>
 <script src="{{ asset('public/Buttons-1.4.2/js/buttons.print.min.js') }}"></script>
 <script src="{{ asset('public/Buttons-1.4.2/js/buttons.colVis.min.js') }}"></script> 
+<script src="{{ asset('ratsoft/ratsoft.js') }}"></script>
 <!-- <script src="{{ asset('') }}"></script>  --> 
 <script>
+  comboFill("/comprobantes","id","detalle","#comprobante");
+  $.get("/comprobantes/tipos",function(resp,estado,jqXHR){
+      var arrayResp = JSON.parse(resp);
+      window.arrayTiposComp = arrayResp.data;
+    });
   //con esto bloqueamos la pantalla cuando inicia alguna accion ajax..
   $(document).ajaxStart(function() {
             $.blockUI({ css: { 
@@ -62,11 +68,25 @@
     });  
 
     });
-    //window.arrayrespuesta = new Array();
+    //recuperamos el array desde el controller
     window.arrayrespuesta = {{ respuesta|raw }};
 
-    console.log(window.arrayrespuesta.data);
+    // Preparamos la lógica para que el combo de tipo de comprobante se llene automaticamente dependiendio el codigo de comprobante seleccionado.
+
+    $('#comprobante').change(function(){
+        var option = $(this).find('option:selected').val();
+        var opciones = "<option value='' selected='selected'>--seleccionar--</option>";
+        window.arrayTiposComp.forEach(function(item,index,arr){
+          if(option == item.cod_comp.id){
+            opciones = opciones + "<option value='"+item.id+"'>"+item.tipo_comp+"</option>";
+
+          }
+        })
+        $("#tipoComprobante").html(opciones);
+      });
     
+    //Llenamos el datatable con el array que trajimos del controller
+
     window.table = $('#tabla-compras').DataTable({
                     dom: "<'row'<'col-sm-8 text-left'B><'col-sm-4 text-right'f>>" +"<'row'<'col-sm-12't>>" +"<'row'<'col-sm-5 text-left'i><'col-sm-7 text-right'p>>",
                     //configuramos la cantidad de datos que queremos que nos muestre el menu <lf<t>ip>
@@ -133,8 +153,12 @@
                         "title": "Situación de IVA"
                       },
                       { 
-                        "data": "periodo_ano",
-                        "title": "Período Año"
+                        //Concateno periodo mes y año para armar el periodo.
+                        "mData": null,
+                        "mRender": function(data,type,full){
+                          return full['periodo_mes']+'-'+full['periodo_ano'];
+                        },
+                        "title": "Período"
                       },
                       { 
                         "data": "fecha",
@@ -319,11 +343,11 @@
           <div class="col-xs-6">          
             <div class="form-group">
               <label for="periodo">Período: </label>                    
-              <input type="text" class="form-control input-sm" id="periodo" name="periodo" />
+              <input type="month" class="form-control input-sm" id="periodo" name="periodo" />
             </div>            
             <div class="form-group">
-              <label for="fechaVenta">Fecha de venta: </label>                    
-              <input type="text" class="form-control input-sm" id="fechaCompra" name="fechaCompra" />
+              <label for="fechaCompra">Fecha de compra: </label>                    
+              <input type="date" class="form-control input-sm" id="fechaCompra" name="fechaCompra" />
             </div>
             <div class="form-group">
               <label for="nombre">Cuit: </label>

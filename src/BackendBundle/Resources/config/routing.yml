@@ -37,3 +37,7 @@ backend_jurisdicciones:
 backend_tiposiibb:
   resource: "@BackendBundle/Resources/config/routing/iibb.yml"
   prefix: /iibb
+
+backend_comprobantes:
+  resource: "@BackendBundle/Resources/config/routing/comprobantes.yml"
+  prefix: /comprobantes
