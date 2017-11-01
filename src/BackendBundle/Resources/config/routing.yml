@@ -18,6 +18,10 @@ backend_compras:
   resource: "@BackendBundle/Resources/config/routing/compras.yml"
   prefix: /contable/compras
 
+backend_ventas:
+  resource: "@BackendBundle/Resources/config/routing/ventas.yml"
+  prefix: /contable/ventas
+
 backend_rubros:
   resource: "@BackendBundle/Resources/config/routing/rubros.yml"
   prefix: /rubros

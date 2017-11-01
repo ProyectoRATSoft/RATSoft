@@ -57,11 +57,14 @@
         $.unblockUI();
 
     $("#addVenta").click(function(){
-      //alert("entre");
-      $("#tablaDeProveedores").modal();
-    });  
+        //alert("entre");
+        $("#tablaDeProveedores").modal();
+      });  
 
     });
+    window.arrayrespuesta = {{ respuesta|raw }};
+
+    console.log(window.arrayrespuesta.data);
     
     var table = $('#tabla-ventas').DataTable({
                     dom: "<'row'<'col-sm-8 text-left'B><'col-sm-4 text-right'f>>" +"<'row'<'col-sm-12't>>" +"<'row'<'col-sm-5 text-left'i><'col-sm-7 text-right'p>>",
@@ -110,17 +113,103 @@
                                   //con esto podes setear que columnas queres aparezca o no
                                   //{ "visible": false, "targets": 3 },
                                     { responsivePriority: 1, targets: 0 },
-                                    { responsivePriority: 2, targets: 3 },                                    
+                                    { responsivePriority: 2, targets: 0 },
+                                    { responsivePriority: 3, targets: 0 },
+                                    { responsivePriority: 4, targets: 0 },
+                                    { responsivePriority: 5, targets: 0 },
+                                    { responsivePriority: 6, targets: 0 },
+                                    { responsivePriority: 7, targets: 0 },
+                                    { responsivePriority: 8, targets: 0 },
+                                    { responsivePriority: 9, targets: 0 },
+                                    { responsivePriority: 10, 'visible': false},
+                                    { responsivePriority: 11, 'visible': false },
+                                    { responsivePriority: 12, 'visible': false },
+                                    { responsivePriority: 13, 'visible': false },
+                                    { responsivePriority: 14, 'visible': false },
+                                    { responsivePriority: 15, 'visible': false },
+                                    { responsivePriority: 16, 'visible': false},
+                                    { responsivePriority: 17, 'visible': false },
+                                    { responsivePriority: 18, 'visible': false },                                
                     ],
                     "responsive": true,   
-                    "ajax": "/empresa",
-                    "columns": [                             
-                      { "data": "nombre"},
-                      { "data": "cuit",
-                        "className": "cuit"}, //esto es importante, le ponemos una clase a este campo
-                      { "data": "iva.detalle"},
-                      { "data": "provincia.nombre" }
-                      ]
+                    retrieve: true,
+                    fixedHeader: true,
+                    data : window.arrayrespuesta.data,
+                     "columns": [
+
+                      { 
+                        "data": "periodo_mes",
+                        "title": "Mes Periodo"
+                      },
+                      { 
+                        "data": "periodo_ano",
+                        "title": "Año Periodo"
+                      },
+                       { 
+                        "data": "fecha",
+                        "title": "Fecha"
+                      },
+                      { 
+                        "data": "cod_comprobante.detalle",
+                        "title": "Comprobante"
+                      },
+                      { 
+                        "data": "tipo_comprobante.tipo_comp",
+                        "title": "Tipo de Comprobante"
+                      },
+                      { 
+                        "data": "nro_comprobante",
+                        "title": "Número de Comprobante"
+                      },
+                      { 
+                        "data": "cliente.nombre",
+                        "title": "Cliente"
+                      },
+                      { 
+                        "data": "cliente.cuit",
+                        "title": "C.U.I.T."
+                      },                   
+                      { 
+                        "data": "cliente.jurisdiccion.nombre",
+                        "title": "Jurisdiccion"
+                      },                      
+                      { 
+                        "data": "total",
+                        "title": "Total"
+                      },   
+                      { 
+                        "data": "neto105",
+                        "title": "Neto 10.5%"
+                      },
+                      { 
+                        "data": "neto21",
+                        "title": "Neto 21%"
+                      },
+                      { 
+                        "data": "neto_exento",
+                        "title": "Neto exento"
+                      },
+                      { 
+                        "data": "iva105",
+                        "title": "IVA 10.5%"
+                      },
+                      { 
+                        "data": "iva21",
+                        "title": "IVA 21%"
+                      },
+                      { 
+                        "data": "ret_gan",
+                        "title": "Retenciones de Ganancias"
+                      },                          
+                      { 
+                        "data": "retencion",
+                        "title": "Retencion"
+                      },
+                      { 
+                        "data": "percepcion",
+                        "title": "Percepcion"
+                      },             
+                       ]
                   }); 
     table.buttons().container().appendTo( '#tabla-empresas .col-sm-6:eq(0)' );                 
     
@@ -158,24 +247,9 @@
             </div>
             <!-- /.box-header -->
             <div class="box-body">
-                <table id="tabla-ventas" class="table table-bordered table-striped table-hover dt-responsive"> <!-- nowrap -->
-                  <thead>                  
-                    <tr>
-                      <th>Razon Social</th>
-                      <th>Cuit</th>
-                      <th>Condicion IVA</th>
-                      <th>Jurisdiccion</th>                    
-                    </tr>
-                  </thead>
-                  <tbody></tbody>
-                  <tfoot>
-                    <tr>
-                      <th>Razon Social</th>
-                      <th>Cuit</th>
-                      <th>Condicion IVA</th>
-                      <th>Jurisdiccion</th>
-                    </tr>
-                  </tfoot>
+                <table id="tabla-ventas" class="table table-bordered table-striped table-hover dt-responsive"> 
+                  <tbody>
+                  </tbody>
                 </table>
             </div>
             <!-- /.box-body -->
@@ -193,7 +267,7 @@
     <!-- /.content -->
   </div>
 
-  <div class="modal fade" id="tablaDeProveedores" tabindex="-1" role="dialog" aria-labelledby="modalProveedores">
+<div class="modal fade" id="tablaDeProveedores" tabindex="-1" role="dialog" aria-labelledby="modalProveedores">
   <div class="modal-dialog modal-lg" role="document">
     <div class="modal-content">
       <div class="modal-header">
