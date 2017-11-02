@@ -45,3 +45,7 @@ backend_tiposiibb:
 backend_comprobantes:
   resource: "@BackendBundle/Resources/config/routing/comprobantes.yml"
   prefix: /comprobantes
+
+backend_proveedores:
+  resource: "@BackendBundle/Resources/config/routing/proveedores.yml"
+  prefix: /proveedores

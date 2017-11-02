@@ -54,17 +54,31 @@
   $(document).ready(function() {
      //cuando termina la accion ajax, se desbloquea..
     $(document).ajaxStop(function() {
-        $.unblockUI();
+        $.unblockUI();     
+
+    });
 
     $("#addVenta").click(function(){
         //alert("entre");
         $("#tablaDeProveedores").modal();
-      });  
-
-    });
+      });
     window.arrayrespuesta = {{ respuesta|raw }};
 
-    console.log(window.arrayrespuesta.data);
+    //console.log(window.arrayrespuesta.data);
+    window.arrayproveedores = new Array();
+
+    $.ajax({
+              type: "GET",
+              url: "/proveedores",
+              dataType: "json",
+              async: false
+            })
+            .done(function(respuesta){
+              window.arrayproveedores = respuesta.data;
+            });
+    console.log(window.arrayproveedores);
+
+    //comboFill("/proveedores","id","nombre","#comprobante");
     
     var table = $('#tabla-ventas').DataTable({
                     dom: "<'row'<'col-sm-8 text-left'B><'col-sm-4 text-right'f>>" +"<'row'<'col-sm-12't>>" +"<'row'<'col-sm-5 text-left'i><'col-sm-7 text-right'p>>",
@@ -112,24 +126,11 @@
                     "columnDefs": [ 
                                   //con esto podes setear que columnas queres aparezca o no
                                   //{ "visible": false, "targets": 3 },
-                                    { responsivePriority: 1, targets: 0 },
-                                    { responsivePriority: 2, targets: 0 },
-                                    { responsivePriority: 3, targets: 0 },
-                                    { responsivePriority: 4, targets: 0 },
-                                    { responsivePriority: 5, targets: 0 },
-                                    { responsivePriority: 6, targets: 0 },
-                                    { responsivePriority: 7, targets: 0 },
-                                    { responsivePriority: 8, targets: 0 },
-                                    { responsivePriority: 9, targets: 0 },
-                                    { responsivePriority: 10, 'visible': false},
-                                    { responsivePriority: 11, 'visible': false },
-                                    { responsivePriority: 12, 'visible': false },
-                                    { responsivePriority: 13, 'visible': false },
-                                    { responsivePriority: 14, 'visible': false },
-                                    { responsivePriority: 15, 'visible': false },
-                                    { responsivePriority: 16, 'visible': false},
-                                    { responsivePriority: 17, 'visible': false },
-                                    { responsivePriority: 18, 'visible': false },                                
+                                  // { responsivePriority: 1, targets: 0 },
+                                  // { responsivePriority: 2, targets: 0 },
+                                  { targets: [0, 1, 2, 3, 4, 5, 6, 7, 8], visible: true},
+                                  //{ targets: '_all', visible: false }
+                                
                     ],
                     "responsive": true,   
                     retrieve: true,
@@ -138,12 +139,17 @@
                      "columns": [
 
                       { 
-                        "data": "periodo_mes",
-                        "title": "Mes Periodo"
+                        "data": "cliente.nombre",
+                        "title": "Cliente"
                       },
                       { 
-                        "data": "periodo_ano",
-                        "title": "Año Periodo"
+                        //Concateno periodo mes y año para armar el periodo.
+                        "mData": null,
+                        "mRender": function(data,type,full){
+                          return full['periodo_mes']+'-'+full['periodo_ano'];
+                          //"width = '10%"
+                        },
+                        "title": "Período"
                       },
                        { 
                         "data": "fecha",
@@ -161,10 +167,7 @@
                         "data": "nro_comprobante",
                         "title": "Número de Comprobante"
                       },
-                      { 
-                        "data": "cliente.nombre",
-                        "title": "Cliente"
-                      },
+                      
                       { 
                         "data": "cliente.cuit",
                         "title": "C.U.I.T."
@@ -179,40 +182,48 @@
                       },   
                       { 
                         "data": "neto105",
-                        "title": "Neto 10.5%"
+                        "title": "Neto 10.5%",
+                         className: 'none'
                       },
                       { 
                         "data": "neto21",
-                        "title": "Neto 21%"
+                        "title": "Neto 21%",
+                         className: 'none'
                       },
                       { 
                         "data": "neto_exento",
-                        "title": "Neto exento"
+                        "title": "Neto exento",
+                         className: 'none'
                       },
                       { 
                         "data": "iva105",
-                        "title": "IVA 10.5%"
+                        "title": "IVA 10.5%",
+                         className: 'none'
                       },
                       { 
                         "data": "iva21",
-                        "title": "IVA 21%"
+                        "title": "IVA 21%",
+                         className: 'none'
                       },
                       { 
                         "data": "ret_gan",
-                        "title": "Retenciones de Ganancias"
+                        "title": "Retenciones de Ganancias",
+                         className: 'none'
                       },                          
                       { 
                         "data": "retencion",
-                        "title": "Retencion"
+                        "title": "Retencion",
+                         className: 'none'
                       },
                       { 
                         "data": "percepcion",
-                        "title": "Percepcion"
+                        "title": "Percepcion", 
+                        className: 'none'
                       },             
                        ]
                   }); 
     table.buttons().container().appendTo( '#tabla-empresas .col-sm-6:eq(0)' );                 
-    
+    //table.columns.adjust().draw();
     
 
   });  

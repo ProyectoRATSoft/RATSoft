@@ -9,16 +9,53 @@
     <script src="https://cdn.jsdelivr.net/npm/jquery-validation@1.17.0/dist/jquery.validate.min.js"></script>  
     <script>
         $(document).ready(function(){
-            var test = {{ respuesta|json_encode|raw }};
-            console.log(test);
+            $.ajax({
+              type: "GET",
+              url: "/proveedores",
+              dataType: "json",
+              async: false
+            })
+            .done(function(respuesta){
+              window.arrayproveedores = respuesta.data;
+            });
+            
+               // var option = $(this).find('option:selected').val();
+                var opciones = "<option value='' selected='selected'>--seleccionar--</option>";
+                window.arrayproveedores.forEach(function(item,index,arr){
+                  //if(option == item.cod_comp.id){
+                    opciones = opciones + "<option data-value='"+item.id+"'>"+item.nombre+"</option>";
+
+                  //}
+                });
+                $("#ratasabia").html(opciones);
+             // });
+             $('#rzn').on('blur',function(){
+                   console.log($(this).text());
+                   console.log($('#ratasabia option:selected').attr('data-value'));
+            });
+
         });
+
+
+            // $(function() {
+            //  $( "#tags" ).autocomplete({
+            //             source: window.arrayproveedores,
+            //             minLength:0
+            //         }).bind('focus', function(){ $(this).autocomplete(" search"); } );
+            //     });
+
     </script>  
     
-    <form id="myform">
-        <label>nombre</label><input type="text" name="nombre"><br>
-        <label>email</label><input type="email" name="email"><br>
-        <input type="submit" name="aceptar" id="boton">
-    </form>
+    <div class="demo">
+    <input type="button" id="boton" />
+    <!-- <div class="ui-widget">
+        <select id='ratasabia'></select> 
+    </div> -->
+    <input type="text" list="ratasabia" id='rzn' />
+    <datalist id="ratasabia">
+    </datalist>
+    
+</div>
 
     
 </body>

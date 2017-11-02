@@ -1,0 +1,4 @@
+proveedores_all:
+    path: /
+    defaults: { _controller: BackendBundle:Proveedores:all }
+    methods: GET
