@@ -8,6 +8,7 @@
 	<!-- <script src="https://cdn.datatables.net/1.10.16/js/jquery.dataTables.min.js"></script> -->
     <!-- <script src="https://cdn.jsdelivr.net/npm/jquery-validation@1.17.0/dist/jquery.validate.min.js"></script> -->
     <script src="https://code.jquery.com/ui/1.12.0/jquery-ui.min.js" ></script>
+    <link rel="stylesheet" href="http://code.jquery.com/ui/1.9.0/themes/smoothness/jquery-ui.css" />
 
     <script>
         $(document).ready(function(){
@@ -31,14 +32,17 @@
             $('#tags').autocomplete({
                 minLength: 3,
                 source: source,
-
+                message: {
+                    noResult:'No search results.'
+                    
+                },
                 select: function(event, ui) {
                     //$('.tags_id').text(mapping[ui.item.value]);
-                    return alert(mapping[ui.item.value]);
+                    //return alert(mapping[ui.item.value]);
                     
                 }
             });
-             $('div.ui-helper-hidden-accessible').remove();
+             //$('div.ui-helper-hidden-accessible').remove();
 
 
         });

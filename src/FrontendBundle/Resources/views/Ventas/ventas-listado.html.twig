@@ -19,6 +19,9 @@
               tr.group:hover {
                 background-color: #ddd !important;
               }
+  input.ui-autocomplete {
+    z-index: 500;
+}
 </style> 
 {% endblock %}
 {% block Scripts %}
@@ -67,7 +70,7 @@
     //console.log(window.arrayrespuesta.data);
     window.arrayproveedores = new Array();
 
-    $.ajax({
+   $.ajax({
               type: "GET",
               url: "/proveedores",
               dataType: "json",
@@ -76,7 +79,29 @@
             .done(function(respuesta){
               window.arrayproveedores = respuesta.data;
             });
-    console.log(window.arrayproveedores);
+           
+            var source  = [ ];
+            var mapping = { };
+            for(var i = 0; i < window.arrayproveedores.length; ++i) {
+                source.push(window.arrayproveedores[i].nombre);
+                mapping[window.arrayproveedores[i].nombre] = window.arrayproveedores[i].id;
+            }
+
+            $('#nombre').autocomplete({
+                minLength: 3,
+                source: source,
+                message: {
+                    noResult:'No search results.'
+                    
+                },
+                select: function(event, ui) {
+                    //$('.tags_id').text(mapping[ui.item.value]);
+                    //return alert(mapping[ui.item.value]);
+                    
+                }
+            });
+            $('#nombre').autocomplete( "option", "appendTo", ".form-group" );
+    //console.log(window.arrayproveedores);
 
     //comboFill("/proveedores","id","nombre","#comprobante");
     
@@ -308,8 +333,8 @@
             </div>
             <div class="form-group">
               <label for="nombre">Razón social: </label>
-              <input type="text" required="true" class="form-control input-sm" id="nombre" name="nombre" disabled="true" />   
-            </div>                 
+              <input type="text" required="true" class="form-control input-sm" id="nombre" name="nombre"  />   
+            </div>                  
             <div class="form-group" style="display: none">
               <label for="empresaID">ID: </label>
               <input type="number" required="true" class="form-control input-sm" id="empresaID" name="empresaID" disabled="true"  />
