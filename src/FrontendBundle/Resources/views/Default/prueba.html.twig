@@ -5,8 +5,10 @@
 </head>
 <body>
 	<script src="https://code.jquery.com/jquery-1.12.4.min.js"></script>
-	<script src="https://cdn.datatables.net/1.10.16/js/jquery.dataTables.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/jquery-validation@1.17.0/dist/jquery.validate.min.js"></script>  
+	<!-- <script src="https://cdn.datatables.net/1.10.16/js/jquery.dataTables.min.js"></script> -->
+    <!-- <script src="https://cdn.jsdelivr.net/npm/jquery-validation@1.17.0/dist/jquery.validate.min.js"></script> -->
+    <script src="https://code.jquery.com/ui/1.12.0/jquery-ui.min.js" ></script>
+
     <script>
         $(document).ready(function(){
             $.ajax({
@@ -18,44 +20,41 @@
             .done(function(respuesta){
               window.arrayproveedores = respuesta.data;
             });
-            
-               // var option = $(this).find('option:selected').val();
-                var opciones = "<option value='' selected='selected'>--seleccionar--</option>";
-                window.arrayproveedores.forEach(function(item,index,arr){
-                  //if(option == item.cod_comp.id){
-                    opciones = opciones + "<option data-value='"+item.id+"'>"+item.nombre+"</option>";
+           
+            var source  = [ ];
+            var mapping = { };
+            for(var i = 0; i < window.arrayproveedores.length; ++i) {
+                source.push(window.arrayproveedores[i].nombre);
+                mapping[window.arrayproveedores[i].nombre] = window.arrayproveedores[i].id;
+            }
 
-                  //}
-                });
-                $("#ratasabia").html(opciones);
-             // });
-             $('#rzn').on('blur',function(){
-                   console.log($(this).text());
-                   console.log($('#ratasabia option:selected').attr('data-value'));
+            $('#tags').autocomplete({
+                minLength: 3,
+                source: source,
+
+                select: function(event, ui) {
+                    //$('.tags_id').text(mapping[ui.item.value]);
+                    return alert(mapping[ui.item.value]);
+                    
+                }
             });
+             $('div.ui-helper-hidden-accessible').remove();
+
 
         });
 
 
-            // $(function() {
-            //  $( "#tags" ).autocomplete({
-            //             source: window.arrayproveedores,
-            //             minLength:0
-            //         }).bind('focus', function(){ $(this).autocomplete(" search"); } );
-            //     });
+     
 
     </script>  
     
-    <div class="demo">
-    <input type="button" id="boton" />
-    <!-- <div class="ui-widget">
-        <select id='ratasabia'></select> 
-    </div> -->
-    <input type="text" list="ratasabia" id='rzn' />
-    <datalist id="ratasabia">
-    </datalist>
+ 
     
-</div>
+    <!-- <input id='browserinput' list="browsers"> -->
+
+<input type="text" id="tags"><br>
+
+
 
     
 </body>
