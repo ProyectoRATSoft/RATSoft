@@ -42,16 +42,19 @@
 <script>
   //con esto bloqueamos la pantalla cuando inicia alguna accion ajax..
   $(document).ajaxStart(function() {
-            $.blockUI({ css: { 
-                border: 'none', 
-                padding: '15px', 
-                backgroundColor: '#000', 
-                '-webkit-border-radius': '10px', 
-                '-moz-border-radius': '10px', 
-                opacity: .5, 
-                color: '#fff' 
-            },message: 'Por Favor, espere...'})
-        });    
+    $.blockUI({ 
+      css: { 
+        border: 'none', 
+        padding: '15px', 
+        backgroundColor: '#000', 
+        '-webkit-border-radius': '10px', 
+        '-moz-border-radius': '10px', 
+        opacity: .5, 
+        color: '#fff' 
+        },
+      message: 'Por Favor, espere...'
+    })
+  });    
   $(document).ready(function(){
 
     //cuando termina la accion ajax, se desbloquea..
@@ -181,6 +184,8 @@
           $('div.form-group #empresaID').val(item.id);
           $('#link-compras').removeAttr('href');
           $('#link-compras').attr('href',"/contable/compras/"+item.id);
+          $('#link-ventas').removeAttr('href');
+          $('#link-ventas').attr('href',"/contable/ventas/"+item.id);
           $('div.form-group #nombre').val(item.nombre);
           $('div.form-group #domicilio').val(item.domicilio);
           $('div.form-group #localidad').val(item.localidad);

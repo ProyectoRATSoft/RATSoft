@@ -19,6 +19,16 @@
               tr.group:hover {
                 background-color: #ddd !important;
               }
+  input.ui-autocomplete {
+    z-index: 500;
+  }
+  #pos-nombre {
+    display: block; 
+    position:relative
+  } 
+  .ui-autocomplete {
+    position: absolute;
+  }
 </style> 
 {% endblock %}
 {% block Scripts %}
@@ -38,6 +48,26 @@
 <script src="{{ asset('ratsoft/ratsoft.js') }}"></script>
 <!-- <script src="{{ asset('') }}"></script>  --> 
 <script>
+  //con esto bloqueamos la pantalla cuando inicia alguna accion ajax..
+  $(document).ajaxStart(function() {
+    $.blockUI({ 
+      css: { 
+        border: 'none', 
+        padding: '15px', 
+        backgroundColor: '#000', 
+        '-webkit-border-radius': '10px', 
+        '-moz-border-radius': '10px', 
+        opacity: .5, 
+        color: '#fff' 
+        },
+      message: 'Por Favor, espere...'
+    })
+  }); 
+  //cuando termina la accion ajax, se desbloquea..
+  $(document).ajaxStop(function() {
+    $.unblockUI();     
+  });
+  //cargamos los valores para el Combo Comprobantes que esta en el modal
   comboFill("/comprobantes","id","detalle","#comprobante");
   $.get("/comprobantes/tipos",function(resp,estado,jqXHR){
       var arrayResp = JSON.parse(resp);
@@ -54,36 +84,72 @@
                 opacity: .5, 
                 color: '#fff' 
             },message: 'Por Favor, espere...'})
-        });
-   
+        });   
     
   $(document).ready(function() {
      //cuando termina la accion ajax, se desbloquea..
     $(document).ajaxStop(function() {
         $.unblockUI();
-
+    });
     $("#addCompra").click(function(){
-      //alert("entre");
       $("#tablaDeProveedores").modal();
     });  
-
-    });
+  //});
     //recuperamos el array desde el controller
     window.arrayrespuesta = {{ respuesta|raw }};
 
+    //Preparamos el array que vamos a usar para los proveedores
+    window.arrayproveedores = new Array();
+
+    // Traemos la info de proveedores y lo metemos en el array luego armamos el mapping entre nombre y id de proveedor para poder usarlo en el ABM
+    $.ajax({
+      type: "GET",
+      url: "/proveedores",
+      dataType: "json",
+      async: false
+    })
+    .done(function(respuesta){
+      window.arrayproveedores = respuesta.data;
+      window.source  = [ ];
+      window.mapping = { };
+      for(var i = 0; i < window.arrayproveedores.length; ++i) {
+        window.source.push(window.arrayproveedores[i].nombre);
+        window.mapping[window.arrayproveedores[i].nombre] = window.arrayproveedores[i].id;
+      }
+    });
+
+
+    // Aplicamos el autocomplete al campo "Razon Social" del Modal
+    $('#nombre').autocomplete({
+      minLength: 3,
+      //source: window.source,
+      "source": function(request, response) {
+        var results = $.ui.autocomplete.filter(window.source, request.term);
+
+        response(results.slice(0, 10));},
+      message: {
+        noResult:'No search results.'
+      },
+      //"select": function(event, ui) {},
+      //"appendTo": ".form-group",
+      "appendTo": "#pos-nombre",
+      //"position": { my : "bottom",  at: "top", collision: "none" },
+    });
+    // Esto es para que las opciones queden attacheadas al modal, sino no se ven.
+    //$('#nombre').autocomplete( "option", "appendTo", ".form-group" );
     // Preparamos la lógica para que el combo de tipo de comprobante se llene automaticamente dependiendio el codigo de comprobante seleccionado.
 
     $('#comprobante').change(function(){
-        var option = $(this).find('option:selected').val();
-        var opciones = "<option value='' selected='selected'>--seleccionar--</option>";
-        window.arrayTiposComp.forEach(function(item,index,arr){
-          if(option == item.cod_comp.id){
-            opciones = opciones + "<option value='"+item.id+"'>"+item.tipo_comp+"</option>";
+      var option = $(this).find('option:selected').val();
+      var opciones = "<option value='' selected='selected'>--seleccionar--</option>";
+      window.arrayTiposComp.forEach(function(item,index,arr){
+        if(option == item.cod_comp.id){
+          opciones = opciones + "<option value='"+item.id+"'>"+item.tipo_comp+"</option>";
 
-          }
-        })
-        $("#tipoComprobante").html(opciones);
-      });
+        }
+      })
+      $("#tipoComprobante").html(opciones);
+    });
     
     //Llenamos el datatable con el array que trajimos del controller
 
@@ -274,8 +340,7 @@
       $("#modal-compras").modal();
     });
    
-  });  
-
+  });
                              
                 
 </script>
@@ -355,7 +420,7 @@
             </div>
             <div class="form-group">
               <label for="nombre">Razón social: </label>
-              <input type="text" required="true" class="form-control input-sm" id="nombre" name="nombre" disabled="true" />   
+              <input type="text" required="true" class="form-control input-sm" id="nombre" name="nombre" /><div id="pos-nombre"></div>  
             </div>                 
             <div class="form-group" style="display: none">
               <label for="empresaID">ID: </label>   
