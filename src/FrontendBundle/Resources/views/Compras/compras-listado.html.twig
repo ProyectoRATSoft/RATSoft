@@ -46,6 +46,7 @@
 <script src="{{ asset('public/Buttons-1.4.2/js/buttons.print.min.js') }}"></script>
 <script src="{{ asset('public/Buttons-1.4.2/js/buttons.colVis.min.js') }}"></script> 
 <script src="{{ asset('ratsoft/ratsoft.js') }}"></script>
+<script src="https://cdn.jsdelivr.net/npm/jquery-validation@1.17.0/dist/jquery.validate.min.js"></script>
 <!-- <script src="{{ asset('') }}"></script>  --> 
 <script>
   //con esto bloqueamos la pantalla cuando inicia alguna accion ajax..
@@ -398,8 +399,177 @@
     });
 
 
+    $("#modal-formulario").validate({
+          rules: {
+              fechaCompra: { 
+                required: true,
+                //minlength: 3
+              },
+              periodo: { 
+                required: true,
+                //minlength: 3
+              },
+              cuit: { 
+                required: true,
+                //minlength: 3
+              },
+              comprobante: { 
+                required: true
+                //minlength: 3
+              },
+              comprobanteNumero: { 
+                required: true
+                //minlength: 3
+              },
+              tipoComprobante: { 
+                required: true,
+                //cuit: true
+              },
+              imputacion: { 
+                required: true
+                //minlength: 3
+              },
+              cai: { 
+                required: true
+                //minlength: 3
+              },
+              exento: { 
+                required: true,
+                //minlength: 3
+              },
+              neto105: { 
+                required: true,
+                //minlength: 3
+              },
+              neto21: { 
+                required: true,
+                //minlength: 3
+              },
+              neto27: { 
+                required: true,
+                //minlength: 3
+              },
+              iva105: { 
+                required: true
+                //minlength: 3
+              },
+              iva21: { 
+                required: true
+                //minlength: 3
+              },
+              iva27: { 
+                required: true,
+                //cuit: true
+              },
+              nogravado: { 
+                required: true
+                //minlength: 3
+              },
+              perc_iva: { 
+                required: true
+                //minlength: 3
+              },
+              perc_iibb: { 
+                required: true,
+                //minlength: 3
+              },
+              ret_ganancia: { 
+                required: true
+                //minlength: 3
+              },
+              total: { 
+                required: true,
+                //minlength: 3
+              },             
+          },
+          messages: {
+              fechaCompra: { 
+                required: "Este campo no puede dejarse en vacío",
+                //minlength: 3
+              },
+              periodo: { 
+                required: "Este campo no puede dejarse en vacío",
+                //minlength: 3
+              },
+              cuit: { 
+                required: "Este campo no puede dejarse en vacío",
+                //minlength: 3
+              },
+              comprobante: { 
+                required: "Este campo no puede dejarse en vacío",                
+                //minlength: 3
+              },
+              comprobanteNumero: { 
+                required: "Este campo no puede dejarse en vacío",                
+                //minlength: 3
+              },
+              tipoComprobante: { 
+                required: "Este campo no puede dejarse en vacío",
+                //cuit: true
+              },
+              imputacion: { 
+                required"Este campo no puede dejarse en vacío",                
+                //minlength: 3
+              },
+              cai: { 
+                required: "Este campo no puede dejarse en vacío",                
+                //minlength: 3
+              },
+              exento: { 
+                required: "Este campo no puede dejarse en vacío",
+                //minlength: 3
+              },
+              neto105: { 
+                required: "Este campo no puede dejarse en vacío",
+                //minlength: 3
+              },
+              neto21: { 
+                required: "Este campo no puede dejarse en vacío",
+                //minlength: 3
+              },
+              neto27: { 
+                required: "Este campo no puede dejarse en vacío",
+                //minlength: 3
+              },
+              iva105: { 
+                required: "Este campo no puede dejarse en vacío",                
+                //minlength: 3
+              },
+              iva21: { 
+                required: "Este campo no puede dejarse en vacío",                
+                //minlength: 3
+              },
+              iva27: { 
+                required: "Este campo no puede dejarse en vacío",
+                //cuit: true
+              },
+              nogravado: { 
+                required: "Este campo no puede dejarse en vacío",                
+                //minlength: 3
+              },
+              perc_iva: { 
+                required: "Este campo no puede dejarse en vacío",                
+                //minlength: 3
+              },
+              perc_iibb: { 
+                required: "Este campo no puede dejarse en vacío",
+                //minlength: 3
+              },
+              ret_ganancia: { 
+                required: "Este campo no puede dejarse en vacío",                
+                //minlength: 3
+              },
+              total: { 
+                required: "Este campo no puede dejarse en vacío",
+                //minlength: 3
+              },             
+          },
+            
+      });
+
+
     $("#boton-guardar").on('click',function(){
-      
+    if ($("#modal-formulario").valid()){  
       var objFecha = new Date($('#fechaCompra').val());
       var realFecha = new Date(objFecha.getTime() + 86400000);
       var objPeriodo = new Date($('#periodo').val());
@@ -475,7 +645,7 @@
       //deberiamos mostrar algun mensaje tanto como de error, como de que todo salio bien. y luego recargar la grilla para que aparezca la nueva empresa en la tabla.
       //alert(resp);
       });
-
+    }
     });
    
   });
@@ -531,6 +701,7 @@
   <div class="modal fade" id="modal-compras" tabindex="-1" role="dialog" aria-labelledby="modalProveedores">
   <div id="modal-compras" class="modal-dialog modal-lg" role="document">
     <div class="modal-content">
+    <form id="modal-formulario">  
       <div class="modal-header">
         <div class="col-xs-12">
           <div class="col-xs-6">
@@ -661,13 +832,15 @@
               <label for="total">Total : </label>                    
               <input type="text" class="form-control input-sm" id="total" name="total" />
             </div>
-          </div>                    
+          </div>
+
         </div>      
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
         <button type="submit" class="btn btn-success" onclick="return false" id="boton-guardar">Guardar</button>
       </div>
+    </form>  
     </div>
   </div>
   </div>
