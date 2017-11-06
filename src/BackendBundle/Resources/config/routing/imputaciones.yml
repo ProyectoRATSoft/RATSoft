@@ -1,0 +1,9 @@
+imputaciones_all:
+    path: /
+    defaults: { _controller: BackendBundle:Imputaciones:all }
+    methods: GET
+
+imputaciones_prov:
+    path: /prov/
+    defaults: { _controller: BackendBundle:Imputaciones:allProv }
+    methods: GET

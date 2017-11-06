@@ -40,8 +40,10 @@ class ComprasController extends Controller
 		
 		return $this->render(
 			'FrontendBundle:Compras:compras-home.html.twig', 
-        	array("respuesta" => $jsonResponse)
-        );
+        	array(
+        		"respuesta" => $jsonResponse,
+        		"empresa" => $id,
+        	));
 		//return new Response($compras);		
 		//return new Response($id);
 	}
@@ -54,7 +56,7 @@ class ComprasController extends Controller
 	public function newAction($id,Request $request){
 
 		$respuesta = array (
-			'fecha_ingreso' => new \DateTime($request->request->get("fecha_ingreso")),
+			'fecha_ingreso' => new \DateTime("now"),
 			'periodo_mes' => $request->request->get("periodo_mes"),
 			'periodo_ano' => $request->request->get("periodo_ano"),
 			'fecha' => new \DateTime($request->request->get("fecha")),
@@ -77,7 +79,8 @@ class ComprasController extends Controller
 			'imputacion' => $request->request->get("imputacion"),
 			'proveedor' => $request->request->get("proveedor"),
 			'tipo_comprobante' => $request->request->get("tipo_comprobante"),
-			'usuario' => $request->request->get("usuario"),
+			//'usuario' => $request->request->get("usuario"),
+			'usuario' => '1',
 		);
 
 		$em = $this->getDoctrine()->getManager();
@@ -147,10 +150,22 @@ class ComprasController extends Controller
     	$em->persist($compras);
 		$em->flush();
 
+		$compras = array(
+			'status'=> 'OK',
+			'draw' => '',
+			'recordsTotal' => '',
+			'recordsFiltered' => '',
+			'data' => '',
+		);
+
+		$result = $em->getRepository("BackendBundle:TblCompras")->findBy(array('empresa' => $id));
+		$compras["data"] = $result;
+
+
 		$serializer = SerializerBuilder::create()->build();
 		$jsonResponse = $serializer->serialize($compras, 'json');
 		//return new Response($jsonResponse);		
-		return new Response("leeestoo");
+		return new Response($jsonResponse);
 	}
 
 
