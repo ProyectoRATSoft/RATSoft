@@ -600,13 +600,14 @@
               <input type="text" class="form-control input-sm" id="jurisdiccion" name="jurisdiccion" disabled="true"/>
             </div> 
             <div class="form-group">
-              <label for="imputacion">Imputacion: </label>                    
+              <label for="imputacion">Imputacion: </label>
+              <div class="col-xs-12  input-sm">                             
+                <select name="imputacion" id="imputacion" required="true" class="selectpicker dropdown-toggle form-control input-sm" type="button" data-toggle="dropdown">
+                  <option disabled selected value>--Seleccione una opcion--</option>  
+                </select>
+              </div>                    
             </div>
-            <div class="col-xs-12  input-sm">                             
-              <select name="imputacion" id="imputacion" required="true" class="selectpicker dropdown-toggle form-control input-sm" type="button" data-toggle="dropdown">
-                <option disabled selected value>--Seleccione una opcion--</option>  
-              </select>
-            </div>
+            &nbsp            
             <div class="form-group">
               <label for="imputacion">CAI: </label>                    
               <input type="text" class="form-control input-sm" id="cai" name="cai"/>
