@@ -49,3 +49,7 @@ backend_comprobantes:
 backend_proveedores:
   resource: "@BackendBundle/Resources/config/routing/proveedores.yml"
   prefix: /proveedores
+
+backend_imputaciones:
+  resource: "@BackendBundle/Resources/config/routing/imputaciones.yml"
+  prefix: /imputaciones

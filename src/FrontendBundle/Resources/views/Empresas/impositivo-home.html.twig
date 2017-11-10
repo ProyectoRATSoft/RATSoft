@@ -1,7 +1,16 @@
 {% extends 'FrontendBundle::Empresas/empresa-listado.html.twig' %}
 {% block botones %}
-	<div>
-		<button class="btn btn-default">IVA</button>
-		<button class="btn btn-default">IIBB</button>
-	</div>
+	<div class="text-center">
+		<div class="col-xs-4">
+			<a id="link-iva"><button id="boton-iva" class="btn btn-default btn-block">IVA</button></a>
+		</div>
+		<div class="col-xs-4">
+			<a id="link-iibb"><button id="boton-iibb" class="btn btn-default btn-block">IIBB</button></a>
+		</div>
+		<div class="col-xs-4">
+			<button class="btn btn-primary btn-block" id="boton-editar">
+				<i class="fa fa-pencil" aria-hidden="true" id="editEmpresa"> Editar Datos</i>
+			</button>
+		</div>
+	</div>	
 {% endblock %}

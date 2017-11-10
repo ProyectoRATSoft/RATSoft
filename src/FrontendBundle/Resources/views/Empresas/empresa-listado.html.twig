@@ -1,26 +1,25 @@
-{% extends 'FrontendBundle::Default/base.html.twig' %} {% block title %} Contable{% endblock %} {% block CSs %}
+{% extends 'FrontendBundle::Default/base.html.twig' %}
+{% block title %} Contable{% endblock %}
+{% block CSs %}
 <link rel="stylesheet" href="{{ asset('public/Buttons-1.4.2/css/buttons.bootstrap.min.css') }}">
 <link rel="stylesheet" href="{{ asset('public/responsive-2.2.0/css/responsive.bootstrap.min.css') }}">
-<style>
-  table {
-    width: 50%
-  }
+  <style>
+    table { width: 50% }
+    tbody tr:hover.active td,
+    tbody tr:hover td {
+      background-color: #A9D0F5;
+      cursor: pointer;
+    }               
+    .table>tbody>tr.active>td {
+      background-color: #A9D0F5;
+      color: #000000;
+      font:  bold 12px/18px;
+    }
+  </style>              
+{% endblock %}
+{% block Scripts %}
 
-  tbody tr:hover.active td,
-  tbody tr:hover td {
-    background-color: #A9D0F5;
-    cursor: pointer;
-  }
-
-  .table>tbody>tr.active>td {
-    background-color: #A9D0F5;
-    color: #000000;
-    font: bold 12px/18px;
-  }
-</style>
-{% endblock %} {% block Scripts %}
-
-<!-- DataTables -->
+ <!-- DataTables -->
 <script src="{{ asset('bower_components/datatables.net/js/jquery.dataTables.min.js') }}"></script>
 <script src="{{ asset('bower_components/datatables.net-bs/js/dataTables.bootstrap.min.js') }}"></script>
 <script src="{{ asset('public/responsive-2.2.0/js/dataTables.responsive.min.js') }}"></script>
@@ -34,213 +33,726 @@
 <script src="{{ asset('public/Buttons-1.4.2/js/buttons.print.min.js') }}"></script>
 <script src="{{ asset('public/Buttons-1.4.2/js/buttons.colVis.min.js') }}"></script>
 
-<!-- <script src="{{ asset('') }}"></script>  -->
+<!-- <script src="{{ asset('') }}"></script>  --> 
 <script src="{{ asset('ratsoft/ratsoft.js') }}"></script>
-<script src="{{ asset('ratsoft/empresa-listado.js') }}"></script>
 
-<script src="https://cdn.jsdelivr.net/npm/jquery-validation@1.17.0/dist/jquery.validate.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/jquery-validation@1.17.0/dist/jquery.validate.min.js">
+</script>
 
-{% endblock %} {% block body %}
-<!-- ACA EMPIEZO A TRABAJAR LA INTERFAZ Content Wrapper. Contains page content -->
-<div class="content-wrapper">
-  <!-- Content Header (Page header) -->
-  <section class="content-header">
-    <h2>
+<script>
+  //con esto bloqueamos la pantalla cuando inicia alguna accion ajax..
+  $(document).ajaxStart(function() {
+    $.blockUI({ 
+      css: { 
+        border: 'none', 
+        padding: '15px', 
+        backgroundColor: '#000', 
+        '-webkit-border-radius': '10px', 
+        '-moz-border-radius': '10px', 
+        opacity: .5, 
+        color: '#fff' 
+        },
+      message: 'Por Favor, espere...'
+    })
+  });    
+  $(document).ready(function(){
+
+    //cuando termina la accion ajax, se desbloquea..
+    $(document).ajaxStop(function() {
+        $.unblockUI();
+    });
+
+    //llenamos el combo pasando 1. url 2. valor 3. descripcion 4. id del campo
+    comboFill("/jurisdicciones","id","nombre","#nuevaProvincia")
+    comboFill("/iva","id","codigo","#nuevaSituacionIVA")
+    comboFill("/rubros","id","nombre","#nuevoRubro")
+    comboFill("/iibb","id","nombre","#nuevoCodIngresosBrutos")
+
+    $("#nuevoCodIngresosBrutos").change(function(){
+      var option = $(this).find('option:selected').val();
+      if(option == "4"){
+        $("#nuevoIngresosBrutos").attr("disabled","true");
+        $("#nuevoIngresosBrutos").removeAttr("required");
+        $("#nuevoIngresosBrutos").val('');
+      }else{
+        $("#nuevoIngresosBrutos").removeAttr("disabled");
+        $("#nuevoIngresosBrutos").attr("required","true");
+      }
+    });
+    // Hacemos que la interfaz arranque con el boton de edición dehabilitado, porque no hay ninguna empresa seleccionada aún.
+    $("#boton-editar").attr("disabled","true");
+    $("#boton-compras").attr("disabled","true");
+    $("#boton-ventas").attr("disabled","true");
+
+    //window.arrayIva = new Array();
+    $.get("/iva",function(resp,estado,jqXHR){
+      var arrayResp = JSON.parse(resp);
+      window.arrayIva = arrayResp.data;
+    });
+    // Vamos a traer el json para laburar con ajax
+    window.arrayrespuesta = new Array();
+    var loadTable = function(){
+      $.ajax({
+              type: "GET",
+              url: "/empresa",
+              dataType: "json",
+            })
+            .done(function(respuesta){
+              window.arrayrespuesta = respuesta.data;
+              window.table = $('#tabla-empresas').DataTable({
+                "responsive": true,
+                 dom: "<'row'<'col-sm-7 text-left'B><'col-sm-5 text-right'f>>" +"<'row'<'col-sm-12't>>" +"<'row'<'col-sm-5 text-left'i><'col-sm-7 text-right'p>>",
+                "language": {
+                    "sProcessing":     "Procesando...",
+                    "sLengthMenu":     "Mostrar _MENU_ registros",
+                    "sZeroRecords":    "No se encontraron resultados",
+                    "sEmptyTable":     "Ningún dato disponible en esta tabla",
+                    "sInfo":           "Mostrando registros del _START_ al _END_ de un total de _TOTAL_ registros",
+                    "sInfoEmpty":      "Mostrando registros del 0 al 0 de un total de 0 registros",
+                    "sInfoFiltered":   "(filtrado de un total de _MAX_ registros)",
+                    "sInfoPostFix":    "",
+                    "sSearch":         "Buscar: ",
+                    "sUrl":            "",
+                    "sInfoThousands":  ",",
+                    "sLoadingRecords": "Cargando...",
+                    "oPaginate": {
+                      "sFirst":    "Primero",
+                      "sLast":     "Último",
+                      "sNext":     "Siguiente",
+                      "sPrevious": "Anterior"
+                    },
+                    "oAria": {
+                      "sSortAscending":  ": Activar para ordenar la columna de manera ascendente",
+                      "sSortDescending": ": Activar para ordenar la columna de manera descendente"
+                    }
+                },
+                lengthMenu: [
+                    [ 10, 25, 50, -1 ],
+                    [ '10 Filas', '25 Filas', '50 Filas', 'Todos' ]
+                ],
+                  //elegis los formatos para exportar los datos de la tabla, colvis (va a servir para seleccionar que columnas queres q se vean o no), pagelenth para seleccionar la cantidad  datos mostrados 
+                buttons: [
+                  {
+                    extend: 'collection',
+                    text: 'Exportar',
+                    //elegis los formatos para exportar los datos de la tabla, colvis (va a seleccionar que mnas queres q se vean o no), pagelenth pla cantidad  datos mostrados             
+                    buttons: [ 'copy', 'excel', 'pdf', 'csv', 'print']         
+                     }, 'pageLength'    
+                ],
+                "columnDefs": [ 
+                //con esto podes setear que columnas queres aparezca o no
+                //{ "visible": false, "targets": 3 },
+                      { responsivePriority: 1, targets: 0 },
+                      { responsivePriority: 2, targets: 3 },                                    
+                ],
+                retrieve: true,
+                data : respuesta.data,
+                "columns": [
+                  { "data": "nombre"},
+                  { "data": "cuit",
+                    "className": "cuit"}, //esto es importante, le ponemos una clase a este campo
+                  { "data": "iva.detalle"},
+                  { "data": "provincia.nombre" }
+                  ]
+              });
+            })};
+    loadTable();
+    var tableReload = function(datosnuevos){
+      window.arrayrespuesta = datosnuevos;
+      $('#tabla-empresas').DataTable().clear().draw();
+      $('#tabla-empresas').DataTable().rows.add(datosnuevos).draw();
+      };
+    // A partir de acá metemos lo que pasa cuando picamos sobre alguna empresa
+
+    $('#tabla-empresas tbody').on( 'click', 'tr', function () {
+      if ( $(this).hasClass('active') ) {
+        $(this).removeClass('active');
+      }
+      else {
+        window.table.$('tr.active').removeClass('active');
+        $(this).addClass('active');
+        $("#boton-editar").removeAttr("disabled");
+        $("#boton-editar").attr("enabled","true");
+        $("#boton-compras").removeAttr("disabled");
+        $("#boton-compras").attr("enabled","true");
+        $("#boton-ventas").removeAttr("disabled");
+        $("#boton-ventas").attr("enabled","true");
+    // metemos en una variable lo que hay en e campo cuit de la empresa seleccionada
+        var cuit = window.table.$("tr.active").find(".cuit").text();
+        window.arrayrespuesta.forEach(function(item,index,arr){
+          if (item.cuit == cuit){
+          $('div.form-group #empresaID').val(item.id);
+          $('#link-compras').removeAttr('href');
+          $('#link-compras').attr('href',"/contable/compras/"+item.id);
+          $('#link-ventas').removeAttr('href');
+          $('#link-ventas').attr('href',"/contable/ventas/"+item.id);
+          $('div.form-group #nombre').val(item.nombre);
+          $('div.form-group #domicilio').val(item.domicilio);
+          $('div.form-group #localidad').val(item.localidad);
+          $('div.form-group #provincia').val(item.provincia.nombre);
+          $('div.form-group #iva').val(item.iva.detalle);
+          $('div.form-group #cuit').val(item.cuit);
+          $('div.form-group #ingresosBrutos').val(item.iibb);
+          $('div.form-group #codIngresosBrutos').val(item.iibb_cod.nombre);
+          $('div.form-group #rubro').val(item.rubro.nombre);
+          $('div.form-group #titular').val(item.titular);
+          //llenamos el modal con los datos de la empresa
+          $('div.modal-body div.form-group #nuevoId').val(item.id);
+          $('div.modal-body div.form-group #nuevoNombre').val(item.nombre);
+          $('div.modal-body div.form-group #nuevoDomicilio').val(item.domicilio);
+          $('div.modal-body div.form-group #nuevaLocalidad').val(item.localidad);
+          $('div.modal-body div.form-group #nuevaProvincia').val(item.provincia.id);
+          $('div.modal-body div.form-group #nuevaSituacionIVA').val(item.iva.id);
+          $('div.modal-body div.form-group #nuevoIva').val(item.iva.detalle);
+          $('div.modal-body div.form-group #nuevoCuit').val(item.cuit);
+          $('div.modal-body div.form-group #nuevoIngresosBrutos').val(item.iibb);
+          $('div.modal-body div.form-group #nuevoCodIngresosBrutos').val(item.iibb_cod.id);
+          $('div.modal-body div.form-group #nuevoRubro').val(item.rubro.id);
+          $('div.modal-body div.form-group #nuevoTitular').val(item.titular);
+          }
+        });
+      }
+    }); 
+
+    //llama al modal luego de hacer click en el boton
+      $("#addEmpresa").click(function(){        
+        $("#modalAddEmpresa").modal();
+          //limpio los campos del modal
+        $("#modal-formulario").validate().resetForm();       
+    //limpio los campos del modal
+        $('input#nuevoNombre').val('');
+        $('input#nuevoId').val('');
+        $('input#nuevoDomicilio').val('');
+        $('input#nuevaLocalidad').val('');
+        $('select#nuevaProvincia').val('');
+        $('select#nuevaSituacionIVA').val('');
+        $('input#nuevoIva').val('');
+        $('input#nuevoCuit').val('');
+        $('input#nuevoIngresosBrutos').val('');
+        $('select#nuevoCodIngresosBrutos').val('');
+        $('select#nuevoRubro').val('');     
+        $('input#nuevoTitular').val('');
+         //limpio los campos de la tabla del costado para arreglar efecto visual y evitar confusiones
+        $('div.form-group #empresaID').val('');
+        $('div.form-group #nombre').val('');
+        $('div.form-group #domicilio').val('');
+        $('div.form-group #localidad').val('');
+        $('div.form-group #provincia').val('');
+        $('div.form-group #iva').val('');
+        $('div.form-group #cuit').val('');
+        $('div.form-group #ingresosBrutos').val('');
+        $('div.form-group #CodIngresosBrutos').val('');
+        $('div.form-group #rubro').val('');
+        $('div.form-group #titular').val('');
+           //deselecciono la empresa de la tabla
+        $('#tabla-empresas tbody tr').removeClass('active');
+         //si esta en modo responsive hay q ver como hacer para que quede cerrado el "+" con sus campos
+          //edito el titulo del modal
+        $("h4.modal-title").text("Nueva Empresa");
+       //establecemos que botones corresponde poder verse  en este caso, como agregamos no hace falta editar ni borrar
+        $('button#newEmpresa').css("display", "");
+        $('button#editDatesEmpresa').css("display", "none");
+        $('button#deleteEmpresa').css("display", "none");
+             
+      });
+
+
+    // llenamos el campo input cuando se detecta un cambio en el dropdownlist, 
+    //hace una busqueda por el codigo seleccionado y va a buscar a la descripcion
+    //a la base para llenar el campo con el texto completo
+
+      $('#nuevaSituacionIVA').change(function(){
+        var option = $(this).find('option:selected').val();
+        window.arrayIva.forEach(function(item,index,arr){
+          if(option == item.id){
+            $('#nuevoIva').val(item.detalle);
+          }
+        })
+      });
+    //detecta el evento click
+      $("#newEmpresa").click(function(){
+    //guardo los valores en cada variable                            
+        if ($("#modal-formulario").valid()){
+
+            var nombre = $('div.modal-body div.form-group #nuevoNombre').val();
+            var domicilio = $('div.modal-body div.form-group #nuevoDomicilio').val();
+            var localidad = $('div.modal-body div.form-group #nuevaLocalidad').val();
+            var provincia = $('div.modal-body div.form-group #nuevaProvincia').val();
+            var iva = $('div.modal-body div.form-group #nuevaSituacionIVA').val();
+            var cuit = $('div.modal-body div.form-group #nuevoCuit').val();
+            var iibb = $('div.modal-body div.form-group #nuevoIngresosBrutos').val();
+            var iibbtipo = $('div.modal-body div.form-group #nuevoCodIngresosBrutos').val();
+            var rubro = $('div.modal-body div.form-group #nuevoRubro').val();
+            var titular = $('div.modal-body div.form-group #nuevoTitular').val();
+    //realizo un post pasando la url correspondiente al backend, los datos previamente capturados y realizo la funcion correspondiente que me devolvera la respuesta.
+            
+            $.ajax({
+              type: "POST",
+              url: "/empresa/new",
+              async: false,
+              data: {                  
+                "nombre" : nombre , 
+                "domicilio" : domicilio, 
+                "localidad" : localidad,
+                "provincia" : provincia,
+                "iva" : iva, 
+                "cuit" : cuit,
+                "iibb" : iibb,
+                "iibbtipo" : iibbtipo,
+                "rubro" : rubro,
+                "titular" : titular },
+              dataType: "json"
+            })
+            .done(function(respuesta){
+              if(respuesta.status = 'OK'){
+                alert("va como piña");
+              }else{
+              }
+              $("#modalAddEmpresa").modal('toggle');
+              tableReload(respuesta.data);
+              $('div.form-group #empresaID').val('');
+              $('div.form-group #nombre').val('');
+              $('div.form-group #domicilio').val('');
+              $('div.form-group #localidad').val('');
+              $('div.form-group #provincia').val('');
+              $('div.form-group #iva').val('');
+              $('div.form-group #cuit').val('');
+              $('div.form-group #ingresosBrutos').val('');
+              $('div.form-group #codIngresosBrutos').val('');
+              $('div.form-group #rubro').val('');
+              $('div.form-group #titular').val('');
+    //deberiamos mostrar algun mensaje tanto como de error, como de que todo salio bien. y luego recargar la grilla para que aparezca la nueva empresa en la tabla.
+    //alert(resp);
+            });
+        }
+      });
+      $("#boton-editar").click(function(){
+      //if ( $("#editEmpresa").prop("enabled")) {
+        
+      
+        $("#modalAddEmpresa").modal();
+        $("#modal-formulario").validate().resetForm();
+        //con esto remuevo el seleccionar del dropdown
+        $('select#nuevaProvincia :contains(--seleccionar--)').attr("disabled","true").removeAttr("selected");
+        $('select#nuevaSituacionIVA :contains(--seleccionar--)').attr("disabled","true").removeAttr("selected");
+        $('select#nuevoRubro :contains(--seleccionar--)').attr("disabled","true").removeAttr("selected");
+        $('select#nuevoCodIngresosBrutos :contains(--seleccionar--)').attr("disabled","true").removeAttr("selected");
+
+        $("h4.modal-title").text("Editar Empresa");
+        $('button#newEmpresa').css("display", "none");
+        $('button#editDatesEmpresa').css("display", "");
+        $('button#deleteEmpresa').css("display", "");
+      //}
+      });
+
+      $("#editDatesEmpresa").click(function(){
+        if ($("#modal-formulario").valid()){
+    //guardamos id para pasarlo en la url
+        var id =  $('div.modal-body div.form-group #nuevoId').val();
+        var nombre = $('div.modal-body div.form-group #nuevoNombre').val();
+        var domicilio = $('div.modal-body div.form-group #nuevoDomicilio').val();
+        var localidad = $('div.modal-body div.form-group #nuevaLocalidad').val();
+        var provincia = $('div.modal-body div.form-group #nuevaProvincia').val();
+        var iva = $('div.modal-body div.form-group #nuevaSituacionIVA').val();
+        var cuit = $('div.modal-body div.form-group #nuevoCuit').val();
+        var iibb = $('div.modal-body div.form-group #nuevoIngresosBrutos').val();
+        var iibbtipo = $('div.modal-body div.form-group #nuevoCodIngresosBrutos').val();
+        var rubro = $('div.modal-body div.form-group #nuevoRubro').val();
+        var titular = $('div.modal-body div.form-group #nuevoTitular').val();
+    //realizo un post pasando la url e id correspondiente para el backend, los datos previamente capturados y realizo la funcion correspondiente que me devolvera la respuesta.
+        
+        $.ajax({
+              type: "POST",
+              url: "/empresa/"+id+"/edit",
+              async: false,
+              data: {                  
+                "nombre" : nombre, 
+                "domicilio" : domicilio, 
+                "localidad" : localidad,
+                "provincia" : provincia,
+                "iva" : iva, 
+                "cuit" : cuit,
+                "iibb" : iibb,
+                "iibbtipo" : iibbtipo,
+                "rubro" : rubro,
+                "titular" : titular },
+              dataType: "json"
+            })
+            .done(function(respuesta){
+              if(respuesta.status = 'OK'){
+                alert("va como piña");
+              }else{
+              }
+              $("#modalAddEmpresa").modal('toggle');
+              tableReload(respuesta.data);
+              $('div.form-group #empresaID').val('');
+              $('div.form-group #nombre').val('');
+              $('div.form-group #domicilio').val('');
+              $('div.form-group #localidad').val('');
+              $('div.form-group #provincia').val('');
+              $('div.form-group #iva').val('');
+              $('div.form-group #cuit').val('');
+              $('div.form-group #ingresosBrutos').val('');
+              $('div.form-group #codIngresosBrutos').val('');
+              $('div.form-group #rubro').val('');
+              $('div.form-group #titular').val('');
+    //deberiamos mostrar algun mensaje tanto como de error, como de que todo salio bien. y luego recargar la grilla para que aparezca la nueva empresa en la tabla.
+            });
+          }
+      });
+
+      $("#deleteEmpresa").click(function(){
+          var id =  $('div.modal-body div.form-group #nuevoId').val();
+          var result = confirm("Esta seguro de que desea borrar la empresa?");
+          if (result) {
+            $.ajax({
+              type: "GET",
+              url: "/empresa/"+id+"/del",
+              async: false,
+              dataType: "json",
+            })
+            .done(function(respuesta){
+              $("#modalAddEmpresa").modal('toggle');
+              tableReload(respuesta.data);
+              $('div.form-group #empresaID').val('');
+              $('div.form-group #nombre').val('');
+              $('div.form-group #domicilio').val('');
+              $('div.form-group #localidad').val('');
+              $('div.form-group #provincia').val('');
+              $('div.form-group #iva').val('');
+              $('div.form-group #cuit').val('');
+              $('div.form-group #ingresosBrutos').val('');
+              $('div.form-group #codIngresosBrutos').val('');
+              $('div.form-group #rubro').val('');
+              $('div.form-group #titular').val('');
+            });
+          }                 
+      });     
+  
+      function validaCuit(cuit) {
+                if (typeof (cuit) == 'undefined'){
+                    return true;
+                }
+                cuit = cuit.toString().replace(/[-_]/g, "");
+                if (cuit == ''){
+                    return true;
+                }
+                if (cuit.length != 11){
+                    return false;
+                }else{
+                    var mult = [5, 4, 3, 2, 7, 6, 5, 4, 3, 2];
+                    var total = 0;
+                    for (var i = 0; i < mult.length; i++) {
+                        total += parseInt(cuit[i]) * mult[i];
+                    };
+                    var mod = total % 11;
+                    var digito = mod == 0 ? 0 : mod == 1 ? 9 : 11 - mod;
+                }
+                return digito == parseInt(cuit[10]);
+            };
+            $.validator.addMethod("cuit", validaCuit, 'CUIT/CUIT Inválido');
+
+      $("#modal-formulario").validate({
+          rules: {
+              nuevoNombre: { 
+                required: true,
+                minlength: 3
+              },
+              nuevoDomicilio: { 
+                required: true,
+                minlength: 3
+              },
+              nuevaLocalidad: { 
+                required: true,
+                minlength: 3
+              },
+              nuevaProvincia: { 
+                required: true
+                //minlength: 3
+              },
+              nuevaSituacionIVA: { 
+                required: true
+                //minlength: 3
+              },
+              nuevoCuit: { 
+                required: true,
+                cuit: true
+              },
+              nuevoCodIngresosBrutos: { 
+                required: true
+                //minlength: 3
+              },
+              nuevoRubro: { 
+                required: true
+                //minlength: 3
+              },
+              nuevoTitular: { 
+                required: true,
+                minlength: 3
+              },
+                                
+          },
+          messages: {
+              nuevoNombre: { 
+                required: "Este campo no puede dejarse en vacío",
+                minlength: "Este campo de contener al menos 3 caracteres"
+              },
+              
+              nuevoDomicilio: { 
+                required: "Este campo no puede dejarse en vacío",
+                minlength: "Este campo de contener al menos 3 caracteres"
+              },
+              nuevaLocalidad: { 
+                required: "Este campo no puede dejarse en vacío",
+                minlength: "Este campo de contener al menos 3 caracteres"
+              },
+              nuevaProvincia: { 
+                required: "Este campo no puede dejarse en vacío",
+                //minlength: 3
+              },
+              nuevaSituacionIVA: { 
+                required: "Este campo no puede dejarse en vacío",
+                //minlength: 3
+              },
+              nuevoCuit: { 
+                required: "Este campo no puede dejarse en vacío"
+              },
+              nuevoCodIngresosBrutos: { 
+                required: "Este campo no puede dejarse en vacío",
+                //minlength: 3
+              },
+              nuevoIngresosBrutos: { 
+                required: "Este campo no puede dejarse en vacío",
+                //minlength: 3
+              },
+              nuevoRubro: { 
+                required: "Este campo no puede dejarse en vacío",
+                //minlength: 3
+              },
+              nuevoTitular: { 
+                required: "Este campo no puede dejarse en vacío",
+                minlength: "Este campo de contener al menos 3 caracteres"
+              },
+                                   
+          },
+          
+      });
+      
+  });
+</script>
+{% endblock %}
+{% block body %}
+  <!-- ACA EMPIEZO A TRABAJAR LA INTERFAZ Content Wrapper. Contains page content -->
+  <div class="content-wrapper">
+    <!-- Content Header (Page header) -->
+    <section class="content-header">
+       <h2>
         Empresas
         <small>Buscador</small>
       </h2>
-    <ol class="breadcrumb">
-      <li><a href="/home"><i class="fa fa-home"></i> Home</a></li>
-      <li class="active"><i class="fa fa-search" aria-hidden="true"></i>Buscador de Empresas</li>
-    </ol>
-  </section>
-  <!-- Main content -->
-
-  <section class="content">
-    <!-- Small boxes (Stat box) -->
-    <div class="row" style="padding-bottom: 0.5em;">
-      <div class="col-xs-6">
-        <button class="btn btn-danger btn-block" id="addEmpresa">
-              <i class="fa fa-plus-circle" aria-hidden="true"> Agregar Empresa </i>
+      <ol class="breadcrumb">
+        <li><a href="/home"><i class="fa fa-home"></i> Home</a></li>
+        <li class="active"><i class="fa fa-search" aria-hidden="true"></i>Buscador de Empresas</li>
+      </ol>
+    </section>
+    <!-- Main content -->
+         
+    <section class="content">
+      <!-- Small boxes (Stat box) -->
+      <div class="row" style="padding-bottom: 0.5em;">        
+          <div class="col-xs-6">
+            <button class="btn btn-danger btn-block" id="addEmpresa">
+              <i class="fa fa-plus-circle" aria-hidden="true"> Agregar Empresa </i> 
             </button>
-      </div>
-      <div class="col-xs-6">
-        <div class="form-group">
-          {% block botones %} {% endblock %}
-        </div>
-      </div>
-    </div>
-    <div class="row">
-      <div class="col-xs-6">
-        <div class="box">
-          <div class="box-header">
-            <h3 class="box-title">Busque la empresa deseada..</h3>
           </div>
-          <!-- /.box-header -->
-          <div class="box-body">
-            <table id="tabla-empresas" class="table table-bordered table-striped table-hover dt-responsive">
-              <thead>
-                <tr>
-                  <th>Razon Social</th>
-                  <th>Cuit</th>
-                  <th>Condicion IVA</th>
-                  <th>Jurisdiccion</th>
-                </tr>
-              </thead>
-              <tbody></tbody>
-              <tfoot>
-                <tr>
-                  <th>Razon Social</th>
-                  <th>Cuit</th>
-                  <th>Condicion IVA</th>
-                  <th>Jurisdiccion</th>
-                </tr>
-              </tfoot>
-            </table>
+          <div class="col-xs-6">
+            <div class="form-group">
+                          {% block botones %}
+                          {% endblock %}                                       
+            </div>
           </div>
-          <!-- /.box-body -->
+      </div>         
+      <div class="row">
+        <div class="col-xs-6">
+          <div class="box">
+            <div class="box-header">
+              <h3 class="box-title">Busque la empresa deseada..</h3>
+            </div>
+            <!-- /.box-header -->
+            <div class="box-body">              
+              <table id="tabla-empresas" class="table table-bordered table-striped table-hover dt-responsive">
+                <thead>                  
+                  <tr>
+                    <th>Razon Social</th>
+                    <th>Cuit</th>
+                    <th>Condicion IVA</th>
+                    <th>Jurisdiccion</th>                    
+                  </tr>
+                </thead>
+                <tbody></tbody>
+                <tfoot>
+                  <tr>
+                    <th>Razon Social</th>
+                    <th>Cuit</th>
+                    <th>Condicion IVA</th>
+                    <th>Jurisdiccion</th>
+                  </tr>
+                </tfoot>
+              </table>
+            </div>
+            <!-- /.box-body -->
+          </div>
         </div>
-      </div>
-      <div class="col-xs-6">
-        <div class="panel-group" id="accordion">
-          <div class="panel panel-default">
-            <div class="panel-heading">
-              <h4 class="panel-title">
+        <div class="col-xs-6">          
+          <div class="panel-group" id="accordion">
+            <div class="panel panel-default">
+              <div class="panel-heading">
+                <h4 class="panel-title">
                    Datos de la empresa
                   </h4>
-            </div>
-            <div id="collapse1" class="panel-collapse collapse in">
-              <div class="box-body">
-                <div class="form-group">
-                  <label for="empresaID">ID: </label>
-                  <input type="number" required="true" class="form-control input-sm" id="empresaID" name="empresaID" disabled="true" />
                 </div>
-                <div class="form-group">
-                  <label for="nombre">Nombre: </label>
-                  <input type="text" required="true" class="form-control input-sm" id="nombre" name="nombre" disabled="true" />
-                </div>
-                <div class="form-group">
-                  <label for="domicilio">Domicilio: </label>
-                  <input type="text" required="true" class="form-control input-sm" id="domicilio" name="domicilio" disabled="true" />
-                </div>
-                <div class="form-group">
-                  <label for="localidad">Localidad: </label>
-                  <input type="text" class="form-control input-sm" id="localidad" name="localidad" disabled="true" />
-                </div>
-                <div class="form-group">
-                  <label for="provincia">Provincia: </label>
-                  <input type="text" class="form-control input-sm" id="provincia" name="provincia" disabled="true" />
-                </div>
-                <div class="form-group">
-                  <label for="situacionIVACompleto">Situacion IVA: </label>
-                  <input type="text" class="form-control input-sm" id="iva" name="situacionIVACompleto" disabled="true" />
-                </div>
-                <div class="form-group">
-                  <label for="cuit">Cuit: </label>
-                  <input type="number" required="true" class="form-control input-sm" id="cuit" name="cuit" disabled="true" />
-                </div>
-                <div class="form-group">
-                  <label for="ingresosBrutos">Ingresos Brutos: </label>
-                  <input type="text" required="true" class="form-control input-sm" id="ingresosBrutos" name="ingresosBrutos" disabled="true" />
-                </div>
-                <div class="form-group">
-                  <label for="codIngresosBrutos">Tipo Ingresos Brutos: </label>
-                  <input type="text" required="true" class="form-control input-sm" id="codIngresosBrutos" name="codIngresosBrutos" disabled="true" />
-                </div>
-                <div class="form-group">
-                  <label for="rubro">Rubro: </label>
-                  <input type="text" class="form-control input-sm" id="rubro" name="rubro" disabled="true" />
-                </div>
-                <div class="form-group">
-                  <label for="titular">Titular: </label>
-                  <input type="text" class="form-control input-sm" id="titular" name="titular" disabled="true" />
-                </div>
+                <div id="collapse1" class="panel-collapse collapse in">
+                  <div class="box-body">                 
+                    <div class="form-group">
+                      <label for="empresaID">ID: </label>
+                      <input type="number" required="true" class="form-control input-sm" id="empresaID" name="empresaID" disabled="true"  />
+                    </div>
+                    <div class="form-group">
+                      <label for="nombre">Nombre: </label>
+                      <input type="text" required="true" class="form-control input-sm" id="nombre" name="nombre"
+                       disabled="true"/>   
+                    </div>
+                    <div class="form-group">
+                      <label for="domicilio">Domicilio: </label>                  
+                      <input type="text" required="true" class="form-control input-sm" id="domicilio" name="domicilio"
+                       disabled="true" />
+                    </div>
+                    <div class="form-group">
+                      <label for="localidad">Localidad: </label>                    
+                      <input type="text" class="form-control input-sm" id="localidad" name="localidad"  disabled="true" />                    
+                    </div>
+                    <div class="form-group">
+                      <label for="provincia">Provincia: </label>                    
+                      <input type="text" class="form-control input-sm" id="provincia" name="provincia" disabled="true"/>                      
+                    </div>
+                    <div class="form-group">
+                      <label for="situacionIVACompleto">Situacion IVA: </label>
+                      <input type="text" class="form-control input-sm" id="iva" name="situacionIVACompleto" disabled="true" /> 
+                    </div>
+                    <div class="form-group">
+                      <label for="cuit">Cuit: </label>                    
+                      <input type="number" required="true" class="form-control input-sm" id="cuit" name="cuit"  disabled="true"/>
+                    </div> 
+                    <div class="form-group">
+                      <label for="codIngresosBrutos">Tipo Ingresos Brutos: </label>                  
+                      <input type="text" required="true" class="form-control input-sm" id="codIngresosBrutos" name="codIngresosBrutos" disabled="true"/>  
+                    </div>
+
+                    <div class="form-group">
+                      <label for="ingresosBrutos">Ingresos Brutos: </label>                  
+                      <input type="text" required="true" class="form-control input-sm" id="ingresosBrutos" name="ingresosBrutos"  disabled="true"/>  
+                    </div>
+                    
+                    <div class="form-group">
+                      <label for="rubro">Rubro: </label>
+                      <input type="text" class="form-control input-sm" id="rubro" name="rubro"  disabled="true" />
+                    </div>
+                    <div class="form-group">
+                      <label for="titular">Titular: </label>
+                      <input type="text" class="form-control input-sm" id="titular" name="titular" disabled="true" />
+                    </div>     
+                  </div>
+                </div>  
               </div>
-            </div>
+            </div>            
           </div>
         </div>
       </div>
-    </div>
-</div>
-</section>
-<!-- /.content -->
-</div>
-<!-- /.content-wrapper -->
-<!-- MODAL ADD EMPRESA -->
-<div class="modal fade" id="modalAddEmpresa" role="dialog">
-  <div class="modal-dialog">
-    <!-- Modal content-->
-    <form id="modal-formulario">
+    </section>
+    <!-- /.content -->
+  </div>
+  <!-- /.content-wrapper -->
+  <!-- MODAL ADD EMPRESA -->
+  <div class="modal fade" id="modalAddEmpresa" role="dialog">
+    <div class="modal-dialog">              
+      <!-- Modal content-->
+      <form id="modal-formulario">          
       <div class="modal-content">
         <div class="modal-header">
           <h4 class="modal-title">Nueva Empresa</h4>
         </div>
         <div class="modal-body">
-          <h4>Datos de la empresa</h4>
+          <h4>Datos de la empresa</h4> 
           <div class="form-group">
-            <input id="nuevoId" style="display: none" enable="true" />
-          </div>
+            <input id="nuevoId" style="display: none" enable="true"/>
+          </div>               
           <div class="form-group">
             <label for="nuevoNombre">Nombre: </label>
-            <input type="text" required="true" class="form-control input-sm" id="nuevoNombre" name="nuevoNombre" placeholder="Nombre Empresa" />
+            <input type="text" required="true" class="form-control input-sm" id="nuevoNombre" name="nuevoNombre"
+            placeholder="Nombre Empresa"/>   
           </div>
           <div class="form-group">
-            <label for="nuevoDomicilio">Domicilio: </label>
-            <input type="text" required="true" class="form-control input-sm" id="nuevoDomicilio" name="nuevoDomicilio" placeholder="Domicilio Empresa" />
+            <label for="nuevoDomicilio">Domicilio: </label>                  
+            <input type="text" required="true" class="form-control input-sm" id="nuevoDomicilio" name="nuevoDomicilio"
+            placeholder="Domicilio Empresa"/>
           </div>
           <div class="form-group">
-            <label for="nuevaLocalidad">Localidad: </label>
-            <input type="text" class="form-control input-sm" id="nuevaLocalidad" required="true" name="nuevaLocalidad" placeholder="Localidad empresa" />
-          </div>
-          <div class="form-group">
-            <div class="col-xs-3" style="padding-left: 0px">
-              <label for="nuevaProvincia">Provincia: </label>
-            </div>
-            <div class="col-xs-9  input-sm">
-              <select name="nuevaProvincia" id="nuevaProvincia" required="true" class="selectpicker dropdown-toggle form-control input-sm" type="button" data-toggle="dropdown">
-                  <option disabled selected value>--Seleccione una opcion--</option>
-                </select>
-            </div>
-          </div>
-          &nbsp
-          <div class="form-group">
-            <div class="col-xs-3" style="padding-left: 0px">
-              <label for="nuevaSituacionIVA">Situacion IVA: </label>
-            </div>
-            <div class="col-xs-9  input-sm">
-              <select name="nuevaSituacionIVA" id="nuevaSituacionIVA" required="true" class="selectpicker dropdown-toggle form-control input-sm" type="button" data-toggle="dropdown">
-                  <option disabled selected value>--Seleccione una opcion--</option>
-                </select>
-            </div>
-            &nbsp
-            <input type="text" class="form-control input-sm" id="nuevoIva" name="situacionIVACompleto" disabled="true" placeholder="Situacion IVA descripcion completa" />
-          </div>
-          <div class="form-group">
-            <label for="nuevoCuit">Cuit: </label>
-            <input type="number" required="true" class="form-control input-sm" id="nuevoCuit" name="nuevoCuit" placeholder="Cuit" />
+            <label for="nuevaLocalidad">Localidad: </label>                    
+            <input type="text" class="form-control input-sm" id="nuevaLocalidad" required="true" name="nuevaLocalidad" placeholder="Localidad empresa"/>                    
           </div>
           <div class="form-group">
             <div class="col-xs-3" style="padding-left: 0px">
-              <label for="nuevoCodIngresosBrutos">Tipo Ingreso Bruto: </label>
-            </div>
-            <div class="col-xs-9  input-sm">
-              <select id="nuevoCodIngresosBrutos" name="nuevoCodIngresosBrutos" class="selectpicker dropdown-toggle form-control input-sm" type="button" data-toggle="dropdown" required="true">
-                  <option disabled selected value>--Seleccione una opcion--</option>
+                   <label for="nuevaProvincia">Provincia: </label>
+              </div>
+              <div class="col-xs-9  input-sm">                             
+                <select name="nuevaProvincia" id="nuevaProvincia" required="true" class="selectpicker dropdown-toggle form-control input-sm" type="button" data-toggle="dropdown">
+                  <option disabled selected value>--Seleccione una opcion--</option>  
                 </select>
-            </div>
+              </div>                     
           </div>
-          &nbsp
+          &nbsp 
+          <div class="form-group">               
+              <div class="col-xs-3" style="padding-left: 0px">
+                  <label for="nuevaSituacionIVA">Situacion IVA: </label>
+              </div>
+              <div class="col-xs-9  input-sm">                             
+                <select name="nuevaSituacionIVA" id="nuevaSituacionIVA" required="true" class="selectpicker dropdown-toggle form-control input-sm" type="button" data-toggle="dropdown">
+                  <option disabled selected value>--Seleccione una opcion--</option>                   
+                </select>
+              </div> 
+              &nbsp                                                           
+              <input type="text"  class="form-control input-sm" id="nuevoIva" name="situacionIVACompleto" 
+              disabled="true" placeholder="Situacion IVA descripcion completa" />                                 
+          </div>                      
           <div class="form-group">
-            <label for="nuevoIngresosBrutos">Ingresos Brutos: </label>
-            <input type="text" required="true" class="form-control input-sm" id="nuevoIngresosBrutos" name="nuevoIngresosBrutos" placeholder="Ingresos Brutos" />          <div class="form-group">
-            <div class="col-xs-3" style="padding-left: 0px;">
-              <label for="nuevoRubro">Rubro: </label>
-            </div>
-            <div class="col-xs-9">
-              <select name="nuevoRubro" id="nuevoRubro" required="true" class="selectpicker dropdown-toggle form-control input-sm" type="button" data-toggle="dropdown">
-                    <option disabled selected value>--Seleccione una opcion--</option>
+            <label for="nuevoCuit">Cuit: </label>                    
+            <input type="number" required="true" class="form-control input-sm" id="nuevoCuit" name="nuevoCuit" placeholder="Cuit"/>
+          </div> 
+           <div class="form-group">
+            <div class="col-xs-3" style="padding-left: 0px">
+                   <label for="nuevoCodIngresosBrutos">Tipo Ingreso Bruto: </label> 
+              </div>
+              <div class="col-xs-9  input-sm">                             
+                <select id="nuevoCodIngresosBrutos" name="nuevoCodIngresosBrutos" class="selectpicker dropdown-toggle form-control input-sm" type="button" data-toggle="dropdown" required="true">
+                  <option disabled selected value>--Seleccione una opcion--</option>  
+                </select>
+              </div>                     
+          </div>
+          &nbsp 
+          <div class="form-group">
+            <label for="nuevoIngresosBrutos">Ingresos Brutos: </label>                    
+            <input type="text" class="form-control input-sm" id="nuevoIngresosBrutos" name="nuevoIngresosBrutos" placeholder="Ingresos Brutos"/>
+          </div>
+          <div class="form-group">               
+                <div class="col-xs-3" style="padding-left: 0px;">
+                    <label for="nuevoRubro">Rubro: </label>
+                </div>
+                <div class="col-xs-9">                             
+                  <select name="nuevoRubro" id="nuevoRubro" required="true" class="selectpicker dropdown-toggle form-control input-sm" 
+                  type="button" data-toggle="dropdown">
+                    <option disabled selected value>--Seleccione una opcion--</option>  
                   </select>
-            </div>
+                </div>                                
           </div>
           <div class="form-group">
             <label for="nuevoTitular">Titular: </label>
@@ -250,16 +762,16 @@
         <div class="modal-footer">
           <div class="col-xs-6 " id="colDelete">
             <button type="submit" onclick="return false" class="btn btn-danger pull-left" id="deleteEmpresa" style="display: none">Borrar</button>
-          </div>
+          </div>         
           <div class="col-xs-6 ">
             <button type="submit" onclick="return false" class="btn btn-success" id="editDatesEmpresa" style="display: none">Guardar</button>
-            <button type="submit" onclick="return false" class="btn btn-success" id="newEmpresa" style="display: none">Guardar</button>
+            <button type="submit" onclick="return false" class="btn btn-success" id="newEmpresa" style="display: none" >Guardar</button>
             <button type="submit" onclick="return false" class="btn btn-default" data-dismiss="modal">Cerrar</button>
           </div>
         </div>
       </div>
-    </form>
+      </form>                
+    </div>
   </div>
-</div>
-<!-- /MODAL ADD EMPRESA -->
+  <!-- /MODAL ADD EMPRESA -->
 {% endblock %}
