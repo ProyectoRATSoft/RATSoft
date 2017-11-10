@@ -19,6 +19,16 @@
               tr.group:hover {
                 background-color: #ddd !important;
               }
+  input.ui-autocomplete {
+    z-index: 500;
+  }
+  #pos-nombre {
+    display: block; 
+    position:relative
+  } 
+  .ui-autocomplete {
+    position: absolute;
+  }
 </style> 
 {% endblock %}
 {% block Scripts %}
@@ -36,54 +46,124 @@
 <script src="{{ asset('public/Buttons-1.4.2/js/buttons.print.min.js') }}"></script>
 <script src="{{ asset('public/Buttons-1.4.2/js/buttons.colVis.min.js') }}"></script> 
 <script src="{{ asset('ratsoft/ratsoft.js') }}"></script>
+<script src="https://cdn.jsdelivr.net/npm/jquery-validation@1.17.0/dist/jquery.validate.min.js"></script>
 <!-- <script src="{{ asset('') }}"></script>  --> 
 <script>
+  //con esto bloqueamos la pantalla cuando inicia alguna accion ajax..
+  $(document).ajaxStart(function() {
+    $.blockUI({ 
+      css: { 
+        border: 'none', 
+        padding: '15px', 
+        backgroundColor: '#000', 
+        '-webkit-border-radius': '10px', 
+        '-moz-border-radius': '10px', 
+        opacity: .5, 
+        color: '#fff' 
+        },
+      message: 'Por Favor, espere...'
+    })
+  }); 
+  //cuando termina la accion ajax, se desbloquea..
+  $(document).ajaxStop(function() {
+    $.unblockUI();     
+  });
+  //cargamos los valores para el Combo Comprobantes que esta en el modal
   comboFill("/comprobantes","id","detalle","#comprobante");
   $.get("/comprobantes/tipos",function(resp,estado,jqXHR){
       var arrayResp = JSON.parse(resp);
       window.arrayTiposComp = arrayResp.data;
     });
-  //con esto bloqueamos la pantalla cuando inicia alguna accion ajax..
-  $(document).ajaxStart(function() {
-            $.blockUI({ css: { 
-                border: 'none', 
-                padding: '15px', 
-                backgroundColor: '#000', 
-                '-webkit-border-radius': '10px', 
-                '-moz-border-radius': '10px', 
-                opacity: .5, 
-                color: '#fff' 
-            },message: 'Por Favor, espere...'})
-        });
-   
-    
+
+  $.get("/imputaciones/prov",function(resp,estado,jqXHR){
+      var arrayResp = JSON.parse(resp);
+      window.arrayImputProv = arrayResp.data;
+    });
+  
   $(document).ready(function() {
      //cuando termina la accion ajax, se desbloquea..
     $(document).ajaxStop(function() {
         $.unblockUI();
-
+    });
     $("#addCompra").click(function(){
-      //alert("entre");
       $("#tablaDeProveedores").modal();
     });  
-
-    });
+  //});
     //recuperamos el array desde el controller
     window.arrayrespuesta = {{ respuesta|raw }};
+    window.idEmpresa = {{ empresa|raw }};
 
+    //Preparamos el array que vamos a usar para los proveedores
+    window.arrayproveedores = new Array();
+
+    // Traemos la info de proveedores y lo metemos en el array luego armamos el mapping entre nombre y id de proveedor para poder usarlo en el ABM
+    $.ajax({
+      type: "GET",
+      url: "/proveedores",
+      dataType: "json",
+      async: false
+    })
+    .done(function(respuesta){
+      window.arrayproveedores = respuesta.data;
+      window.source  = [ ];
+      window.mapping = { };
+      window.mappingCuit = { };
+      for(var i = 0; i < window.arrayproveedores.length; ++i) {
+        window.source.push(window.arrayproveedores[i].nombre);
+        window.mapping[window.arrayproveedores[i].nombre] = window.arrayproveedores[i].id;
+        window.mappingCuit[window.arrayproveedores[i].nombre] = window.arrayproveedores[i].cuit;
+      }
+    });
+
+
+    // Aplicamos el autocomplete al campo "Razon Social" del Modal
+    $('#nombre').autocomplete({
+      minLength: 3,
+      //source: window.source,
+      "source": function(request, response) {
+        var results = $.ui.autocomplete.filter(window.source, request.term);
+
+        response(results.slice(0, 10));},
+      message: {
+        noResult:'No search results.'
+      },
+      "select": function(event, ui) {
+          window.idProv = window.mapping[ui.item.value];
+          window.arrayproveedores.forEach(function(item,index,arr){
+            if ( item.id == window.idProv) {
+              $("#cuit").val(item.cuit);
+              $("#iva").val(item.iva.codigo);
+              $("#jurisdiccion").val(item.jurisdiccion.nombre);
+            }
+          });
+          var option = window.idProv;
+          var opciones = "<option value='' selected='selected'>--seleccionar--</option>";
+          window.arrayImputProv.forEach(function(item,index,arr){
+            if(option == item.id_prov){
+              opciones = opciones + "<option value='"+item.id_imp.id+"'>"+item.id_imp.nombre+"</option>";
+            }
+          });
+          $("#imputacion").html(opciones);
+      },
+      //"appendTo": ".form-group",
+      "appendTo": "#pos-nombre",
+      //"position": { my : "bottom",  at: "top", collision: "none" },
+    });
+    // Esto es para que las opciones queden attacheadas al modal, sino no se ven.
+    //$('#nombre').autocomplete( "option", "appendTo", ".form-group" );
     // Preparamos la lógica para que el combo de tipo de comprobante se llene automaticamente dependiendio el codigo de comprobante seleccionado.
 
     $('#comprobante').change(function(){
-        var option = $(this).find('option:selected').val();
-        var opciones = "<option value='' selected='selected'>--seleccionar--</option>";
-        window.arrayTiposComp.forEach(function(item,index,arr){
-          if(option == item.cod_comp.id){
-            opciones = opciones + "<option value='"+item.id+"'>"+item.tipo_comp+"</option>";
+      var option = $(this).find('option:selected').val();
+      var opciones = "<option value='' selected='selected'>--seleccionar--</option>";
+      window.arrayTiposComp.forEach(function(item,index,arr){
+        if(option == item.cod_comp.id){
+          opciones = opciones + "<option value='"+item.id+"'>"+item.tipo_comp+"</option>";
 
-          }
-        })
-        $("#tipoComprobante").html(opciones);
-      });
+        }
+      })
+      $("#tipoComprobante").html(opciones);
+    });
     
     //Llenamos el datatable con el array que trajimos del controller
 
@@ -165,13 +245,20 @@
                         "title": "Fecha"
                       },
                       { 
+                        "mData": null,
+                        "mRender": function(data,type,full){
+                          return full['cod_comprobante'].detalle+' '+full['tipo_comprobante'].tipo_comp;
+                        },
+                        "title": "Comprobante"
+                      },
+                      /*{ 
                         "data": "cod_comprobante.detalle",
                         "title": "Comprobante"
                       },
                       { 
                         "data": "tipo_comprobante.tipo_comp",
                         "title": "Tipo de Comprobante"
-                      },
+                      },*/
                       { 
                         "data": "nro_comprobante",
                         "title": "Número de Comprobante"
@@ -194,43 +281,53 @@
                       },                      
                       { 
                         "data": "neto105",
-                        "title": "Neto 10.5%"
+                        "title": "Neto 10.5%",
+                        className: 'none'
                       },
                       { 
                         "data": "neto21",
-                        "title": "Neto 21%"
+                        "title": "Neto 21%",
+                        className: 'none'
                       },
                       { 
                         "data": "neto27",
-                        "title": "Neto 27%"
+                        "title": "Neto 27%",
+                        className: 'none'
                       },
                       { 
                         "data": "nogravado",
-                        "title": "No Gravado"
+                        "title": "No Gravado",
+                        className: 'none'
                       },
                       { 
                         "data": "iva105",
-                        "title": "IVA 10.5%"
+                        "title": "IVA 10.5%",
+                        className: 'none'
                       },
                       { 
                         "data": "iva21",
-                        "title": "IVA 21%"
+                        "title": "IVA 21%",
+                        className: 'none'
                       },
                       { 
                         "data": "iva27",
-                        "title": "IVA 27%"
+                        "title": "IVA 27%",
+                        className: 'none'
                       },
                       { 
                         "data": "perc_iva",
-                        "title": "Percepciones de IVA"
+                        "title": "Percepciones de IVA",
+                        className: 'none'
                       },
                       { 
                         "data": "perc_iibb",
-                        "title": "Percepciones de IIBB"
+                        "title": "Percepciones de IIBB",
+                        className: 'none'
                       },
                       { 
                         "data": "ret_ganancia",
-                        "title": "Retenciones de Ganancias"
+                        "title": "Retenciones de Ganancias",
+                        className: 'none'
                       },                      
                       { 
                         "data": "total",
@@ -238,9 +335,15 @@
                       },                      
                       ]
                   }); 
-    table.buttons().container().appendTo( '#tabla-compras .col-sm-6:eq(0)' );                 
+    table.buttons().container().appendTo( '#tabla-compras .col-sm-6:eq(0)' );
 
-        // A partir de acá metemos lo que pasa cuando picamos sobre alguna empresa
+    var tableReload = function(datosnuevos){
+      window.arrayrespuesta = datosnuevos;
+      $('#tabla-compras').DataTable().clear().draw();
+      $('#tabla-compras').DataTable().rows.add(datosnuevos).draw();
+      };                 
+
+        // A partir de acá metemos lo que pasa cuando picamos sobre alguna compra
 
     $('#tabla-compras tbody').on( 'click', 'tr', function () {
       if ( $(this).hasClass('active') ) {
@@ -272,10 +375,280 @@
 
     $("#addCompra").click(function(){
       $("#modal-compras").modal();
+      //Limpiamos el modal
+      $("#fechaCompra").val('');
+      $("#periodo").val('');
+      $("#cuit").val('');
+      $('#comprobante').val('');
+      $('#comprobanteNumero').val('');
+      $('#tipoComprobante').val('');
+      $('#imputacion').val('');
+      $('#cai').val('');
+      $('#exento').val('0');
+      $('#neto105').val('0');
+      $('#neto21').val('0');
+      $('#neto27').val('0');
+      $('#iva105').val('0');
+      $('#iva21').val('0');
+      $('#iva27').val('0');
+      $('#nogravado').val('0');
+      $('#perc_iva').val('0');
+      $('#perc_iibb').val('0');
+      $('#ret_ganancia').val('0');
+      $('#total').val('0');
+    });
+
+
+    $("#modal-formulario").validate({
+          rules: {
+              fechaCompra: { 
+                required: true,
+                //minlength: 3
+              },
+              periodo: { 
+                required: true,
+                //minlength: 3
+              },
+              cuit: { 
+                required: true,
+                //minlength: 3
+              },
+              comprobante: { 
+                required: true
+                //minlength: 3
+              },
+              comprobanteNumero: { 
+                required: true
+                //minlength: 3
+              },
+              tipoComprobante: { 
+                required: true,
+                //cuit: true
+              },
+              imputacion: { 
+                required: true
+                //minlength: 3
+              },
+              cai: { 
+                required: true
+                //minlength: 3
+              },
+              exento: { 
+                required: true,
+                //minlength: 3
+              },
+              neto105: { 
+                required: true,
+                //minlength: 3
+              },
+              neto21: { 
+                required: true,
+                //minlength: 3
+              },
+              neto27: { 
+                required: true,
+                //minlength: 3
+              },
+              iva105: { 
+                required: true
+                //minlength: 3
+              },
+              iva21: { 
+                required: true
+                //minlength: 3
+              },
+              iva27: { 
+                required: true,
+                //cuit: true
+              },
+              nogravado: { 
+                required: true
+                //minlength: 3
+              },
+              perc_iva: { 
+                required: true
+                //minlength: 3
+              },
+              perc_iibb: { 
+                required: true,
+                //minlength: 3
+              },
+              ret_ganancia: { 
+                required: true
+                //minlength: 3
+              },
+              total: { 
+                required: true,
+                //minlength: 3
+              },             
+          },
+          messages: {
+              fechaCompra: { 
+                required: "Este campo no puede dejarse en vacío",
+                //minlength: 3
+              },
+              periodo: { 
+                required: "Este campo no puede dejarse en vacío",
+                //minlength: 3
+              },
+              cuit: { 
+                required: "Este campo no puede dejarse en vacío",
+                //minlength: 3
+              },
+              comprobante: { 
+                required: "Este campo no puede dejarse en vacío",                
+                //minlength: 3
+              },
+              comprobanteNumero: { 
+                required: "Este campo no puede dejarse en vacío",                
+                //minlength: 3
+              },
+              tipoComprobante: { 
+                required: "Este campo no puede dejarse en vacío",
+                //cuit: true
+              },
+              imputacion: { 
+                required: "Este campo no puede dejarse en vacío",                
+                //minlength: 3
+              },
+              cai: { 
+                required: "Este campo no puede dejarse en vacío",                
+                //minlength: 3
+              },
+              exento: { 
+                required: "Este campo no puede dejarse en vacío",
+                //minlength: 3
+              },
+              neto105: { 
+                required: "Este campo no puede dejarse en vacío",
+                //minlength: 3
+              },
+              neto21: { 
+                required: "Este campo no puede dejarse en vacío",
+                //minlength: 3
+              },
+              neto27: { 
+                required: "Este campo no puede dejarse en vacío",
+                //minlength: 3
+              },
+              iva105: { 
+                required: "Este campo no puede dejarse en vacío",                
+                //minlength: 3
+              },
+              iva21: { 
+                required: "Este campo no puede dejarse en vacío",                
+                //minlength: 3
+              },
+              iva27: { 
+                required: "Este campo no puede dejarse en vacío",
+                //cuit: true
+              },
+              nogravado: { 
+                required: "Este campo no puede dejarse en vacío",                
+                //minlength: 3
+              },
+              perc_iva: { 
+                required: "Este campo no puede dejarse en vacío",                
+                //minlength: 3
+              },
+              perc_iibb: { 
+                required: "Este campo no puede dejarse en vacío",
+                //minlength: 3
+              },
+              ret_ganancia: { 
+                required: "Este campo no puede dejarse en vacío",                
+                //minlength: 3
+              },
+              total: { 
+                required: "Este campo no puede dejarse en vacío",
+                //minlength: 3
+              },             
+          },
+            
+      });
+
+
+    $("#boton-guardar").on('click',function(){
+    if ($("#modal-formulario").valid()){  
+      var objFecha = new Date($('#fechaCompra').val());
+      var realFecha = new Date(objFecha.getTime() + 86400000);
+      var objPeriodo = new Date($('#periodo').val());
+      var realPeriodo = new Date(objPeriodo.getTime() + 86400000);
+
+      var periodoMes = realPeriodo.getMonth() + 1;
+      var periodoAno = realPeriodo.getFullYear();
+
+      var fechaDia = realFecha.getDate();
+      var fechaMes = realFecha.getMonth() + 1;
+      var fechaAno = realFecha.getFullYear();
+      
+      //realizo un post pasando la url correspondiente al backend, los datos previamente capturados y realizo la funcion correspondiente que me devolvera la respuesta.
+            
+      $.ajax({
+        type: "POST",
+        url: "/contable/compras/" + window.idEmpresa + "/new",
+        async: false,
+        data: {                  
+          "periodo_mes" : ( "0" + periodoMes).slice( -2 ), 
+          "periodo_ano" : periodoAno, 
+          "fecha" : fechaAno + "-" + ( '0' + fechaMes).slice( -2 ) + "-" + ( '0' + fechaDia).slice( -2 ),
+          "proveedor" : idProv,
+          "cod_comprobante" : $('#comprobante').val(), 
+          "nro_comprobante" : $('#comprobanteNumero').val(),
+          "tipo_comprobante" : $('#tipoComprobante').val(),
+          "imputacion" : $('#imputacion').val(),
+          "cai" : $('#cai').val(),
+          "neto_105": $('#neto105').val(), 
+          "neto_21": $('#neto21').val(),
+          "neto_27": $('#neto27').val(),
+          "iva_105": $('#iva105').val(),
+          "iva_21": $('#iva21').val(),
+          "iva_27": $('#iva27').val(),
+          "nogravado": $('#nogravado').val(),
+          "exento": $('#exento').val(),
+          "perc_iva": $('#perc_iva').val(),
+          "perc_iibb": $('#perc_iibb').val(),
+          "ret_ganancia": $('#ret_ganancia').val(),
+          "total": $('#total').val(),
+           },
+        dataType: "json"
+      })
+      .done(function(respuesta){
+        console.log(respuesta);
+        if(respuesta.status = 'OK'){
+          alert("compra agregada con éxito");
+        }else{
+          alert("no se pudo agregar la compra")
+        } 
+        $("#modal-compras").modal('toggle');
+        tableReload(respuesta.data);
+        $("#fechaCompra").val('');
+        $("#periodo").val('');
+        $("#cuit").val('');
+        $('#comprobante').val('');
+        $('#comprobanteNumero').val('');
+        $('#tipoComprobante').val('');
+        $('#imputacion').val('');
+        $('#cai').val('');
+        $('#exento').val('0');
+        $('#neto105').val('0');
+        $('#neto21').val('0');
+        $('#neto27').val('0');
+        $('#iva105').val('0');
+        $('#iva21').val('0');
+        $('#iva27').val('0');
+        $('#nogravado').val('0');
+        $('#perc_iva').val('0');
+        $('#perc_iibb').val('0');
+        $('#ret_ganancia').val('0');
+        $('#total').val('0');
+      //deberiamos mostrar algun mensaje tanto como de error, como de que todo salio bien. y luego recargar la grilla para que aparezca la nueva empresa en la tabla.
+      //alert(resp);
+      });
+    }
     });
    
-  });  
-
+  });
                              
                 
 </script>
@@ -328,6 +701,7 @@
   <div class="modal fade" id="modal-compras" tabindex="-1" role="dialog" aria-labelledby="modalProveedores">
   <div id="modal-compras" class="modal-dialog modal-lg" role="document">
     <div class="modal-content">
+    <form id="modal-formulario">  
       <div class="modal-header">
         <div class="col-xs-12">
           <div class="col-xs-6">
@@ -350,12 +724,12 @@
               <input type="date" class="form-control input-sm" id="fechaCompra" name="fechaCompra" />
             </div>
             <div class="form-group">
-              <label for="nombre">Cuit: </label>
-              <input type="text" required="true" class="form-control input-sm" id="cuit" name="cuit" />   
+              <label for="cuit">Cuit: </label>
+              <input type="text" required="true" class="form-control input-sm" id="cuit" name="cuit" disabled="true" />   
             </div>
             <div class="form-group">
               <label for="nombre">Razón social: </label>
-              <input type="text" required="true" class="form-control input-sm" id="nombre" name="nombre" disabled="true" />   
+              <input type="text" required="true" class="form-control input-sm" id="nombre" name="nombre" /><div id="pos-nombre"></div>  
             </div>                 
             <div class="form-group" style="display: none">
               <label for="empresaID">ID: </label>   
@@ -397,15 +771,24 @@
               <input type="text" class="form-control input-sm" id="jurisdiccion" name="jurisdiccion" disabled="true"/>
             </div> 
             <div class="form-group">
-              <label for="imputacion">Imputacion: </label>                    
-              <input type="text" class="form-control input-sm" id="imputacion" name="imputacion" disabled="true"/>
+              <label for="imputacion">Imputacion: </label>
+              <div class="col-xs-12  input-sm">                             
+                <select name="imputacion" id="imputacion" required="true" class="selectpicker dropdown-toggle form-control input-sm" type="button" data-toggle="dropdown">
+                  <option disabled selected value>--Seleccione una opcion--</option>  
+                </select>
+              </div>                    
             </div>
+            &nbsp            
             <div class="form-group">
               <label for="imputacion">CAI: </label>                    
               <input type="text" class="form-control input-sm" id="cai" name="cai"/>
             </div>                      
           </div>
-          <div class="col-xs-6">            
+          <div class="col-xs-6">
+            <div class="form-group">
+              <label for="neto105">Exento :</label>                    
+              <input type="text" class="form-control input-sm" id="exento" name="exento" />
+            </div>            
             <div class="form-group">
               <label for="neto105">Neto al 10,5% :</label>                    
               <input type="text" class="form-control input-sm" id="neto105" name="neto105" />
@@ -450,13 +833,15 @@
               <label for="total">Total : </label>                    
               <input type="text" class="form-control input-sm" id="total" name="total" />
             </div>
-          </div>                    
+          </div>
+
         </div>      
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-        <button type="button" class="btn btn-success">Guardar</button>
+        <button type="submit" class="btn btn-success" onclick="return false" id="boton-guardar">Guardar</button>
       </div>
+    </form>  
     </div>
   </div>
   </div>
