@@ -20,20 +20,20 @@ home_index:
 
 contable_index:
     path: /contable
-    defaults: { _controller: "FrontendBundle:Modulos:contable" } 
-                              # bundle, dps controler y funcion que llama 
+    defaults: { _controller: "FrontendBundle:Modulos:contable" }
+                              # bundle, dps controler y funcion que llama
     methods: GET
 
 impositivo_index:
     path: /impositivo
-    defaults: { _controller: "FrontendBundle:Modulos:impositivo" } 
-                              # bundle, dps controler y funcion que llama 
+    defaults: { _controller: "FrontendBundle:Modulos:impositivo" }
+                              # bundle, dps controler y funcion que llama
     methods: GET
 
 ventas_index:
     path: /ventas
-    defaults: { _controller: "FrontendBundle:Ventas:index" } 
-                              # bundle, dps controler y funcion que llama 
+    defaults: { _controller: "FrontendBundle:Ventas:index" }
+                              # bundle, dps controler y funcion que llama
     methods: GET
 
 register_user:

@@ -14,22 +14,30 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 class ComprasController extends Controller
 {
 	/**
-	*	@Route("/compras",name="compras_all")
+	*	@Route("/compras/{id}",name="compras_all")
 	*	@Method({"GET"})
 	*/
 
 	public function allAction($id,Request $request){
     	$em = $this->getDoctrine()->getManager();
-		$result = $em->getRepository("BackendBundle:TblCompras")->findBy(array('cuit' => $id));
-		$empresas = array(
+    	$compras = array(
 			'draw' => '',
 			'recordsTotal' => '',
 			'recordsFiltered' => '',
-			'data' => $result,
+			'data' => '',
 		);
+
+		$result = $em->getRepository("BackendBundle:TblCompras")->findBy(array('empresa' => $id));
+		$compras["data"] = $result;
 		$serializer = SerializerBuilder::create()->build();
-		$jsonResponse = $serializer->serialize($empresas, 'json');
-		return new Response($jsonResponse);		
+		$jsonResponse = $serializer->serialize($compras, 'json');
+		
+		
+		return $this->render(
+			'FrontendBundle:Compras:compras-home.html.twig', 
+        	array("respuesta" => $jsonResponse)
+        );
+		//return new Response($compras);		
 		//return new Response($id);
 	}
 

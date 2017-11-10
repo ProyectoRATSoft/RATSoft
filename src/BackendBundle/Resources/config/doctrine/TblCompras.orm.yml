@@ -129,6 +129,11 @@ BackendBundle\Entity\TblCompras:
             nullable: false
             precision: 10
             scale: 2
+        usuario:
+            type: integer
+            nullable: false
+            options:
+                unsigned: false
     manyToOne:
         codComprobante:
             targetEntity: TblComprobantes

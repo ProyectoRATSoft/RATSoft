@@ -1,5 +1,5 @@
 {% extends 'FrontendBundle::Default/base.html.twig' %}
-{% block title %} Ventas{% endblock %}
+{% block title %} Compras{% endblock %}
 {% block CSs %}
 <link rel="stylesheet" href="{{ asset('public/Buttons-1.4.2/css/buttons.bootstrap.min.css') }}">
 <link rel="stylesheet" href="{{ asset('public/responsive-2.2.0/css/responsive.bootstrap.min.css') }}">
@@ -35,8 +35,14 @@
 <script src="{{ asset('public/Buttons-1.4.2/js/buttons.html5.min.js') }}"></script>
 <script src="{{ asset('public/Buttons-1.4.2/js/buttons.print.min.js') }}"></script>
 <script src="{{ asset('public/Buttons-1.4.2/js/buttons.colVis.min.js') }}"></script> 
+<script src="{{ asset('ratsoft/ratsoft.js') }}"></script>
 <!-- <script src="{{ asset('') }}"></script>  --> 
 <script>
+  comboFill("/comprobantes","id","detalle","#comprobante");
+  $.get("/comprobantes/tipos",function(resp,estado,jqXHR){
+      var arrayResp = JSON.parse(resp);
+      window.arrayTiposComp = arrayResp.data;
+    });
   //con esto bloqueamos la pantalla cuando inicia alguna accion ajax..
   $(document).ajaxStart(function() {
             $.blockUI({ css: { 
@@ -54,33 +60,34 @@
   $(document).ready(function() {
      //cuando termina la accion ajax, se desbloquea..
     $(document).ajaxStop(function() {
-        $.unblockUI();     
+        $.unblockUI();
+
+    $("#addCompra").click(function(){
+      //alert("entre");
+      $("#tablaDeProveedores").modal();
+    });  
 
     });
-
-    $("#addVenta").click(function(){
-        //alert("entre");
-        $("#tablaDeProveedores").modal();
-      });
+    //recuperamos el array desde el controller
     window.arrayrespuesta = {{ respuesta|raw }};
 
-    //console.log(window.arrayrespuesta.data);
-    window.arrayproveedores = new Array();
+    // Preparamos la lógica para que el combo de tipo de comprobante se llene automaticamente dependiendio el codigo de comprobante seleccionado.
 
-    $.ajax({
-              type: "GET",
-              url: "/proveedores",
-              dataType: "json",
-              async: false
-            })
-            .done(function(respuesta){
-              window.arrayproveedores = respuesta.data;
-            });
-    console.log(window.arrayproveedores);
+    $('#comprobante').change(function(){
+        var option = $(this).find('option:selected').val();
+        var opciones = "<option value='' selected='selected'>--seleccionar--</option>";
+        window.arrayTiposComp.forEach(function(item,index,arr){
+          if(option == item.cod_comp.id){
+            opciones = opciones + "<option value='"+item.id+"'>"+item.tipo_comp+"</option>";
 
-    //comboFill("/proveedores","id","nombre","#comprobante");
+          }
+        })
+        $("#tipoComprobante").html(opciones);
+      });
     
-    var table = $('#tabla-ventas').DataTable({
+    //Llenamos el datatable con el array que trajimos del controller
+
+    window.table = $('#tabla-compras').DataTable({
                     dom: "<'row'<'col-sm-8 text-left'B><'col-sm-4 text-right'f>>" +"<'row'<'col-sm-12't>>" +"<'row'<'col-sm-5 text-left'i><'col-sm-7 text-right'p>>",
                     //configuramos la cantidad de datos que queremos que nos muestre el menu <lf<t>ip>
                     // "<'row'<'col-sm-6'l><'col-sm-6'f>>" +
@@ -126,32 +133,34 @@
                     "columnDefs": [ 
                                   //con esto podes setear que columnas queres aparezca o no
                                   //{ "visible": false, "targets": 3 },
-                                  // { responsivePriority: 1, targets: 0 },
-                                  // { responsivePriority: 2, targets: 0 },
-                                  { targets: [0, 1, 2, 3, 4, 5, 6, 7, 8], visible: true},
-                                  //{ targets: '_all', visible: false }
-                                
+                                    { responsivePriority: 1, targets: 0 },
+                                    { responsivePriority: 2, targets: 3 },                                    
                     ],
                     "responsive": true,   
                     retrieve: true,
-                    fixedHeader: true,
                     data : window.arrayrespuesta.data,
-                     "columns": [
-
+                     "columns": [                             
                       { 
-                        "data": "cliente.nombre",
-                        "title": "Cliente"
+                        "data": "proveedor.nombre",
+                        "title": "Razon Social"
+                      },
+                      { 
+                        "data": "proveedor.cuit",
+                        "title": "C.U.I.T"
+                      },
+                      { 
+                        "data": "proveedor.iva.detalle",
+                        "title": "Situación de IVA"
                       },
                       { 
                         //Concateno periodo mes y año para armar el periodo.
                         "mData": null,
                         "mRender": function(data,type,full){
                           return full['periodo_mes']+'-'+full['periodo_ano'];
-                          //"width = '10%"
                         },
                         "title": "Período"
                       },
-                       { 
+                      { 
                         "data": "fecha",
                         "title": "Fecha"
                       },
@@ -167,65 +176,104 @@
                         "data": "nro_comprobante",
                         "title": "Número de Comprobante"
                       },
-                      
                       { 
-                        "data": "cliente.cuit",
-                        "title": "C.U.I.T."
-                      },                   
+                        "data": "cai",
+                        "title": "CAI"
+                      },
                       { 
-                        "data": "cliente.jurisdiccion.nombre",
-                        "title": "Jurisdiccion"
+                        "data": "proveedor.jurisdiccion.nombre",
+                        "title": "Jurisdicción"
+                      },
+                      { 
+                        "data": "imputacion.id",
+                        "title": "Código de imputación"
+                      },                      
+                      { 
+                        "data": "imputacion.nombre",
+                        "title": "Detalle de imputación"
+                      },                      
+                      { 
+                        "data": "neto105",
+                        "title": "Neto 10.5%"
+                      },
+                      { 
+                        "data": "neto21",
+                        "title": "Neto 21%"
+                      },
+                      { 
+                        "data": "neto27",
+                        "title": "Neto 27%"
+                      },
+                      { 
+                        "data": "nogravado",
+                        "title": "No Gravado"
+                      },
+                      { 
+                        "data": "iva105",
+                        "title": "IVA 10.5%"
+                      },
+                      { 
+                        "data": "iva21",
+                        "title": "IVA 21%"
+                      },
+                      { 
+                        "data": "iva27",
+                        "title": "IVA 27%"
+                      },
+                      { 
+                        "data": "perc_iva",
+                        "title": "Percepciones de IVA"
+                      },
+                      { 
+                        "data": "perc_iibb",
+                        "title": "Percepciones de IIBB"
+                      },
+                      { 
+                        "data": "ret_ganancia",
+                        "title": "Retenciones de Ganancias"
                       },                      
                       { 
                         "data": "total",
                         "title": "Total"
-                      },   
-                      { 
-                        "data": "neto105",
-                        "title": "Neto 10.5%",
-                         className: 'none'
-                      },
-                      { 
-                        "data": "neto21",
-                        "title": "Neto 21%",
-                         className: 'none'
-                      },
-                      { 
-                        "data": "neto_exento",
-                        "title": "Neto exento",
-                         className: 'none'
-                      },
-                      { 
-                        "data": "iva105",
-                        "title": "IVA 10.5%",
-                         className: 'none'
-                      },
-                      { 
-                        "data": "iva21",
-                        "title": "IVA 21%",
-                         className: 'none'
-                      },
-                      { 
-                        "data": "ret_gan",
-                        "title": "Retenciones de Ganancias",
-                         className: 'none'
-                      },                          
-                      { 
-                        "data": "retencion",
-                        "title": "Retencion",
-                         className: 'none'
-                      },
-                      { 
-                        "data": "percepcion",
-                        "title": "Percepcion", 
-                        className: 'none'
-                      },             
-                       ]
+                      },                      
+                      ]
                   }); 
-    table.buttons().container().appendTo( '#tabla-empresas .col-sm-6:eq(0)' );                 
-    //table.columns.adjust().draw();
-    
+    table.buttons().container().appendTo( '#tabla-compras .col-sm-6:eq(0)' );                 
 
+        // A partir de acá metemos lo que pasa cuando picamos sobre alguna empresa
+
+    $('#tabla-compras tbody').on( 'click', 'tr', function () {
+      if ( $(this).hasClass('active') ) {
+        $(this).removeClass('active');
+      }
+      else {
+        window.table.$('tr.active').removeClass('active');
+        $(this).addClass('active');
+        // metemos en una variable lo que hay en e campo cuit de la empresa seleccionada
+        var cuit = window.table.$("tr.active").find(".cuit").text();
+        window.arrayrespuesta.forEach(function(item,index,arr){
+          if (item.cuit == cuit){
+          $('div.modal-body div.form-group #nuevoId').val(item.id);
+          $('div.modal-body div.form-group #nuevoNombre').val(item.nombre);
+          $('div.modal-body div.form-group #nuevoDomicilio').val(item.domicilio);
+          $('div.modal-body div.form-group #nuevaLocalidad').val(item.localidad);
+          $('div.modal-body div.form-group #nuevaProvincia').val(item.provincia.id);
+          $('div.modal-body div.form-group #nuevaSituacionIVA').val(item.iva.id);
+          $('div.modal-body div.form-group #nuevoIva').val(item.iva.detalle);
+          $('div.modal-body div.form-group #nuevoCuit').val(item.cuit);
+          $('div.modal-body div.form-group #nuevoIngresosBrutos').val(item.iibb);
+          $('div.modal-body div.form-group #nuevoCodIngresosBrutos').val(item.iibb_cod.id);
+          $('div.modal-body div.form-group #nuevoRubro').val(item.rubro.id);
+          $('div.modal-body div.form-group #nuevoTitular').val(item.titular);
+          }
+        });
+      }
+    });
+
+    $("#addCompra").click(function(){
+      $("#modal-compras").modal();
+    });
+   
   });  
 
                              
@@ -239,13 +287,13 @@
     <!-- Content Header (Page header) -->
     <section class="content-header">
        <h2>
-        Ventas
+        Compras
         <small>Buscador</small>
       </h2>
       <ol class="breadcrumb">
         <li><a href="/home"><i class="fa fa-home"></i> home</a></li>
         <li><a href="/contable"><i class="fa fa-calculator"></i> contable</a></li>
-        <li class="active"><i class="fa fa-search"></i>Buscador de ventas</li>
+        <li class="active"><i class="fa fa-search"></i>Buscador de compras</li>
       </ol>
     </section>    
     <section class="content">
@@ -254,13 +302,12 @@
         <div class="col-xs-12">
           <div class="box">
             <div class="box-header">
-              <h3 class="box-title">Busque la factura deseada..</h3>
+              <h3 class="box-title">Busque el comprobante deseado..</h3>
             </div>
             <!-- /.box-header -->
             <div class="box-body">
-                <table id="tabla-ventas" class="table table-bordered table-striped table-hover dt-responsive"> 
-                  <tbody>
-                  </tbody>
+                <table id="tabla-compras" class="table table-bordered table-striped table-hover dt-responsive"> <!-- nowrap -->
+                  <tbody></tbody>
                 </table>
             </div>
             <!-- /.box-body -->
@@ -278,8 +325,8 @@
     <!-- /.content -->
   </div>
 
-<div class="modal fade" id="tablaDeProveedores" tabindex="-1" role="dialog" aria-labelledby="modalProveedores">
-  <div class="modal-dialog modal-lg" role="document">
+  <div class="modal fade" id="modal-compras" tabindex="-1" role="dialog" aria-labelledby="modalProveedores">
+  <div id="modal-compras" class="modal-dialog modal-lg" role="document">
     <div class="modal-content">
       <div class="modal-header">
         <div class="col-xs-12">
@@ -296,11 +343,11 @@
           <div class="col-xs-6">          
             <div class="form-group">
               <label for="periodo">Período: </label>                    
-              <input type="text" class="form-control input-sm" id="periodo" name="periodo" />
+              <input type="month" class="form-control input-sm" id="periodo" name="periodo" />
             </div>            
             <div class="form-group">
-              <label for="fechaVenta">Fecha de venta: </label>                    
-              <input type="text" class="form-control input-sm" id="fechaVenta" name="fechaVenta" />
+              <label for="fechaCompra">Fecha de compra: </label>                    
+              <input type="date" class="form-control input-sm" id="fechaCompra" name="fechaCompra" />
             </div>
             <div class="form-group">
               <label for="nombre">Cuit: </label>
@@ -311,7 +358,7 @@
               <input type="text" required="true" class="form-control input-sm" id="nombre" name="nombre" disabled="true" />   
             </div>                 
             <div class="form-group" style="display: none">
-              <label for="empresaID">ID: </label>
+              <label for="empresaID">ID: </label>   
               <input type="number" required="true" class="form-control input-sm" id="empresaID" name="empresaID" disabled="true"  />
             </div>
             <div class="form-group">
@@ -352,40 +399,52 @@
             <div class="form-group">
               <label for="imputacion">Imputacion: </label>                    
               <input type="text" class="form-control input-sm" id="imputacion" name="imputacion" disabled="true"/>
+            </div>
+            <div class="form-group">
+              <label for="imputacion">CAI: </label>                    
+              <input type="text" class="form-control input-sm" id="cai" name="cai"/>
             </div>                      
           </div>
           <div class="col-xs-6">            
             <div class="form-group">
-              <label for="netoReventa">Neto Reventa :</label>                    
-              <input type="text" class="form-control input-sm" id="netoReventa" name="netoReventa" />
+              <label for="neto105">Neto al 10,5% :</label>                    
+              <input type="text" class="form-control input-sm" id="neto105" name="neto105" />
             </div>
             <div class="form-group">
-              <label for="netoExento">Neto Exento :</label>                    
-              <input type="text" class="form-control input-sm" id="netoExento" name="netoExento" />
+              <label for="neto21">Neto al 21% :</label>                    
+              <input type="text" class="form-control input-sm" id="neto21" name="neto21" />
             </div>
             <div class="form-group">
-              <label for="ivaRi">Iva Ri :</label>                    
-              <input type="text" class="form-control input-sm" id="ivaRi" name="ivaRi" />
+              <label for="neto27">Neto al 27% :</label>                    
+              <input type="text" class="form-control input-sm" id="neto27" name="neto27" />
             </div>
             <div class="form-group">
-              <label for="ivaMon">Iva Mon : </label>                    
-              <input type="text" class="form-control input-sm" id="ivaMon" name="ivaMon" />
+              <label for="nogravado">No Gravado : </label>                    
+              <input type="text" class="form-control input-sm" id="nogravado" name="nogravado" />
             </div>
             <div class="form-group">
-              <label for="ivaCf">Iva Cf: </label>                    
-              <input type="text" class="form-control input-sm" id="ivaCf" name="ivaCf" />
+              <label for="iva105">IVA 10,5%: </label>                    
+              <input type="text" class="form-control input-sm" id="iva105" name="iva105" />
             </div>
             <div class="form-group">
-              <label for="retGanancias">Ret Ganancias : </label>                    
-              <input type="text" class="form-control input-sm" id="retGanancias" name="retGanancias" />
+              <label for="iva21">IVA 21% : </label>                    
+              <input type="text" class="form-control input-sm" id="iva21" name="iva21" />
             </div>
             <div class="form-group">
-              <label for="retIva">Ret IVA: </label>                    
-              <input type="text" class="form-control input-sm" id="retIva" name="retIva" />
+              <label for="iva27">IVA 27%: </label>                    
+              <input type="text" class="form-control input-sm" id="iva27" name="iva27" />
             </div>
             <div class="form-group">
-              <label for="retIibb">Ret IIBB : </label>                    
-              <input type="text" class="form-control input-sm" id="retIibb" name="retIibb" />
+              <label for="perc_iva">Percepciones de IVA : </label>                    
+              <input type="text" class="form-control input-sm" id="perc_iva" name="perc_iva" />
+            </div>
+            <div class="form-group">
+              <label for="perc_iibb">Percepciones de IIBB : </label>                    
+              <input type="text" class="form-control input-sm" id="perc_iibb" name="perc_iibb" />
+            </div>
+            <div class="form-group">
+              <label for="ret_ganancia">Retenciones de Ganancias : </label>                    
+              <input type="text" class="form-control input-sm" id="ret_ganancia" name="ret_ganancia" />
             </div>
             <div class="form-group">
               <label for="total">Total : </label>                    
@@ -399,6 +458,7 @@
         <button type="button" class="btn btn-success">Guardar</button>
       </div>
     </div>
+  </div>
   </div>
 </div>
   <!-- /.content-wrapper -->

@@ -1,0 +1,9 @@
+ventas_all:
+    path: /{id}
+    defaults: { _controller: BackendBundle:Ventas:all }
+    methods: GET
+
+ventas_new:
+    path: /{id}/new
+    defaults: { _controller: BackendBundle:Ventas:new }
+    methods: POST

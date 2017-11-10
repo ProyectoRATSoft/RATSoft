@@ -573,4 +573,236 @@ class TblVentas
     {
         return $this->tipoComprobante;
     }
+    /**
+     * @var string
+     */
+    private $neto105;
+
+    /**
+     * @var string
+     */
+    private $neto21;
+
+    /**
+     * @var string
+     */
+    private $iva105;
+
+    /**
+     * @var string
+     */
+    private $iva21;
+
+    /**
+     * @var string
+     */
+    private $retGan;
+
+
+    /**
+     * Set neto105
+     *
+     * @param string $neto105
+     *
+     * @return TblVentas
+     */
+    public function setNeto105($neto105)
+    {
+        $this->neto105 = $neto105;
+
+        return $this;
+    }
+
+    /**
+     * Get neto105
+     *
+     * @return string
+     */
+    public function getNeto105()
+    {
+        return $this->neto105;
+    }
+
+    /**
+     * Set neto21
+     *
+     * @param string $neto21
+     *
+     * @return TblVentas
+     */
+    public function setNeto21($neto21)
+    {
+        $this->neto21 = $neto21;
+
+        return $this;
+    }
+
+    /**
+     * Get neto21
+     *
+     * @return string
+     */
+    public function getNeto21()
+    {
+        return $this->neto21;
+    }
+
+    /**
+     * Set iva105
+     *
+     * @param string $iva105
+     *
+     * @return TblVentas
+     */
+    public function setIva105($iva105)
+    {
+        $this->iva105 = $iva105;
+
+        return $this;
+    }
+
+    /**
+     * Get iva105
+     *
+     * @return string
+     */
+    public function getIva105()
+    {
+        return $this->iva105;
+    }
+
+    /**
+     * Set iva21
+     *
+     * @param string $iva21
+     *
+     * @return TblVentas
+     */
+    public function setIva21($iva21)
+    {
+        $this->iva21 = $iva21;
+
+        return $this;
+    }
+
+    /**
+     * Get iva21
+     *
+     * @return string
+     */
+    public function getIva21()
+    {
+        return $this->iva21;
+    }
+
+    /**
+     * Set retGan
+     *
+     * @param string $retGan
+     *
+     * @return TblVentas
+     */
+    public function setRetGan($retGan)
+    {
+        $this->retGan = $retGan;
+
+        return $this;
+    }
+
+    /**
+     * Get retGan
+     *
+     * @return string
+     */
+    public function getRetGan()
+    {
+        return $this->retGan;
+    }
+    /**
+     * @var \BackendBundle\Entity\TblEmpresas
+     */
+    private $empresa;
+
+
+    /**
+     * Set empresa
+     *
+     * @param \BackendBundle\Entity\TblEmpresas $empresa
+     *
+     * @return TblVentas
+     */
+    public function setEmpresa(\BackendBundle\Entity\TblEmpresas $empresa = null)
+    {
+        $this->empresa = $empresa;
+
+        return $this;
+    }
+
+    /**
+     * Get empresa
+     *
+     * @return \BackendBundle\Entity\TblEmpresas
+     */
+    public function getEmpresa()
+    {
+        return $this->empresa;
+    }
+    /**
+     * @var \DateTime
+     */
+    private $fechaIngreso;
+
+    /**
+     * @var \BackendBundle\Entity\User
+     */
+    private $usuario;
+
+
+    /**
+     * Set fechaIngreso
+     *
+     * @param \DateTime $fechaIngreso
+     *
+     * @return TblVentas
+     */
+    public function setFechaIngreso($fechaIngreso)
+    {
+        $this->fechaIngreso = $fechaIngreso;
+
+        return $this;
+    }
+
+    /**
+     * Get fechaIngreso
+     *
+     * @return \DateTime
+     */
+    public function getFechaIngreso()
+    {
+        return $this->fechaIngreso;
+    }
+
+    /**
+     * Set usuario
+     *
+     * @param \BackendBundle\Entity\User $usuario
+     *
+     * @return TblVentas
+     */
+    public function setUsuario(\BackendBundle\Entity\User $usuario = null)
+    {
+        $this->usuario = $usuario;
+
+        return $this;
+    }
+
+    /**
+     * Get usuario
+     *
+     * @return \BackendBundle\Entity\User
+     */
+    public function getUsuario()
+    {
+        return $this->usuario;
+    }
 }

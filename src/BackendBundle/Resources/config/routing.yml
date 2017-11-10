@@ -16,7 +16,11 @@ backend_empresas:
 
 backend_compras:
   resource: "@BackendBundle/Resources/config/routing/compras.yml"
-  prefix: /compras
+  prefix: /contable/compras
+
+backend_ventas:
+  resource: "@BackendBundle/Resources/config/routing/ventas.yml"
+  prefix: /contable/ventas
 
 backend_rubros:
   resource: "@BackendBundle/Resources/config/routing/rubros.yml"
@@ -37,3 +41,11 @@ backend_jurisdicciones:
 backend_tiposiibb:
   resource: "@BackendBundle/Resources/config/routing/iibb.yml"
   prefix: /iibb
+
+backend_comprobantes:
+  resource: "@BackendBundle/Resources/config/routing/comprobantes.yml"
+  prefix: /comprobantes
+
+backend_proveedores:
+  resource: "@BackendBundle/Resources/config/routing/proveedores.yml"
+  prefix: /proveedores
