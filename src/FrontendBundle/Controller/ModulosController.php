@@ -16,4 +16,9 @@ class ModulosController extends Controller
     {
         return $this->render('FrontendBundle:Empresas:impositivo-home.html.twig');
     }
+
+    public function userAction()
+    {
+    	return $this->render('FrontendBundle:Users:register.html.twig');
+    }
 }

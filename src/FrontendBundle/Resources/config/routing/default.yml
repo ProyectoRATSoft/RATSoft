@@ -35,3 +35,7 @@ ventas_index:
     defaults: { _controller: "FrontendBundle:Ventas:index" } 
                               # bundle, dps controler y funcion que llama 
     methods: GET
+
+register_user:
+    path: /users
+    defaults: { _controller: "FrontendBundle:Modulos:user" }

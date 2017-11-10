@@ -1,47 +1,177 @@
-{% extends 'FrontendBundle::Users/login.html.twig' %}
-{% block title %}Registration Page{% endblock %} 
-{% block body %}
-<div class="register-box">
-  <div class="register-logo">
-    <a href="../../index2.html"><b>RATS</b>oft</a>
+{% extends 'FrontendBundle::Default/base.html.twig' %} {% block title %} Configuración{% endblock %} {% block CSs %}
+<link rel="stylesheet" href="{{ asset('public/Buttons-1.4.2/css/buttons.bootstrap.min.css') }}">
+<link rel="stylesheet" href="{{ asset('public/responsive-2.2.0/css/responsive.bootstrap.min.css') }}">
+<style>
+  table {
+    width: 50%
+  }
+
+  tbody tr:hover.active td,
+  tbody tr:hover td {
+    background-color: #A9D0F5;
+    cursor: pointer;
+  }
+
+  .table>tbody>tr.active>td {
+    background-color: #A9D0F5;
+    color: #000000;
+    font: bold 12px/18px;
+  }
+</style>
+{% endblock %} {% block Scripts %}
+
+<!-- DataTables -->
+<script src="{{ asset('bower_components/datatables.net/js/jquery.dataTables.min.js') }}"></script>
+<script src="{{ asset('bower_components/datatables.net-bs/js/dataTables.bootstrap.min.js') }}"></script>
+<script src="{{ asset('public/responsive-2.2.0/js/dataTables.responsive.min.js') }}"></script>
+<script src="{{ asset('public/responsive-2.2.0/js/responsive.bootstrap.min.js') }}"></script>
+<script src="{{ asset('public/Buttons-1.4.2/js/dataTables.buttons.min.js') }}"></script>
+<script src="{{ asset('public/Buttons-1.4.2/js/buttons.bootstrap.min.js') }}"></script>
+<script src="{{ asset('public/JSZip-2.5.0/jszip.min.js') }}"></script>
+<script src="{{ asset('public/pdfmake-0.1.32/pdfmake.min.js') }}"></script>
+<script src="{{ asset('public/pdfmake-0.1.32/vfs_fonts.js') }}"></script>
+<script src="{{ asset('public/Buttons-1.4.2/js/buttons.html5.min.js') }}"></script>
+<script src="{{ asset('public/Buttons-1.4.2/js/buttons.print.min.js') }}"></script>
+<script src="{{ asset('public/Buttons-1.4.2/js/buttons.colVis.min.js') }}"></script>
+
+<!-- <script src="{{ asset('') }}"></script>  -->
+<script src="{{ asset('ratsoft/ratsoft.js') }}"></script>
+<script src="{{ asset('ratsoft/register.js') }}"></script>
+
+<script src="https://cdn.jsdelivr.net/npm/jquery-validation@1.17.0/dist/jquery.validate.min.js"></script>
+
+
+
+{% endblock %} {% block body %}
+<!-- ACA EMPIEZO A TRABAJAR LA INTERFAZ Content Wrapper. Contains page content -->
+<div class="content-wrapper">
+  <section class="content-header">
+    <h2>
+      Usuarios
+      <small>Buscador</small>
+    </h2>
+    <ol class="breadcrumb">
+      <li><a href="/home"><i class="fa fa-home"></i> Home</a></li>
+    </ol>
+  </section>
+
+  <section class="content">
+    <!-- AGREGAR NUEVO USUARIO -->
+    <div class="row" style="padding-bottom: 0.5em;">
+      <div class="col-xs-6">
+        <button class="btn btn-danger btn-block" id="addEmpresa">
+          <i class="fa fa-plus-circle" aria-hidden="true"> Agregar Usuario </i>
+        </button>
+      </div>
+    </div>
+
+    <!-- LISTADO DE USUARIOS -->
+    <div class="row">
+      <div class="col-xs-6">
+        <div class="box">
+          <div class="box-header">
+            <h3 class="box-title">Usuarios Activos</h3>
+          </div>
+
+          <div class="box-body">
+            <table id="tabla-empresas" class="table table-bordered table-striped table-hover dt-responsive">
+              <thead>
+                <tr>
+                  <th>Username</th>
+                  <th>Email</th>
+                </tr>
+              </thead>
+              <tbody>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- LISTADO DE USUARIOS -->
+      <div class="col-xs-6">
+        <div class="panel-group" id="accordion">
+          <div class="panel panel-default">
+            <div class="panel-heading">
+              <h4 class="panel-title">
+                   Datos del usuario
+                  </h4>
+            </div>
+            <div id="collapse1" class="panel-collapse collapse in">
+              <div class="box-body">
+                <div class="form-group">
+                  <label for="id">ID: </label>
+                  <input type="number" required="true" class="form-control input-sm" id="userId" name="userId" disabled="true" />
+                </div>
+                <div class="form-group">
+                  <label for="username">Username: </label>
+                  <input type="text" required="true" class="form-control input-sm" id="username" name="username" disabled="true" />
+                </div>
+                <div class="form-group">
+                  <label for="email">Email: </label>
+                  <input type="text" required="true" class="form-control input-sm" id="email" name="email" disabled="true" />
+                </div>
+                <div class="form-group">
+                  <label for="role">Role: </label>
+                  <input type="text" class="form-control input-sm" id="role" name="role" disabled="true" />
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+  </section>
   </div>
 
-  <div class="register-box-body">
-    <p class="login-box-msg">Register a new membership</p>
+  <!-- MODAL ADD EMPRESA -->
+  <div class="modal fade" id="modalAddEmpresa" role="dialog">
+    <div class="modal-dialog">
+      <!-- Modal content-->
+      <form id="modal-formulario">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h4 class="modal-title">Nuevo Usuario</h4>
+          </div>
+          <div class="modal-body">
+            <h4>Datos del Usuario</h4>
+            <div class="form-group">
+              <input id="nuevoId" style="display: none" enable="true" />
+            </div>
+            <div class="form-group">
+              <label for="nuevoUsername">Username: </label>
+              <input type="text" required="true" class="form-control input-sm" id="nuevoUsername" name="nuevoUsername" placeholder="Username Usuario" />
+            </div>
+            <div class="form-group">
+              <label for="nuevoPassword">Password: </label>
+              <input type="text" required="true" class="form-control input-sm" id="nuevoPassword" name="nuevoPassword" placeholder="Password Usuario" />
+            </div>
+            <div class="form-group">
+              <label for="nuevoNombre">Nombre: </label>
+              <input type="text" class="form-control input-sm" id="nuevoNombre" required="true" name="nuevoNombre" placeholder="Nombre Usuario" />
+            </div>
+            <div class="form-group">
+              <label for="nuevoApellido">Apellido: </label>
+              <input type="text" class="form-control input-sm" id="nuevoApellido" required="true" name="nuevoApellido" placeholder="Apellido Usuario" />
+            </div>
+            <div class="form-group">
+              <label for="nuevoEmail">Email: </label>
+              <input type="text" class="form-control input-sm" id="nuevoEmail" required="true" name="nuevoEmail" placeholder="Email Usuario" />
+            </div>
+          </div>
 
-    <form action="../../index.html" method="post">
-      <div class="form-group has-feedback">
-        <input type="text" class="form-control" placeholder="Full name">
-        <span class="glyphicon glyphicon-user form-control-feedback"></span>
-      </div>
-      <div class="form-group has-feedback">
-        <input type="email" class="form-control" placeholder="Email">
-        <span class="glyphicon glyphicon-envelope form-control-feedback"></span>
-      </div>
-      <div class="form-group has-feedback">
-        <input type="password" class="form-control" placeholder="Password">
-        <span class="glyphicon glyphicon-lock form-control-feedback"></span>
-      </div>
-      <div class="form-group has-feedback">
-        <input type="password" class="form-control" placeholder="Retype password">
-        <span class="glyphicon glyphicon-log-in form-control-feedback"></span>
-      </div>
-      <div class="row">
-        <div class="col-xs-4">
-
+          <div class="modal-footer">
+            <div class="col-xs-6 " id="colDelete">
+              <button type="submit" onclick="return false" class="btn btn-danger pull-left" id="deleteEmpresa" style="display: none">Borrar</button>
+            </div>
+            <div class="col-xs-6 ">
+              <button type="submit" onclick="return false" class="btn btn-success" id="editDatesEmpresa" style="display: none">Guardar</button>
+              <button type="submit" onclick="return false" class="btn btn-success" id="newEmpresa" style="display: none">Guardar</button>
+              <button type="submit" onclick="return false" class="btn btn-default" data-dismiss="modal">Cerrar</button>
+            </div>
+          </div>
         </div>
-        
-        <div class="col-xs-4">
-          <button type="submit" class="btn btn-primary btn-block btn-flat">Register</button>
-        </div>
-        <!-- /.col -->
-      </div>
-    </form>
-    <br>
-    <a href="login-ratsoft" class="text-center">I already have a membership</a>
+      </form>
+    </div>
   </div>
-  <!-- /.form-box -->
-</div>
-<!-- /.register-box -->
-{% endblock %}
-
+  <!-- /MODAL ADD EMPRESA -->
+  {% endblock %}
