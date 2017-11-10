@@ -51,25 +51,23 @@
 <script>
   //con esto bloqueamos la pantalla cuando inicia alguna accion ajax..
   $(document).ajaxStart(function() {
-    $.blockUI({ 
-      css: { 
-        border: 'none', 
-        padding: '15px', 
-        backgroundColor: '#000', 
-        '-webkit-border-radius': '10px', 
-        '-moz-border-radius': '10px', 
-        opacity: .5, 
-        color: '#fff' 
-        },
-      message: 'Por Favor, espere...'
-    })
-  }); 
-  //cuando termina la accion ajax, se desbloquea..
-  $(document).ajaxStop(function() {
-    $.unblockUI();     
-  });
-  //cargamos los valores para el Combo Comprobantes que esta en el modal
-  comboFill("/comprobantes","id","detalle","#comprobante");
+            $.blockUI({ css: { 
+                border: 'none', 
+                padding: '15px', 
+                backgroundColor: '#000', 
+                '-webkit-border-radius': '10px', 
+                '-moz-border-radius': '10px', 
+                opacity: .5, 
+                color: '#fff' 
+            },message: 'Por Favor, espere...'})
+        }); 
+  $(document).ready(function() {
+     //cuando termina la accion ajax, se desbloquea..
+    $(document).ajaxStop(function() {
+        $.unblockUI();
+    });
+    //cargamos los valores para el Combo Comprobantes que esta en el modal
+    comboFill("/comprobantes","id","detalle","#comprobante");
   $.get("/comprobantes/tipos",function(resp,estado,jqXHR){
       var arrayResp = JSON.parse(resp);
       window.arrayTiposComp = arrayResp.data;
@@ -78,12 +76,6 @@
   $.get("/imputaciones/prov",function(resp,estado,jqXHR){
       var arrayResp = JSON.parse(resp);
       window.arrayImputProv = arrayResp.data;
-    });
-  
-  $(document).ready(function() {
-     //cuando termina la accion ajax, se desbloquea..
-    $(document).ajaxStop(function() {
-        $.unblockUI();
     });
     $("#addCompra").click(function(){
       $("#tablaDeProveedores").modal();
@@ -101,7 +93,7 @@
       type: "GET",
       url: "/proveedores",
       dataType: "json",
-      async: false
+      //async: false
     })
     .done(function(respuesta){
       window.arrayproveedores = respuesta.data;
@@ -587,7 +579,7 @@
       $.ajax({
         type: "POST",
         url: "/contable/compras/" + window.idEmpresa + "/new",
-        async: false,
+        //async: false,
         data: {                  
           "periodo_mes" : ( "0" + periodoMes).slice( -2 ), 
           "periodo_ano" : periodoAno, 

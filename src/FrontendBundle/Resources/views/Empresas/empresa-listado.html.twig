@@ -1,26 +1,25 @@
-{% extends 'FrontendBundle::Default/base.html.twig' %} {% block title %} Contable{% endblock %} {% block CSs %}
+{% extends 'FrontendBundle::Default/base.html.twig' %}
+{% block title %} Contable{% endblock %}
+{% block CSs %}
 <link rel="stylesheet" href="{{ asset('public/Buttons-1.4.2/css/buttons.bootstrap.min.css') }}">
 <link rel="stylesheet" href="{{ asset('public/responsive-2.2.0/css/responsive.bootstrap.min.css') }}">
-<style>
-  table {
-    width: 50%
-  }
+  <style>
+    table { width: 50% }
+    tbody tr:hover.active td,
+    tbody tr:hover td {
+      background-color: #A9D0F5;
+      cursor: pointer;
+    }               
+    .table>tbody>tr.active>td {
+      background-color: #A9D0F5;
+      color: #000000;
+      font:  bold 12px/18px;
+    }
+  </style>              
+{% endblock %}
+{% block Scripts %}
 
-  tbody tr:hover.active td,
-  tbody tr:hover td {
-    background-color: #A9D0F5;
-    cursor: pointer;
-  }
-
-  .table>tbody>tr.active>td {
-    background-color: #A9D0F5;
-    color: #000000;
-    font: bold 12px/18px;
-  }
-</style>
-{% endblock %} {% block Scripts %}
-
-<!-- DataTables -->
+ <!-- DataTables -->
 <script src="{{ asset('bower_components/datatables.net/js/jquery.dataTables.min.js') }}"></script>
 <script src="{{ asset('bower_components/datatables.net-bs/js/dataTables.bootstrap.min.js') }}"></script>
 <script src="{{ asset('public/responsive-2.2.0/js/dataTables.responsive.min.js') }}"></script>
@@ -34,9 +33,13 @@
 <script src="{{ asset('public/Buttons-1.4.2/js/buttons.print.min.js') }}"></script>
 <script src="{{ asset('public/Buttons-1.4.2/js/buttons.colVis.min.js') }}"></script>
 
-<!-- <script src="{{ asset('') }}"></script>  -->
+<!-- <script src="{{ asset('') }}"></script>  --> 
 <script src="{{ asset('ratsoft/ratsoft.js') }}"></script>
+<<<<<<< HEAD
 <script src="{{ asset('ratsoft/empresa-listado.js') }}"></script>
+=======
+
+>>>>>>> 10df4b80abfcf62229a2cb0d779b334e58c9e932
 <script src="https://cdn.jsdelivr.net/npm/jquery-validation@1.17.0/dist/jquery.validate.min.js">
 </script>
 
@@ -452,209 +455,312 @@
                 return digito == parseInt(cuit[10]);
             };
             $.validator.addMethod("cuit", validaCuit, 'CUIT/CUIT Inválido');
+<<<<<<< HEAD
 
+=======
+>>>>>>> 10df4b80abfcf62229a2cb0d779b334e58c9e932
 
-{% endblock %} {% block body %}
-<!-- ACA EMPIEZO A TRABAJAR LA INTERFAZ Content Wrapper. Contains page content -->
-<div class="content-wrapper">
-  <!-- Content Header (Page header) -->
-  <section class="content-header">
-    <h2>
+      $("#modal-formulario").validate({
+          rules: {
+              nuevoNombre: { 
+                required: true,
+                minlength: 3
+              },
+              nuevoDomicilio: { 
+                required: true,
+                minlength: 3
+              },
+              nuevaLocalidad: { 
+                required: true,
+                minlength: 3
+              },
+              nuevaProvincia: { 
+                required: true
+                //minlength: 3
+              },
+              nuevaSituacionIVA: { 
+                required: true
+                //minlength: 3
+              },
+              nuevoCuit: { 
+                required: true,
+                cuit: true
+              },
+              nuevoCodIngresosBrutos: { 
+                required: true
+                //minlength: 3
+              },
+              nuevoRubro: { 
+                required: true
+                //minlength: 3
+              },
+              nuevoTitular: { 
+                required: true,
+                minlength: 3
+              },
+                                
+          },
+          messages: {
+              nuevoNombre: { 
+                required: "Este campo no puede dejarse en vacío",
+                minlength: "Este campo de contener al menos 3 caracteres"
+              },
+              
+              nuevoDomicilio: { 
+                required: "Este campo no puede dejarse en vacío",
+                minlength: "Este campo de contener al menos 3 caracteres"
+              },
+              nuevaLocalidad: { 
+                required: "Este campo no puede dejarse en vacío",
+                minlength: "Este campo de contener al menos 3 caracteres"
+              },
+              nuevaProvincia: { 
+                required: "Este campo no puede dejarse en vacío",
+                //minlength: 3
+              },
+              nuevaSituacionIVA: { 
+                required: "Este campo no puede dejarse en vacío",
+                //minlength: 3
+              },
+              nuevoCuit: { 
+                required: "Este campo no puede dejarse en vacío"
+              },
+              nuevoCodIngresosBrutos: { 
+                required: "Este campo no puede dejarse en vacío",
+                //minlength: 3
+              },
+              nuevoIngresosBrutos: { 
+                required: "Este campo no puede dejarse en vacío",
+                //minlength: 3
+              },
+              nuevoRubro: { 
+                required: "Este campo no puede dejarse en vacío",
+                //minlength: 3
+              },
+              nuevoTitular: { 
+                required: "Este campo no puede dejarse en vacío",
+                minlength: "Este campo de contener al menos 3 caracteres"
+              },
+                                   
+          },
+          
+      });
+      
+  });
+</script>
+{% endblock %}
+{% block body %}
+  <!-- ACA EMPIEZO A TRABAJAR LA INTERFAZ Content Wrapper. Contains page content -->
+  <div class="content-wrapper">
+    <!-- Content Header (Page header) -->
+    <section class="content-header">
+       <h2>
         Empresas
         <small>Buscador</small>
       </h2>
-    <ol class="breadcrumb">
-      <li><a href="/home"><i class="fa fa-home"></i> Home</a></li>
-      <li class="active"><i class="fa fa-search" aria-hidden="true"></i>Buscador de Empresas</li>
-    </ol>
-  </section>
-  <!-- Main content -->
-
-  <section class="content">
-    <!-- Small boxes (Stat box) -->
-    <div class="row" style="padding-bottom: 0.5em;">
-      <div class="col-xs-6">
-        <button class="btn btn-danger btn-block" id="addEmpresa">
-              <i class="fa fa-plus-circle" aria-hidden="true"> Agregar Empresa </i>
+      <ol class="breadcrumb">
+        <li><a href="/home"><i class="fa fa-home"></i> Home</a></li>
+        <li class="active"><i class="fa fa-search" aria-hidden="true"></i>Buscador de Empresas</li>
+      </ol>
+    </section>
+    <!-- Main content -->
+         
+    <section class="content">
+      <!-- Small boxes (Stat box) -->
+      <div class="row" style="padding-bottom: 0.5em;">        
+          <div class="col-xs-6">
+            <button class="btn btn-danger btn-block" id="addEmpresa">
+              <i class="fa fa-plus-circle" aria-hidden="true"> Agregar Empresa </i> 
             </button>
-      </div>
-      <div class="col-xs-6">
-        <div class="form-group">
-          {% block botones %} {% endblock %}
-        </div>
-      </div>
-    </div>
-    <div class="row">
-      <div class="col-xs-6">
-        <div class="box">
-          <div class="box-header">
-            <h3 class="box-title">Busque la empresa deseada..</h3>
           </div>
-          <!-- /.box-header -->
-          <div class="box-body">
-            <table id="tabla-empresas" class="table table-bordered table-striped table-hover dt-responsive">
-              <thead>
-                <tr>
-                  <th>Razon Social</th>
-                  <th>Cuit</th>
-                  <th>Condicion IVA</th>
-                  <th>Jurisdiccion</th>
-                </tr>
-              </thead>
-              <tbody></tbody>
-              <tfoot>
-                <tr>
-                  <th>Razon Social</th>
-                  <th>Cuit</th>
-                  <th>Condicion IVA</th>
-                  <th>Jurisdiccion</th>
-                </tr>
-              </tfoot>
-            </table>
+          <div class="col-xs-6">
+            <div class="form-group">
+                          {% block botones %}
+                          {% endblock %}                                       
+            </div>
           </div>
-          <!-- /.box-body -->
+      </div>         
+      <div class="row">
+        <div class="col-xs-6">
+          <div class="box">
+            <div class="box-header">
+              <h3 class="box-title">Busque la empresa deseada..</h3>
+            </div>
+            <!-- /.box-header -->
+            <div class="box-body">              
+              <table id="tabla-empresas" class="table table-bordered table-striped table-hover dt-responsive">
+                <thead>                  
+                  <tr>
+                    <th>Razon Social</th>
+                    <th>Cuit</th>
+                    <th>Condicion IVA</th>
+                    <th>Jurisdiccion</th>                    
+                  </tr>
+                </thead>
+                <tbody></tbody>
+                <tfoot>
+                  <tr>
+                    <th>Razon Social</th>
+                    <th>Cuit</th>
+                    <th>Condicion IVA</th>
+                    <th>Jurisdiccion</th>
+                  </tr>
+                </tfoot>
+              </table>
+            </div>
+            <!-- /.box-body -->
+          </div>
         </div>
-      </div>
-      <div class="col-xs-6">
-        <div class="panel-group" id="accordion">
-          <div class="panel panel-default">
-            <div class="panel-heading">
-              <h4 class="panel-title">
+        <div class="col-xs-6">          
+          <div class="panel-group" id="accordion">
+            <div class="panel panel-default">
+              <div class="panel-heading">
+                <h4 class="panel-title">
                    Datos de la empresa
                   </h4>
-            </div>
-            <div id="collapse1" class="panel-collapse collapse in">
-              <div class="box-body">
-                <div class="form-group">
-                  <label for="empresaID">ID: </label>
-                  <input type="number" required="true" class="form-control input-sm" id="empresaID" name="empresaID" disabled="true" />
                 </div>
-                <div class="form-group">
-                  <label for="nombre">Nombre: </label>
-                  <input type="text" required="true" class="form-control input-sm" id="nombre" name="nombre" disabled="true" />
-                </div>
-                <div class="form-group">
-                  <label for="domicilio">Domicilio: </label>
-                  <input type="text" required="true" class="form-control input-sm" id="domicilio" name="domicilio" disabled="true" />
-                </div>
-                <div class="form-group">
-                  <label for="localidad">Localidad: </label>
-                  <input type="text" class="form-control input-sm" id="localidad" name="localidad" disabled="true" />
-                </div>
-                <div class="form-group">
-                  <label for="provincia">Provincia: </label>
-                  <input type="text" class="form-control input-sm" id="provincia" name="provincia" disabled="true" />
-                </div>
-                <div class="form-group">
-                  <label for="situacionIVACompleto">Situacion IVA: </label>
-                  <input type="text" class="form-control input-sm" id="iva" name="situacionIVACompleto" disabled="true" />
-                </div>
-                <div class="form-group">
-                  <label for="cuit">Cuit: </label>
-                  <input type="number" required="true" class="form-control input-sm" id="cuit" name="cuit" disabled="true" />
-                </div>
-                <div class="form-group">
-                  <label for="ingresosBrutos">Ingresos Brutos: </label>
-                  <input type="text" required="true" class="form-control input-sm" id="ingresosBrutos" name="ingresosBrutos" disabled="true" />
-                </div>
-                <div class="form-group">
-                  <label for="codIngresosBrutos">Tipo Ingresos Brutos: </label>
-                  <input type="text" required="true" class="form-control input-sm" id="codIngresosBrutos" name="codIngresosBrutos" disabled="true" />
-                </div>
-                <div class="form-group">
-                  <label for="rubro">Rubro: </label>
-                  <input type="text" class="form-control input-sm" id="rubro" name="rubro" disabled="true" />
-                </div>
-                <div class="form-group">
-                  <label for="titular">Titular: </label>
-                  <input type="text" class="form-control input-sm" id="titular" name="titular" disabled="true" />
-                </div>
+                <div id="collapse1" class="panel-collapse collapse in">
+                  <div class="box-body">                 
+                    <div class="form-group">
+                      <label for="empresaID">ID: </label>
+                      <input type="number" required="true" class="form-control input-sm" id="empresaID" name="empresaID" disabled="true"  />
+                    </div>
+                    <div class="form-group">
+                      <label for="nombre">Nombre: </label>
+                      <input type="text" required="true" class="form-control input-sm" id="nombre" name="nombre"
+                       disabled="true"/>   
+                    </div>
+                    <div class="form-group">
+                      <label for="domicilio">Domicilio: </label>                  
+                      <input type="text" required="true" class="form-control input-sm" id="domicilio" name="domicilio"
+                       disabled="true" />
+                    </div>
+                    <div class="form-group">
+                      <label for="localidad">Localidad: </label>                    
+                      <input type="text" class="form-control input-sm" id="localidad" name="localidad"  disabled="true" />                    
+                    </div>
+                    <div class="form-group">
+                      <label for="provincia">Provincia: </label>                    
+                      <input type="text" class="form-control input-sm" id="provincia" name="provincia" disabled="true"/>                      
+                    </div>
+                    <div class="form-group">
+                      <label for="situacionIVACompleto">Situacion IVA: </label>
+                      <input type="text" class="form-control input-sm" id="iva" name="situacionIVACompleto" disabled="true" /> 
+                    </div>
+                    <div class="form-group">
+                      <label for="cuit">Cuit: </label>                    
+                      <input type="number" required="true" class="form-control input-sm" id="cuit" name="cuit"  disabled="true"/>
+                    </div> 
+                    <div class="form-group">
+                      <label for="codIngresosBrutos">Tipo Ingresos Brutos: </label>                  
+                      <input type="text" required="true" class="form-control input-sm" id="codIngresosBrutos" name="codIngresosBrutos" disabled="true"/>  
+                    </div>
+
+                    <div class="form-group">
+                      <label for="ingresosBrutos">Ingresos Brutos: </label>                  
+                      <input type="text" required="true" class="form-control input-sm" id="ingresosBrutos" name="ingresosBrutos"  disabled="true"/>  
+                    </div>
+                    
+                    <div class="form-group">
+                      <label for="rubro">Rubro: </label>
+                      <input type="text" class="form-control input-sm" id="rubro" name="rubro"  disabled="true" />
+                    </div>
+                    <div class="form-group">
+                      <label for="titular">Titular: </label>
+                      <input type="text" class="form-control input-sm" id="titular" name="titular" disabled="true" />
+                    </div>     
+                  </div>
+                </div>  
               </div>
-            </div>
+            </div>            
           </div>
         </div>
       </div>
-    </div>
-</div>
-</section>
-<!-- /.content -->
-</div>
-<!-- /.content-wrapper -->
-<!-- MODAL ADD EMPRESA -->
-<div class="modal fade" id="modalAddEmpresa" role="dialog">
-  <div class="modal-dialog">
-    <!-- Modal content-->
-    <form id="modal-formulario">
+    </section>
+    <!-- /.content -->
+  </div>
+  <!-- /.content-wrapper -->
+  <!-- MODAL ADD EMPRESA -->
+  <div class="modal fade" id="modalAddEmpresa" role="dialog">
+    <div class="modal-dialog">              
+      <!-- Modal content-->
+      <form id="modal-formulario">          
       <div class="modal-content">
         <div class="modal-header">
           <h4 class="modal-title">Nueva Empresa</h4>
         </div>
         <div class="modal-body">
-          <h4>Datos de la empresa</h4>
+          <h4>Datos de la empresa</h4> 
           <div class="form-group">
-            <input id="nuevoId" style="display: none" enable="true" />
-          </div>
+            <input id="nuevoId" style="display: none" enable="true"/>
+          </div>               
           <div class="form-group">
             <label for="nuevoNombre">Nombre: </label>
-            <input type="text" required="true" class="form-control input-sm" id="nuevoNombre" name="nuevoNombre" placeholder="Nombre Empresa" />
+            <input type="text" required="true" class="form-control input-sm" id="nuevoNombre" name="nuevoNombre"
+            placeholder="Nombre Empresa"/>   
           </div>
           <div class="form-group">
-            <label for="nuevoDomicilio">Domicilio: </label>
-            <input type="text" required="true" class="form-control input-sm" id="nuevoDomicilio" name="nuevoDomicilio" placeholder="Domicilio Empresa" />
+            <label for="nuevoDomicilio">Domicilio: </label>                  
+            <input type="text" required="true" class="form-control input-sm" id="nuevoDomicilio" name="nuevoDomicilio"
+            placeholder="Domicilio Empresa"/>
           </div>
           <div class="form-group">
-            <label for="nuevaLocalidad">Localidad: </label>
-            <input type="text" class="form-control input-sm" id="nuevaLocalidad" required="true" name="nuevaLocalidad" placeholder="Localidad empresa" />
-          </div>
-          <div class="form-group">
-            <div class="col-xs-3" style="padding-left: 0px">
-              <label for="nuevaProvincia">Provincia: </label>
-            </div>
-            <div class="col-xs-9  input-sm">
-              <select name="nuevaProvincia" id="nuevaProvincia" required="true" class="selectpicker dropdown-toggle form-control input-sm" type="button" data-toggle="dropdown">
-                  <option disabled selected value>--Seleccione una opcion--</option>
-                </select>
-            </div>
-          </div>
-          &nbsp
-          <div class="form-group">
-            <div class="col-xs-3" style="padding-left: 0px">
-              <label for="nuevaSituacionIVA">Situacion IVA: </label>
-            </div>
-            <div class="col-xs-9  input-sm">
-              <select name="nuevaSituacionIVA" id="nuevaSituacionIVA" required="true" class="selectpicker dropdown-toggle form-control input-sm" type="button" data-toggle="dropdown">
-                  <option disabled selected value>--Seleccione una opcion--</option>
-                </select>
-            </div>
-            &nbsp
-            <input type="text" class="form-control input-sm" id="nuevoIva" name="situacionIVACompleto" disabled="true" placeholder="Situacion IVA descripcion completa" />
-          </div>
-          <div class="form-group">
-            <label for="nuevoCuit">Cuit: </label>
-            <input type="number" required="true" class="form-control input-sm" id="nuevoCuit" name="nuevoCuit" placeholder="Cuit" />
+            <label for="nuevaLocalidad">Localidad: </label>                    
+            <input type="text" class="form-control input-sm" id="nuevaLocalidad" required="true" name="nuevaLocalidad" placeholder="Localidad empresa"/>                    
           </div>
           <div class="form-group">
             <div class="col-xs-3" style="padding-left: 0px">
-              <label for="nuevoCodIngresosBrutos">Tipo Ingreso Bruto: </label>
-            </div>
-            <div class="col-xs-9  input-sm">
-              <select id="nuevoCodIngresosBrutos" name="nuevoCodIngresosBrutos" class="selectpicker dropdown-toggle form-control input-sm" type="button" data-toggle="dropdown" required="true">
-                  <option disabled selected value>--Seleccione una opcion--</option>
+                   <label for="nuevaProvincia">Provincia: </label>
+              </div>
+              <div class="col-xs-9  input-sm">                             
+                <select name="nuevaProvincia" id="nuevaProvincia" required="true" class="selectpicker dropdown-toggle form-control input-sm" type="button" data-toggle="dropdown">
+                  <option disabled selected value>--Seleccione una opcion--</option>  
                 </select>
-            </div>
+              </div>                     
           </div>
-          &nbsp
+          &nbsp 
+          <div class="form-group">               
+              <div class="col-xs-3" style="padding-left: 0px">
+                  <label for="nuevaSituacionIVA">Situacion IVA: </label>
+              </div>
+              <div class="col-xs-9  input-sm">                             
+                <select name="nuevaSituacionIVA" id="nuevaSituacionIVA" required="true" class="selectpicker dropdown-toggle form-control input-sm" type="button" data-toggle="dropdown">
+                  <option disabled selected value>--Seleccione una opcion--</option>                   
+                </select>
+              </div> 
+              &nbsp                                                           
+              <input type="text"  class="form-control input-sm" id="nuevoIva" name="situacionIVACompleto" 
+              disabled="true" placeholder="Situacion IVA descripcion completa" />                                 
+          </div>                      
           <div class="form-group">
-            <label for="nuevoIngresosBrutos">Ingresos Brutos: </label>
-            <input type="text" required="true" class="form-control input-sm" id="nuevoIngresosBrutos" name="nuevoIngresosBrutos" placeholder="Ingresos Brutos" />          <div class="form-group">
-            <div class="col-xs-3" style="padding-left: 0px;">
-              <label for="nuevoRubro">Rubro: </label>
-            </div>
-            <div class="col-xs-9">
-              <select name="nuevoRubro" id="nuevoRubro" required="true" class="selectpicker dropdown-toggle form-control input-sm" type="button" data-toggle="dropdown">
-                    <option disabled selected value>--Seleccione una opcion--</option>
+            <label for="nuevoCuit">Cuit: </label>                    
+            <input type="number" required="true" class="form-control input-sm" id="nuevoCuit" name="nuevoCuit" placeholder="Cuit"/>
+          </div> 
+           <div class="form-group">
+            <div class="col-xs-3" style="padding-left: 0px">
+                   <label for="nuevoCodIngresosBrutos">Tipo Ingreso Bruto: </label> 
+              </div>
+              <div class="col-xs-9  input-sm">                             
+                <select id="nuevoCodIngresosBrutos" name="nuevoCodIngresosBrutos" class="selectpicker dropdown-toggle form-control input-sm" type="button" data-toggle="dropdown" required="true">
+                  <option disabled selected value>--Seleccione una opcion--</option>  
+                </select>
+              </div>                     
+          </div>
+          &nbsp 
+          <div class="form-group">
+            <label for="nuevoIngresosBrutos">Ingresos Brutos: </label>                    
+            <input type="text" class="form-control input-sm" id="nuevoIngresosBrutos" name="nuevoIngresosBrutos" placeholder="Ingresos Brutos"/>
+          </div>
+          <div class="form-group">               
+                <div class="col-xs-3" style="padding-left: 0px;">
+                    <label for="nuevoRubro">Rubro: </label>
+                </div>
+                <div class="col-xs-9">                             
+                  <select name="nuevoRubro" id="nuevoRubro" required="true" class="selectpicker dropdown-toggle form-control input-sm" 
+                  type="button" data-toggle="dropdown">
+                    <option disabled selected value>--Seleccione una opcion--</option>  
                   </select>
-            </div>
+                </div>                                
           </div>
           <div class="form-group">
             <label for="nuevoTitular">Titular: </label>
@@ -664,16 +770,16 @@
         <div class="modal-footer">
           <div class="col-xs-6 " id="colDelete">
             <button type="submit" onclick="return false" class="btn btn-danger pull-left" id="deleteEmpresa" style="display: none">Borrar</button>
-          </div>
+          </div>         
           <div class="col-xs-6 ">
             <button type="submit" onclick="return false" class="btn btn-success" id="editDatesEmpresa" style="display: none">Guardar</button>
-            <button type="submit" onclick="return false" class="btn btn-success" id="newEmpresa" style="display: none">Guardar</button>
+            <button type="submit" onclick="return false" class="btn btn-success" id="newEmpresa" style="display: none" >Guardar</button>
             <button type="submit" onclick="return false" class="btn btn-default" data-dismiss="modal">Cerrar</button>
           </div>
         </div>
       </div>
-    </form>
+      </form>                
+    </div>
   </div>
-</div>
-<!-- /MODAL ADD EMPRESA -->
+  <!-- /MODAL ADD EMPRESA -->
 {% endblock %}
