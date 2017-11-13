@@ -802,9 +802,7 @@
         type: "POST",
         url: "/contable/compras/" + window.idEmpresa + "/del",
         //async: false,
-        data: {                  
-          "id_compras": idCompra,
-          },
+        data: {"id_compras": idCompra},
         dataType: "json"
       })
       .done(function(respuesta){
