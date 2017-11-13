@@ -168,5 +168,133 @@ class ComprasController extends Controller
 		return new Response($jsonResponse);
 	}
 
+	/**
+	*	@Route("/contable/compras/{id}/update",name="compras_update")
+	*	@Method({"GET"})
+	*/
+
+	public function updateAction($id,Request $request){
+
+		$respuesta = array (
+			'id' => $request->request->get("id_compras"),
+			'fecha_ingreso' => new \DateTime("now"),
+			'periodo_mes' => $request->request->get("periodo_mes"),
+			'periodo_ano' => $request->request->get("periodo_ano"),
+			'fecha' => new \DateTime($request->request->get("fecha")),
+			'nro_comprobante' => $request->request->get("nro_comprobante"),
+			'cai' => $request->request->get("cai"),
+			'neto_105' => $request->request->get("neto_105"),
+			'neto_21' => $request->request->get("neto_21"),
+			'neto_27' => $request->request->get("neto_27"),
+			'iva_105' => $request->request->get("iva_105"),
+			'iva_21' => $request->request->get("iva_21"),
+			'iva_27' => $request->request->get("iva_27"),
+			'nogravado' => $request->request->get("nogravado"),
+			'exento' => $request->request->get("exento"),
+			'perc_iva' => $request->request->get("perc_iva"),
+			'perc_iibb' => $request->request->get("perc_iibb"),
+			'ret_ganancia' => $request->request->get("ret_ganancia"),
+			'total' => $request->request->get("total"),
+			'cod_comprobante' => $request->request->get("cod_comprobante"),
+			'empresa' => $id,
+			'imputacion' => $request->request->get("imputacion"),
+			'proveedor' => $request->request->get("proveedor"),
+			'tipo_comprobante' => $request->request->get("tipo_comprobante"),
+			//'usuario' => $request->request->get("usuario"),
+			'usuario' => '1',
+		);
+
+		$em = $this->getDoctrine()->getManager();
+
+		$comprobantes = new TblComprobantes();
+		$comprobantes = $em->getRepository("BackendBundle:TblComprobantes")->findOneBy(
+			array(
+				'id' => $respuesta["cod_comprobante"]
+			)
+		);
+
+		$empresas = new TblEmpresas();
+		$empresas = $em->getRepository("BackendBundle:TblEmpresas")->findOneBy(
+			array(
+				'id' => $respuesta["empresa"]
+			)
+		);
+
+		$imputacion = new TblImputaciones();
+		$imputacion = $em->getRepository("BackendBundle:TblImputaciones")->findOneBy(
+			array(
+				'id' => $respuesta["imputacion"]
+			)
+		);
+
+		$proveedores = new TblProveedores();
+		$proveedores = $em->getRepository("BackendBundle:TblProveedores")->findOneBy(
+			array(
+				'id' => $respuesta["proveedor"]
+			)
+		);
+
+		$tipo_comprobantes = new TblTiposComp();
+		$tipo_comprobantes = $em->getRepository("BackendBundle:TblTiposComp")->findOneBy(
+			array(
+				'id' => $respuesta["tipo_comprobante"]
+			)
+		);
+
+		// Instanciamos un objeto Compras y seteamos sus datos.
+		
+		$compras = $em->getRepository("BackendBundle:TblCompras")->findOneBy(
+			array(
+				'id' => $respuesta["id"]
+			)
+		);
+    	
+    	//$compras = new TblCompras();     	
+    	$compras->setFechaIngreso($respuesta["fecha_ingreso"]);
+    	$compras->setPeriodoMes($respuesta["periodo_mes"]);
+    	$compras->setPeriodoAno($respuesta["periodo_ano"]);
+    	$compras->setFecha($respuesta["fecha"]);
+    	$compras->setNroComprobante($respuesta["nro_comprobante"]);
+    	$compras->setCai($respuesta["cai"]);
+    	$compras->setNeto105($respuesta["neto_105"]);
+    	$compras->setNeto21($respuesta["neto_21"]);
+    	$compras->setNeto27($respuesta["neto_27"]);
+    	$compras->setIva105($respuesta["iva_105"]);
+    	$compras->setIva21($respuesta["iva_21"]);
+    	$compras->setIva27($respuesta["iva_27"]);
+    	$compras->setNogravado($respuesta["nogravado"]);
+    	$compras->setExento($respuesta["exento"]);
+    	$compras->setPercIva($respuesta["perc_iva"]);
+    	$compras->setPercIibb($respuesta["perc_iibb"]);
+    	$compras->setRetGanancia($respuesta["ret_ganancia"]);
+    	$compras->setTotal($respuesta["total"]);
+    	$compras->setCodComprobante($comprobantes);
+    	$compras->setEmpresa($empresas);
+    	$compras->setImputacion($imputacion);
+    	$compras->setProveedor($proveedores);
+    	$compras->setTipoComprobante($tipo_comprobantes);
+    	$compras->setUsuario($respuesta["usuario"]);
+
+    	$em->persist($compras);
+		$em->flush();
+
+		$compras = array(
+			'status'=> 'OK',
+			'draw' => '',
+			'recordsTotal' => '',
+			'recordsFiltered' => '',
+			'data' => '',
+		);
+
+		$result = $em->getRepository("BackendBundle:TblCompras")->findBy(array('empresa' => $id));
+		$compras["data"] = $result;
+
+
+		$serializer = SerializerBuilder::create()->build();
+		$jsonResponse = $serializer->serialize($compras, 'json');
+		//return new Response($jsonResponse);		
+		return new Response($jsonResponse);
+	}
+
 
 }

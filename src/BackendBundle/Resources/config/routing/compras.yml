@@ -7,3 +7,8 @@ compras_new:
     path: /{id}/new
     defaults: { _controller: BackendBundle:Compras:new }
     methods: POST
+
+compras_update:
+    path: /{id}/update
+    defaults: { _controller: BackendBundle:Compras:update }
+    methods: POST

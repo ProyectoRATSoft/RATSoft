@@ -83,6 +83,7 @@
   //});
     //recuperamos el array desde el controller
     window.arrayrespuesta = {{ respuesta|raw }};
+    console.log(arrayrespuesta);
     window.idEmpresa = {{ empresa|raw }};
 
     //Preparamos el array que vamos a usar para los proveedores
@@ -211,7 +212,13 @@
                     "responsive": true,   
                     retrieve: true,
                     data : window.arrayrespuesta.data,
-                     "columns": [                             
+                     "columns": [
+                      { 
+                        "data": "id",
+                        "title": "ID",
+                        //"visible": false, // hago esta columna invisible porque no la neecsito ver pero la voy a usar para poder apuntarle a la compra cuando arme el modal de edición.
+                        "className": "id-compra"
+                      },                           
                       { 
                         "data": "proveedor.nombre",
                         "title": "Razon Social"
@@ -330,9 +337,10 @@
     table.buttons().container().appendTo( '#tabla-compras .col-sm-6:eq(0)' );
 
     var tableReload = function(datosnuevos){
-      window.arrayrespuesta = datosnuevos;
+      window.arrayrespuesta.data = datosnuevos;
       $('#tabla-compras').DataTable().clear().draw();
       $('#tabla-compras').DataTable().rows.add(datosnuevos).draw();
+      console.log(window.arrayrespuesta);
       };                 
 
         // A partir de acá metemos lo que pasa cuando picamos sobre alguna compra
@@ -345,28 +353,15 @@
         window.table.$('tr.active').removeClass('active');
         $(this).addClass('active');
         // metemos en una variable lo que hay en e campo cuit de la empresa seleccionada
-        var cuit = window.table.$("tr.active").find(".cuit").text();
-        window.arrayrespuesta.forEach(function(item,index,arr){
-          if (item.cuit == cuit){
-          $('div.modal-body div.form-group #nuevoId').val(item.id);
-          $('div.modal-body div.form-group #nuevoNombre').val(item.nombre);
-          $('div.modal-body div.form-group #nuevoDomicilio').val(item.domicilio);
-          $('div.modal-body div.form-group #nuevaLocalidad').val(item.localidad);
-          $('div.modal-body div.form-group #nuevaProvincia').val(item.provincia.id);
-          $('div.modal-body div.form-group #nuevaSituacionIVA').val(item.iva.id);
-          $('div.modal-body div.form-group #nuevoIva').val(item.iva.detalle);
-          $('div.modal-body div.form-group #nuevoCuit').val(item.cuit);
-          $('div.modal-body div.form-group #nuevoIngresosBrutos').val(item.iibb);
-          $('div.modal-body div.form-group #nuevoCodIngresosBrutos').val(item.iibb_cod.id);
-          $('div.modal-body div.form-group #nuevoRubro').val(item.rubro.id);
-          $('div.modal-body div.form-group #nuevoTitular').val(item.titular);
-          }
-        });
       }
     });
 
     $("#addCompra").click(function(){
       $("#modal-compras").modal();
+      $("h4.modal-title").text("Agregar Empresa");
+      $('#boton-new').css("display", "");
+      $('#boton-edit').css("display", "none");
+      $('#boton-del').css("display", "none");
       //Limpiamos el modal
       $("#fechaCompra").val('');
       $("#periodo").val('');
@@ -376,12 +371,15 @@
       $('#tipoComprobante').val('');
       $('#imputacion').val('');
       $('#cai').val('');
+      $('#nombre').val('');
+      $('#iva').val('');
+      $('#jurisdiccion').val('');
       $('#exento').val('0');
       $('#neto105').val('0');
       $('#neto21').val('0');
       $('#neto27').val('0');
       $('#iva105').val('0');
-      $('#iva21').val('0');
+      $('#iva21').val('0');-
       $('#iva27').val('0');
       $('#nogravado').val('0');
       $('#perc_iva').val('0');
@@ -389,6 +387,72 @@
       $('#ret_ganancia').val('0');
       $('#total').val('0');
     });
+    $("#editCompra").click(function(){
+      $("#modal-compras").modal();
+      $("h4.modal-title").text("Editar Empresa");
+      $('#boton-new').css("display", "none");
+      $('#boton-edit').css("display", "");
+      $('#boton-del').css("display", "");
+      //cargamos el modal
+      window.idCompra = window.table.$("tr.active").find(".id-compra").text();
+      console.log(idCompra);
+        window.arrayrespuesta.data.forEach(function(item,index,arr){
+          if (item.id == idCompra){
+            console.log(item);
+            $('div.modal-body div.form-group #periodo').val( item.periodo_ano + "-" + ("0" + item.periodo_mes).slice( -2 )); // hay que mandarlo en formato YYYY-MM
+            var objFecha = new Date(item.fecha);
+            var realFecha = new Date(objFecha.getTime() + 86400000);
+            var fechaDia = realFecha.getDate();
+            var fechaMes = realFecha.getMonth() + 1;
+            var fechaAno = realFecha.getFullYear();
+            $("#fechaCompra").val(fechaAno + "-" + ("0" + fechaMes).slice(-2) + "-" + ("0" + fechaDia).slice(-2));
+            console.log(fechaAno + "-" + ("0" + fechaMes).slice(-2) + "-" + ("0" + fechaDia).slice(-2)); // hay que mandarlo en formato YYYY-MM-DD
+            
+            window.idProv = item.proveedor.id;
+            $("#cuit").val(item.proveedor.cuit);
+            $("#iva").val(item.proveedor.iva.codigo);
+            $("#jurisdiccion").val(item.proveedor.jurisdiccion.nombre);
+            $("#nombre").val(item.proveedor.nombre);
+            $("#comprobanteNumero").val(item.nro_comprobante);
+            console.log(item.nro_comprobante);
+            $("#comprobante").val(item.cod_comprobante.id);
+            
+            var option = item.cod_comprobante.id;
+            var opciones = "<option value='' selected='selected'>--seleccionar--</option>";
+            window.arrayTiposComp.forEach(function(item,index,arr){
+              if(option == item.cod_comp.id){
+                opciones = opciones + "<option value='"+item.id+"'>"+item.tipo_comp+"</option>";
+              }
+            });
+            $("#tipoComprobante").html(opciones);
+            $("#tipoComprobante").val(item.tipo_comprobante.id);
+
+            var option = window.idProv;
+            var opciones = "<option value='' selected='selected'>--seleccionar--</option>";
+            window.arrayImputProv.forEach(function(item,index,arr){
+              if(option == item.id_prov){
+                opciones = opciones + "<option value='"+item.id_imp.id+"'>"+item.id_imp.nombre+"</option>";
+              }
+            });
+            $("#imputacion").html(opciones);
+            $('#imputacion').val(item.imputacion.id);
+            
+            $('#cai').val(item.cai);
+            $('#exento').val(item.exento);
+            $('#neto105').val(item.neto105);
+            $('#neto21').val(item.neto21);
+            $('#neto27').val(item.neto27);
+            $('#iva105').val(item.iva105);
+            $('#iva21').val(item.iva21);
+            $('#iva27').val(item.iva27);
+            $('#nogravado').val(item.nogravado);
+            $('#perc_iva').val(item.perc_iva);
+            $('#perc_iibb').val(item.perc_iibb);
+            $('#ret_ganancia').val(item.ret_ganancia);
+            $('#total').val(item.total);
+          }
+        });
+      });
 
 
     $("#modal-formulario").validate({
@@ -559,8 +623,9 @@
             
       });
 
+    // Apartir de aca lo que hace el boron agregar para crear una nueva compra
 
-    $("#boton-guardar").on('click',function(){
+    $("#boton-new").on('click',function(){
     if ($("#modal-formulario").valid()){  
       var objFecha = new Date($('#fechaCompra').val());
       var realFecha = new Date(objFecha.getTime() + 86400000);
@@ -622,6 +687,95 @@
         $('#tipoComprobante').val('');
         $('#imputacion').val('');
         $('#cai').val('');
+        $('#nombre').val('');
+        $('#iva').val('');
+        $('#jurisdiccion').val('');
+        $('#exento').val('0');
+        $('#neto105').val('0');
+        $('#neto21').val('0');
+        $('#neto27').val('0');
+        $('#iva105').val('0');
+        $('#iva21').val('0');
+        $('#iva27').val('0');
+        $('#nogravado').val('0');
+        $('#perc_iva').val('0');
+        $('#perc_iibb').val('0');
+        $('#ret_ganancia').val('0');
+        $('#total').val('0');
+      //deberiamos mostrar algun mensaje tanto como de error, como de que todo salio bien. y luego recargar la grilla para que aparezca la nueva empresa en la tabla.
+      //alert(resp);
+      });
+    }
+    });
+
+    // Apartir de aca lo que hace el boron agregar para editar una compra
+
+    $("#boton-edit").on('click',function(){
+    if ($("#modal-formulario").valid()){  
+      var objFecha = new Date($('#fechaCompra').val());
+      var realFecha = new Date(objFecha.getTime() + 86400000);
+      var objPeriodo = new Date($('#periodo').val());
+      var realPeriodo = new Date(objPeriodo.getTime() + 86400000);
+
+      var periodoMes = realPeriodo.getMonth() + 1;
+      var periodoAno = realPeriodo.getFullYear();
+
+      var fechaDia = realFecha.getDate();
+      var fechaMes = realFecha.getMonth() + 1;
+      var fechaAno = realFecha.getFullYear();
+      
+      //realizo un post pasando la url correspondiente al backend, los datos previamente capturados y realizo la funcion correspondiente que me devolvera la respuesta.
+            
+      $.ajax({
+        type: "POST",
+        url: "/contable/compras/" + window.idEmpresa + "/update",
+        //async: false,
+        data: {                  
+          "periodo_mes" : ( "0" + periodoMes).slice( -2 ), 
+          "periodo_ano" : periodoAno, 
+          "fecha" : fechaAno + "-" + ( '0' + fechaMes).slice( -2 ) + "-" + ( '0' + fechaDia).slice( -2 ),
+          "id_compras": idCompra,
+          "proveedor" : idProv,
+          "cod_comprobante" : $('#comprobante').val(), 
+          "nro_comprobante" : $('#comprobanteNumero').val(),
+          "tipo_comprobante" : $('#tipoComprobante').val(),
+          "imputacion" : $('#imputacion').val(),
+          "cai" : $('#cai').val(),
+          "neto_105": $('#neto105').val(), 
+          "neto_21": $('#neto21').val(),
+          "neto_27": $('#neto27').val(),
+          "iva_105": $('#iva105').val(),
+          "iva_21": $('#iva21').val(),
+          "iva_27": $('#iva27').val(),
+          "nogravado": $('#nogravado').val(),
+          "exento": $('#exento').val(),
+          "perc_iva": $('#perc_iva').val(),
+          "perc_iibb": $('#perc_iibb').val(),
+          "ret_ganancia": $('#ret_ganancia').val(),
+          "total": $('#total').val(),
+           },
+        dataType: "json"
+      })
+      .done(function(respuesta){
+        console.log(respuesta);
+        if(respuesta.status = 'OK'){
+          alert("compra agregada con éxito");
+        }else{
+          alert("no se pudo agregar la compra")
+        } 
+        $("#modal-compras").modal('toggle');
+        tableReload(respuesta.data);
+        $("#fechaCompra").val('');
+        $("#periodo").val('');
+        $("#cuit").val('');
+        $('#comprobante').val('');
+        $('#comprobanteNumero').val('');
+        $('#tipoComprobante').val('');
+        $('#imputacion').val('');
+        $('#cai').val('');
+        $('#nombre').val('');
+        $('#iva').val('');
+        $('#jurisdiccion').val('');
         $('#exento').val('0');
         $('#neto105').val('0');
         $('#neto21').val('0');
@@ -831,7 +985,9 @@
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-        <button type="submit" class="btn btn-success" onclick="return false" id="boton-guardar">Guardar</button>
+        <button type="submit" class="btn btn-success" onclick="return false" id="boton-new" style="display: none">Agregar</button>
+        <button type="submit" class="btn btn-success" onclick="return false" id="boton-edit" style="display: none">Guardar</button>
+        <button type="submit" class="btn btn-danger pull-left" onclick="return false" id="boton-del" style="display: none">Eliminar</button>
       </div>
     </form>  
     </div>
