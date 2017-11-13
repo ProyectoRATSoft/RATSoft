@@ -13,6 +13,7 @@ use BackendBundle\Entity\TblEmpresas;
 use BackendBundle\Entity\TblImputaciones;
 use BackendBundle\Entity\TblProveedores;
 use BackendBundle\Entity\TblTiposComp;
+use BackendBundle\Entity\User;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 
@@ -124,6 +125,13 @@ class ComprasController extends Controller
 			)
 		);
 
+		$usuario = new User();
+		$usuario = $em->getRepository("BackendBundle:User")->findOneBy(
+			array(
+				'id' => $respuesta["usuario"]
+			)
+		);
+
     	
     	$compras = new TblCompras();     	
     	$compras->setFechaIngreso($respuesta["fecha_ingreso"]);
@@ -149,7 +157,7 @@ class ComprasController extends Controller
     	$compras->setImputacion($imputacion);
     	$compras->setProveedor($proveedores);
     	$compras->setTipoComprobante($tipo_comprobantes);
-    	$compras->setUsuario($respuesta["usuario"]);
+    	$compras->setUsuario($usuario);
     	$compras->setActivo("1");
 
     	$em->persist($compras);
@@ -250,6 +258,13 @@ class ComprasController extends Controller
 			)
 		);
 
+		$usuario = new User();
+		$usuario = $em->getRepository("BackendBundle:User")->findOneBy(
+			array(
+				'id' => $respuesta["usuario"]
+			)
+		);
+
 		// Instanciamos un objeto Compras y seteamos sus datos.
 		
 		$compras = $em->getRepository("BackendBundle:TblCompras")->findOneBy(
@@ -282,7 +297,7 @@ class ComprasController extends Controller
     	$compras->setImputacion($imputacion);
     	$compras->setProveedor($proveedores);
     	$compras->setTipoComprobante($tipo_comprobantes);
-    	$compras->setUsuario($respuesta["usuario"]);
+    	$compras->setUsuario($usuario);
     	$compras->setActivo("1");
 
     	$em->persist($compras);

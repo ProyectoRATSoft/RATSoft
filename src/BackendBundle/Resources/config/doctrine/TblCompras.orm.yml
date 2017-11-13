@@ -17,6 +17,9 @@ BackendBundle\Entity\TblCompras:
         FK_EMPRESA_COMPRA_idx:
             columns:
                 - empresa
+        FK_USER_COMPRA_idx:
+            columns:
+                - usuario
     id:
         id:
             type: integer
@@ -129,11 +132,6 @@ BackendBundle\Entity\TblCompras:
             nullable: false
             precision: 10
             scale: 2
-        usuario:
-            type: integer
-            nullable: false
-            options:
-                unsigned: false
         activo:
             type: integer
             nullable: false
@@ -188,6 +186,16 @@ BackendBundle\Entity\TblCompras:
             inversedBy: null
             joinColumns:
                 tipo_comprobante:
+                    referencedColumnName: id
+            orphanRemoval: false
+        usuario:
+            targetEntity: User
+            cascade: {  }
+            fetch: LAZY
+            mappedBy: null
+            inversedBy: null
+            joinColumns:
+                usuario:
                     referencedColumnName: id
             orphanRemoval: false
     lifecycleCallbacks: {  }
