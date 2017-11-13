@@ -12,3 +12,8 @@ compras_update:
     path: /{id}/update
     defaults: { _controller: BackendBundle:Compras:update }
     methods: POST
+
+compras_del:
+    path: /{id}/del
+    defaults: { _controller: BackendBundle:Compras:del }
+    methods: POST

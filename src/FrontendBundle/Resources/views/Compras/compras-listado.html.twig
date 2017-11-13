@@ -793,6 +793,57 @@
       });
     }
     });
+
+    // A partir de aca lo que pasa cuando le damos al boton eliminar
+
+    $("#boton-del").on("click",function(){
+
+      $.ajax({
+        type: "POST",
+        url: "/contable/compras/" + window.idEmpresa + "/del",
+        //async: false,
+        data: {                  
+          "id_compras": idCompra,
+          },
+        dataType: "json"
+      })
+      .done(function(respuesta){
+        console.log(respuesta);
+        if(respuesta.status = 'OK'){
+          alert("compra eliminada con éxito");
+        }else{
+          alert("no se pudo eliminar la compra")
+        } 
+        $("#modal-compras").modal('toggle');
+        tableReload(respuesta.data);
+        $("#fechaCompra").val('');
+        $("#periodo").val('');
+        $("#cuit").val('');
+        $('#comprobante').val('');
+        $('#comprobanteNumero').val('');
+        $('#tipoComprobante').val('');
+        $('#imputacion').val('');
+        $('#cai').val('');
+        $('#nombre').val('');
+        $('#iva').val('');
+        $('#jurisdiccion').val('');
+        $('#exento').val('0');
+        $('#neto105').val('0');
+        $('#neto21').val('0');
+        $('#neto27').val('0');
+        $('#iva105').val('0');
+        $('#iva21').val('0');
+        $('#iva27').val('0');
+        $('#nogravado').val('0');
+        $('#perc_iva').val('0');
+        $('#perc_iibb').val('0');
+        $('#ret_ganancia').val('0');
+        $('#total').val('0');
+      //deberiamos mostrar algun mensaje tanto como de error, como de que todo salio bien. y luego recargar la grilla para que aparezca la nueva empresa en la tabla.
+      //alert(resp);
+      });
+
+    });
    
   });
                              

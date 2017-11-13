@@ -32,7 +32,11 @@ class ComprasController extends Controller
 			'data' => '',
 		);
 
-		$result = $em->getRepository("BackendBundle:TblCompras")->findBy(array('empresa' => $id));
+		$result = $em->getRepository("BackendBundle:TblCompras")->findBy(
+			array(
+				'empresa' => $id,
+				'activo' => "1"
+			));
 		$compras["data"] = $result;
 		$serializer = SerializerBuilder::create()->build();
 		$jsonResponse = $serializer->serialize($compras, 'json');
@@ -146,6 +150,7 @@ class ComprasController extends Controller
     	$compras->setProveedor($proveedores);
     	$compras->setTipoComprobante($tipo_comprobantes);
     	$compras->setUsuario($respuesta["usuario"]);
+    	$compras->setActivo("1");
 
     	$em->persist($compras);
 		$em->flush();
@@ -158,7 +163,11 @@ class ComprasController extends Controller
 			'data' => '',
 		);
 
-		$result = $em->getRepository("BackendBundle:TblCompras")->findBy(array('empresa' => $id));
+		$result = $em->getRepository("BackendBundle:TblCompras")->findBy(
+			array(
+				'empresa' => $id,
+				'activo' => "1"
+			));
 		$compras["data"] = $result;
 
 
@@ -274,6 +283,7 @@ class ComprasController extends Controller
     	$compras->setProveedor($proveedores);
     	$compras->setTipoComprobante($tipo_comprobantes);
     	$compras->setUsuario($respuesta["usuario"]);
+    	$compras->setActivo("1");
 
     	$em->persist($compras);
 		$em->flush();
@@ -286,7 +296,11 @@ class ComprasController extends Controller
 			'data' => '',
 		);
 
-		$result = $em->getRepository("BackendBundle:TblCompras")->findBy(array('empresa' => $id));
+		$result = $em->getRepository("BackendBundle:TblCompras")->findBy(
+			array(
+				'empresa' => $id,
+				'activo' => "1"
+			));
 		$compras["data"] = $result;
 
 
@@ -294,6 +308,50 @@ class ComprasController extends Controller
 		$jsonResponse = $serializer->serialize($compras, 'json');
 		//return new Response($jsonResponse);		
 		return new Response($jsonResponse);
+	}
+
+	/**
+	*	@Route("/contable/compras/{id}/del",name="compras_del")
+	*	@Method({"post"})
+	*/
+	
+	public function delAction($id, Request $request){
+
+		$respuesta = array (
+			'id' => $request->request->get("id_compras"),
+		);
+		$em = $this->getDoctrine()->getManager();
+		$compras = $em->getRepository("BackendBundle:TblCompras")->findOneBy(
+			array(
+				'id' => $respuesta["id"],
+			)
+		);
+		$compras->setActivo("0");
+		$em->persist($compras);
+		$em->flush();
+
+		$compras = array(
+				'status' => 'OK',
+				'msg' => 'La compra ha sido Eliminada con exito',
+				'draw' => '',
+				'recordsTotal' => '',
+				'recordsFiltered' => '',
+				'data' => '',
+			);
+		$em = $this->getDoctrine()->getManager();
+		$result = $em->getRepository("BackendBundle:TblCompras")->findBy(
+			array(
+				'empresa' => $id,
+				'activo' => "1"
+			));
+		$compras["data"] = $result;
+
+
+		$serializer = SerializerBuilder::create()->build();
+		$jsonResponse = $serializer->serialize($compras, 'json');
+		//return new Response($jsonResponse);		
+		return new Response($jsonResponse);
+
 	}
 
 

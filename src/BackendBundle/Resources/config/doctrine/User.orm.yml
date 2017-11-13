@@ -19,7 +19,7 @@ BackendBundle\Entity\User:
                 unsigned: false
             id: true
             generator:
-                strategy: IDENTITY            
+                strategy: IDENTITY
     # fields:
     #     username:
     #         type: string
