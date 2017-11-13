@@ -805,4 +805,33 @@ class TblVentas
     {
         return $this->usuario;
     }
+    /**
+     * @var integer
+     */
+    private $activo;
+
+
+    /**
+     * Set activo
+     *
+     * @param integer $activo
+     *
+     * @return TblVentas
+     */
+    public function setActivo($activo)
+    {
+        $this->activo = $activo;
+
+        return $this;
+    }
+
+    /**
+     * Get activo
+     *
+     * @return integer
+     */
+    public function getActivo()
+    {
+        return $this->activo;
+    }
 }

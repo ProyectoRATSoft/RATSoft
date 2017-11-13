@@ -104,6 +104,11 @@ BackendBundle\Entity\TblVentas:
             type: date
             nullable: false
             column: fecha_ingreso
+        activo:
+            type: integer
+            nullable: false
+            options:
+                unsigned: false
     manyToOne:
         cliente:
             targetEntity: TblProveedores

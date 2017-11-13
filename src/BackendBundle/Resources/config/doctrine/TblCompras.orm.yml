@@ -134,6 +134,11 @@ BackendBundle\Entity\TblCompras:
             nullable: false
             options:
                 unsigned: false
+        activo:
+            type: integer
+            nullable: false
+            options:
+                unsigned: false
     manyToOne:
         codComprobante:
             targetEntity: TblComprobantes
