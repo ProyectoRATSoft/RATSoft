@@ -7,3 +7,13 @@ ventas_new:
     path: /{id}/new
     defaults: { _controller: BackendBundle:Ventas:new }
     methods: POST
+
+ventas_update:
+    path: /{id}/update
+    defaults: { _controller: BackendBundle:Ventas:update }
+    methods: POST
+
+ventas_del:
+    path: /{id}/del
+    defaults: { _controller: BackendBundle:Ventas:del }
+    methods: POST
