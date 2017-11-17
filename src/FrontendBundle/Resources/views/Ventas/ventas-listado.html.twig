@@ -109,9 +109,7 @@
         $('#tipoComprobante').empty();
         $('#tipoComprobante').prepend('<option disabled selected value>--Seleccionar--</option>');
          $('#rubro').empty();
-        // var opciones = "<option value='' selected='selected'>--seleccionar--</option>";
-        var opciones = "<option value='"+arrayrespuesta.data['0'].empresa.rubro.id+"'>"+arrayrespuesta.data['0'].empresa.rubro.nombre+"</option>";
-        //console.log(arrayrespuesta.empresa.rubro.nombre);
+        var opciones = "<option value='"+arrayrespuesta.data["0"].empresa.rubro.id+"'>"+arrayrespuesta.data["0"].empresa.rubro.nombre+"</option>";
         $('#rubro').prepend(opciones);
         $('#exento').val('0');
         $('#neto105').val('0');
@@ -166,17 +164,6 @@
             });
             $("#tipoComprobante").html(opciones);
             $("#tipoComprobante").val(item.tipo_comprobante.id);
-
-            //var option = window.idProv;
-            //var opciones = "<option value='' selected='selected'>--seleccionar--</option>";
-            // window.arrayImputProv.forEach(function(item,index,arr){
-            //   if(option == item.id_prov){
-            //     opciones = opciones + "<option value='"+item.id_imp.id+"'>"+item.id_imp.nombre+"</option>";
-            //   }
-            // });
-            // $("#imputacion").html(opciones);
-            // $('#imputacion').val(item.imputacion.id);
-            
             $('#exento').val(item.neto_exento);
             $('#neto105').val(item.neto105);
             $('#neto21').val(item.neto21);
@@ -246,7 +233,7 @@
         $("#modal-ventas").modal('toggle');
         tableReload(respuesta.data);
         $('empresaID').val('');
-          $("#fechaVenta").val('');
+        $("#fechaVenta").val('');
         $("#periodo").val('');
         $("#cuit").val('');
         $('#nombre').val('');
@@ -261,9 +248,8 @@
         //con esto vaciamos el campo y en la siguiente linea cargado nuevamente el seleccionar disabled
         $('#tipoComprobante').empty();
         $('#tipoComprobante').prepend('<option disabled selected value>--Seleccionar--</option>');
-         $('#rubro').empty();
-        // var opciones = "<option value='' selected='selected'>--seleccionar--</option>";
-        
+        $('#rubro').empty();
+        // var opciones = "<option value='' selected='selected'>--seleccionar--</option>";        
         //console.log(arrayrespuesta.empresa.rubro.nombre);
         //$('#rubro').prepend(opciones);
         $('#exento').val('0');
@@ -301,7 +287,7 @@
         $("#modal-ventas").modal('toggle');
         tableReload(respuesta.data);
         $('empresaID').val('');
-          $("#fechaVenta").val('');
+        $("#fechaVenta").val('');
         $("#periodo").val('');
         $("#cuit").val('');
         $('#nombre').val('');
