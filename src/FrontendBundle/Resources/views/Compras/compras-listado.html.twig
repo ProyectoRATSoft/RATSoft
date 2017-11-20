@@ -71,6 +71,7 @@
   $.get("/comprobantes/tipos",function(resp,estado,jqXHR){
       var arrayResp = JSON.parse(resp);
       window.arrayTiposComp = arrayResp.data;
+      console.log(arrayTiposComp);
     });
 
   $.get("/imputaciones/prov",function(resp,estado,jqXHR){
@@ -156,6 +157,57 @@
         }
       })
       $("#tipoComprobante").html(opciones);
+
+    });
+
+    $('#tipoComprobante').change(function(){
+      var option = $(this).find('option:selected').val();
+      window.arrayTiposComp.forEach(function(item,index,arr){
+        if(option == item.id){
+          if(item.blk_total == 1){
+            $("#total").removeAttr("disabled");
+            $("#total").attr("disabled","true");
+          }else{
+            $("#total").removeAttr("disabled");
+          }
+          if(item.blk_exe == 1){
+              $("#exento").removeAttr("disabled");
+              $("#exento").attr("disabled","true");
+          }else{
+            $("#exento").removeAttr("disabled");
+          }
+          if(item.blk_iva == 1){
+              $(".iva").removeAttr("disabled");
+              $(".iva").attr("disabled","true");
+          }else{
+            $(".iva").removeAttr("disabled");
+          }
+          if(item.blk_netos == 1){
+              $(".calcularIva").removeAttr("disabled");
+              $(".calcularIva").attr("disabled","true");
+          }else{
+            $(".calcularIva").removeAttr("disabled");
+          }
+          if(item.blk_nograv == 1){
+              $("#nogravado").removeAttr("disabled");
+              $("#nogravado").attr("disabled","true");
+          }else{
+            $("#nogravado").removeAttr("disabled");
+          }
+          if(item.blk_perciibb == 1){
+              $("perc_iibb").removeAttr("disabled");
+              $("perc_iibb").attr("disabled","true");
+          }else{
+            $("perc_iibb").removeAttr("disabled");
+          }
+          if(item.blk_perciva == 1){
+              $("#perc_iibb").removeAttr("disabled");
+              $("#perc_iibb").attr("disabled","true");
+          }else{
+            $("#perc_iibb").removeAttr("disabled");
+          }
+        }
+      })
     });
     
     //Llenamos el datatable con el array que trajimos del controller
@@ -358,7 +410,7 @@
 
     $("#addCompra").click(function(){
       $("#modal-compras").modal();
-      $("h4.modal-title").text("Agregar Empresa");
+      //$("h4.modal-title").text("Agregar Compra");
       $('#boton-new').css("display", "");
       $('#boton-edit').css("display", "none");
       $('#boton-del').css("display", "none");
@@ -385,11 +437,36 @@
       $('#perc_iva').val('0');
       $('#perc_iibb').val('0');
       $('#ret_ganancia').val('0');
-      $('#total').val('0');
+      $('#total').removeAttr("disabled");
+      $('#exento').removeAttr("disabled");
+      $('#neto105').removeAttr("disabled");
+      $('#neto21').removeAttr("disabled");
+      $('#neto27').removeAttr("disabled");
+      $('#iva105').removeAttr("disabled");
+      $('#iva21').removeAttr("disabled");-
+      $('#iva27').removeAttr("disabled");
+      $('#nogravado').removeAttr("disabled");
+      $('#perc_iva').removeAttr("disabled");
+      $('#perc_iibb').removeAttr("disabled");
+      $('#ret_ganancia').removeAttr("disabled");
+      $('#total').removeAttr("disabled");
     });
     $("#editCompra").click(function(){
+      $('#total').removeAttr("disabled");
+      $('#exento').removeAttr("disabled");
+      $('#neto105').removeAttr("disabled");
+      $('#neto21').removeAttr("disabled");
+      $('#neto27').removeAttr("disabled");
+      $('#iva105').removeAttr("disabled");
+      $('#iva21').removeAttr("disabled");-
+      $('#iva27').removeAttr("disabled");
+      $('#nogravado').removeAttr("disabled");
+      $('#perc_iva').removeAttr("disabled");
+      $('#perc_iibb').removeAttr("disabled");
+      $('#ret_ganancia').removeAttr("disabled");
+      $('#total').removeAttr("disabled");
       $("#modal-compras").modal();
-      $("h4.modal-title").text("Editar Empresa");
+      //$("h4.modal-title").text("Editar Empresa");
       $('#boton-new').css("display", "none");
       $('#boton-edit').css("display", "");
       $('#boton-del').css("display", "");
@@ -425,7 +502,7 @@
               }
             });
             $("#tipoComprobante").html(opciones);
-            $("#tipoComprobante").val(item.tipo_comprobante.id);
+            $("#tipoComprobante").val(item.tipo_comprobante.id).trigger('change');
 
             var option = window.idProv;
             var opciones = "<option value='' selected='selected'>--seleccionar--</option>";
@@ -706,6 +783,9 @@
       //alert(resp);
       });
     }
+
+
+
     });
 
     // Apartir de aca lo que hace el boron agregar para editar una compra
@@ -841,6 +921,31 @@
       //alert(resp);
       });
 
+    });
+
+    $(".calcularIva").on("change",function(){
+      var iva105 = parseFloat($('#neto105').val()) * parseFloat("0.105");
+      $("#iva105").val(iva105);
+      var iva21 = parseFloat($('#neto21').val()) * parseFloat("0.21");
+      $("#iva21").val(iva21);
+      var iva27 = parseFloat($('#neto27').val()) * parseFloat("0.27");
+      $("#iva27").val(iva27);
+    });
+
+    $(".calculado").on("change",function(){
+      var comprasTotal = 
+        parseFloat($('#exento').val()) +
+        parseFloat($('#neto105').val()) +
+        parseFloat($('#neto21').val()) +
+        parseFloat($('#neto27').val()) +
+        parseFloat($('#iva105').val()) +
+        parseFloat($('#iva21').val()) +
+        parseFloat($('#iva27').val()) +
+        parseFloat($('#nogravado').val()) +
+        parseFloat($('#perc_iva').val()) +
+        parseFloat($('#perc_iibb').val()) +
+        parseFloat($('#ret_ganancia').val());
+      $('#total').val(comprasTotal);
     });
    
   });
@@ -982,47 +1087,47 @@
           <div class="col-xs-6">
             <div class="form-group">
               <label for="neto105">Exento :</label>                    
-              <input type="text" class="form-control input-sm" id="exento" name="exento" />
+              <input type="text" class="form-control input-sm calculado" id="exento" name="exento" />
             </div>            
             <div class="form-group">
               <label for="neto105">Neto al 10,5% :</label>                    
-              <input type="text" class="form-control input-sm" id="neto105" name="neto105" />
+              <input type="text" class="form-control input-sm calculado calcularIva" id="neto105" name="neto105" />
             </div>
             <div class="form-group">
               <label for="neto21">Neto al 21% :</label>                    
-              <input type="text" class="form-control input-sm" id="neto21" name="neto21" />
+              <input type="text" class="form-control input-sm calculado calcularIva" id="neto21" name="neto21" />
             </div>
             <div class="form-group">
               <label for="neto27">Neto al 27% :</label>                    
-              <input type="text" class="form-control input-sm" id="neto27" name="neto27" />
+              <input type="text" class="form-control input-sm calculado calcularIva" id="neto27" name="neto27" />
             </div>
             <div class="form-group">
               <label for="nogravado">No Gravado : </label>                    
-              <input type="text" class="form-control input-sm" id="nogravado" name="nogravado" />
+              <input type="text" class="form-control input-sm calculado" id="nogravado" name="nogravado" />
             </div>
             <div class="form-group">
               <label for="iva105">IVA 10,5%: </label>                    
-              <input type="text" class="form-control input-sm" id="iva105" name="iva105" />
+              <input type="text" class="form-control input-sm calculado iva" id="iva105" name="iva105" />
             </div>
             <div class="form-group">
               <label for="iva21">IVA 21% : </label>                    
-              <input type="text" class="form-control input-sm" id="iva21" name="iva21" />
+              <input type="text" class="form-control input-sm calculado iva" id="iva21" name="iva21" />
             </div>
             <div class="form-group">
               <label for="iva27">IVA 27%: </label>                    
-              <input type="text" class="form-control input-sm" id="iva27" name="iva27" />
+              <input type="text" class="form-control input-sm calculado iva" id="iva27" name="iva27" />
             </div>
             <div class="form-group">
               <label for="perc_iva">Percepciones de IVA : </label>                    
-              <input type="text" class="form-control input-sm" id="perc_iva" name="perc_iva" />
+              <input type="text" class="form-control input-sm calculado" id="perc_iva" name="perc_iva" />
             </div>
             <div class="form-group">
               <label for="perc_iibb">Percepciones de IIBB : </label>                    
-              <input type="text" class="form-control input-sm" id="perc_iibb" name="perc_iibb" />
+              <input type="text" class="form-control input-sm calculado" id="perc_iibb" name="perc_iibb" />
             </div>
             <div class="form-group">
               <label for="ret_ganancia">Retenciones de Ganancias : </label>                    
-              <input type="text" class="form-control input-sm" id="ret_ganancia" name="ret_ganancia" />
+              <input type="text" class="form-control input-sm calculado" id="ret_ganancia" name="ret_ganancia" />
             </div>
             <div class="form-group">
               <label for="total">Total : </label>                    

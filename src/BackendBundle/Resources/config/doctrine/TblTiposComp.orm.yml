@@ -22,6 +22,69 @@ BackendBundle\Entity\TblTiposComp:
             options:
                 fixed: false
             column: tipo_comp
+        blkExe:
+            type: integer
+            nullable: false
+            options:
+                unsigned: false
+            column: blk_exe
+        blkPerciva:
+            type: integer
+            nullable: false
+            options:
+                unsigned: false
+            column: blk_perciva
+        blkPerciibb:
+            type: integer
+            nullable: false
+            options:
+                unsigned: false
+            column: blk_perciibb
+        blkRet:
+            type: integer
+            nullable: false
+            options:
+                unsigned: false
+            column: blk_ret
+        blkNetos:
+            type: integer
+            nullable: false
+            options:
+                unsigned: false
+            column: blk_netos
+        blkIva:
+            type: integer
+            nullable: false
+            options:
+                unsigned: false
+            column: blk_iva
+        blkTotal:
+            type: integer
+            nullable: false
+            options:
+                unsigned: false
+            column: blk_total
+        blkNograv:
+            type: integer
+            nullable: false
+            options:
+                unsigned: false
+            column: blk_nograv
+        autoiva:
+            type: integer
+            nullable: false
+            options:
+                unsigned: false
+        autoneto:
+            type: integer
+            nullable: false
+            options:
+                unsigned: false
+        autototal:
+            type: integer
+            nullable: false
+            options:
+                unsigned: false
     manyToOne:
         codComp:
             targetEntity: TblComprobantes
