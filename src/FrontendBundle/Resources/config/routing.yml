@@ -20,3 +20,7 @@ frontend_contable:
 frontend_impositivo:
     resource: "@FrontendBundle/Resources/config/routing/impositivo.yml"
     prefix: /impositivo 
+
+frontend_configuraciones:
+    resource: "@FrontendBundle/Resources/config/routing/configuraciones.yml"
+    prefix: /configuraciones 
