@@ -1,5 +1,5 @@
 backend_homepage:
-    path:     /
+    path: /
     defaults: { _controller: BackendBundle:Default:index }
 
 backend_default:
@@ -13,6 +13,10 @@ backend_user:
 backend_empresas:
   resource: "@BackendBundle/Resources/config/routing/empresas.yml"
   prefix: /empresa
+
+backend_razonessociales:
+  resource: "@BackendBundle/Resources/config/routing/razonessociales.yml"
+  prefix: /razonsocial
 
 backend_compras:
   resource: "@BackendBundle/Resources/config/routing/compras.yml"

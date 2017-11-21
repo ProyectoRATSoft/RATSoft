@@ -1,0 +1,24 @@
+razonsocial_all:
+    path: /
+    defaults: { _controller: BackendBundle:Razonsocial:all }
+    methods: GET
+
+razonsocial_new:
+    path: /new
+    defaults: { _controller: "BackendBundle:Razonsocial:new" }
+    methods: POST
+
+# razonsocial_find:
+#     path: /find
+#     defaults: { _controller: "BackendBundle:Razonsocial:findByCuit" }
+#     methods: POST
+
+razonsocial_del:
+    path: /{id}/del
+    defaults: { _controller: BackendBundle:Razonsocial:del }
+    methods: GET
+
+razonsocial_edit:
+    path: /{id}/edit
+    defaults: { _controller: BackendBundle:Razonsocial:edit }
+    methods: POST

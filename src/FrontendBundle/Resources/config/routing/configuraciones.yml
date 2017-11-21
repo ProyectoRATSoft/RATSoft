@@ -1,0 +1,5 @@
+configuraciones_razonsocial:
+    path: /razon_social
+    defaults: { _controller: "FrontendBundle:Modulos:razonsocial" } 
+                              # bundle, dps controler y funcion que llama 
+    methods: GET
