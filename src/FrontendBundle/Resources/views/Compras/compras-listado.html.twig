@@ -47,6 +47,7 @@
 <script src="{{ asset('public/Buttons-1.4.2/js/buttons.colVis.min.js') }}"></script> 
 <script src="{{ asset('ratsoft/ratsoft.js') }}"></script>
 <script src="https://cdn.jsdelivr.net/npm/jquery-validation@1.17.0/dist/jquery.validate.min.js"></script>
+<script src="{{ asset('plugins/js-cookie/src/js.cookie.js') }}"></script>
 <!-- <script src="{{ asset('') }}"></script>  --> 
 <script>
   //con esto bloqueamos la pantalla cuando inicia alguna accion ajax..
@@ -68,46 +69,76 @@
     });
     //cargamos los valores para el Combo Comprobantes que esta en el modal
     comboFill("/comprobantes","id","detalle","#comprobante");
-  $.get("/comprobantes/tipos",function(resp,estado,jqXHR){
-      var arrayResp = JSON.parse(resp);
-      window.arrayTiposComp = arrayResp.data;
-      console.log(arrayTiposComp);
+    $.get("/comprobantes/tipos",function(resp,estado,jqXHR){
+        var arrayResp = JSON.parse(resp);
+        window.arrayTiposComp = arrayResp.data;
+        console.log(arrayTiposComp);
     });
 
-  $.get("/imputaciones/prov",function(resp,estado,jqXHR){
-      var arrayResp = JSON.parse(resp);
-      window.arrayImputProv = arrayResp.data;
+    $.get("/imputaciones/prov",function(resp,estado,jqXHR){
+        var arrayResp = JSON.parse(resp);
+        window.arrayImputProv = arrayResp.data;
     });
     $("#addCompra").click(function(){
       $("#tablaDeProveedores").modal();
     });  
   //});
     //recuperamos el array desde el controller
+
+    //Preparamos el array que vamos a usar para los proveedores
+    window.arrayproveedores = new Array();
+    //sessionStorage.arrayProv = new Array();
+    $.get("/proveedores/hash",function(resp,estado,jqXHR){
+      var arrayResp = JSON.parse(resp);
+      window.hashProv = arrayResp.hash;
+    })
+    
+
+    // Traemos la info de proveedores y lo metemos en el array luego armamos el mapping entre nombre y id de proveedor para poder usarlo en el ABM
+    .done(function(){
+      if ( sessionStorage.arrayproveedores === undefined || Cookies.get("hashProv") === undefined ||   parseInt(Cookies.get("hashProv"),10) !== window.hashProv ) {
+        console.log("no se encontro la cookie")
+          $.ajax({
+          type: "GET",
+          url: "/proveedores",
+          dataType: "json",
+          //async: false
+        })
+        .done(function(respuesta){
+          window.arrayproveedores = respuesta.data;
+          window.source  = [ ];
+          window.mapping = { };
+          window.mappingCuit = { };
+          for(var i = 0; i < window.arrayproveedores.length; ++i) {
+            window.source.push(window.arrayproveedores[i].nombre);
+            window.mapping[window.arrayproveedores[i].nombre] = window.arrayproveedores[i].id;
+            window.mappingCuit[window.arrayproveedores[i].nombre] = window.arrayproveedores[i].cuit;
+          }
+          var minutes = 120;
+          var date = new Date();
+          date.setTime(date.getTime() + (minutes * 60 * 1000));
+          sessionStorage.arrayproveedores=JSON.stringify(window.arrayproveedores);
+          Cookies.set("hashProv",hashProv);
+        });
+      }else{
+        console.log("la encontré, es al pedo que la llame con ajax")
+        arrayproveedores = JSON.parse(sessionStorage.arrayproveedores);
+        window.source  = [ ];
+        window.mapping = { };
+        window.mappingCuit = { };
+        for(var i = 0; i < window.arrayproveedores.length; ++i) {
+          window.source.push(window.arrayproveedores[i].nombre);
+          window.mapping[window.arrayproveedores[i].nombre] = window.arrayproveedores[i].id;
+          window.mappingCuit[window.arrayproveedores[i].nombre] = window.arrayproveedores[i].cuit;
+        }
+      }
+    });
     window.arrayrespuesta = {{ respuesta|raw }};
     console.log(arrayrespuesta);
     window.idEmpresa = {{ empresa|raw }};
 
-    //Preparamos el array que vamos a usar para los proveedores
-    window.arrayproveedores = new Array();
-
-    // Traemos la info de proveedores y lo metemos en el array luego armamos el mapping entre nombre y id de proveedor para poder usarlo en el ABM
-    $.ajax({
-      type: "GET",
-      url: "/proveedores",
-      dataType: "json",
-      //async: false
-    })
-    .done(function(respuesta){
-      window.arrayproveedores = respuesta.data;
-      window.source  = [ ];
-      window.mapping = { };
-      window.mappingCuit = { };
-      for(var i = 0; i < window.arrayproveedores.length; ++i) {
-        window.source.push(window.arrayproveedores[i].nombre);
-        window.mapping[window.arrayproveedores[i].nombre] = window.arrayproveedores[i].id;
-        window.mappingCuit[window.arrayproveedores[i].nombre] = window.arrayproveedores[i].cuit;
-      }
-    });
+    
+    
 
 
     // Aplicamos el autocomplete al campo "Razon Social" del Modal
