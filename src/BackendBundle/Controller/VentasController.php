@@ -90,37 +90,37 @@ class VentasController extends Controller
 
 		// Me aseguro que no me hayan mandado ningun campo vacío
 
-		// if ( 
-		// 		   empty($respuesta["periodo_mes"])
-		// 		|| empty($respuesta["periodo_ano"])
-		// 		|| empty($respuesta["fecha"])	
-		// 		|| empty($respuesta["cod_comprobante"])
-		// 		|| empty($respuesta["tipo_comprobante"])
-		// 		|| empty($respuesta["nro_comprobante"])
-		// 		|| empty($respuesta["proveedor"])
-		// 		|| empty($respuesta["neto_105"])	
-		// 		|| empty($respuesta["neto_21"])		
-		// 		|| empty($respuesta["neto_exento"])
-		// 		|| empty($respuesta["iva_105"])	
-		// 		|| empty($respuesta["iva_21"])			
-		// 		|| empty($respuesta["ret_gan"])		
-		// 		|| empty($respuesta["retencion"])
-		// 		|| empty($respuesta["percepcion"])
-		// 		|| empty($respuesta["total"])
-		// 	) {
-		// 		$data = array(
-		// 			'status' => 'ERROR',
-		// 			'msg' => 'Hubo campos mandatorios que se enviaron vacios',
-		// 			'draw' => '',
-		// 			'recordsTotal' => '',
-		// 			'recordsFiltered' => '',
-		// 			'data' => '',
-		// 			);
+		if ( 
+				    !$respuesta["periodo_mes"]
+				|| 	!$respuesta["periodo_ano"]
+				||  !$respuesta["fecha"]	
+				||  !$respuesta["cod_comprobante"]
+				||  !$respuesta["tipo_comprobante"]
+				||  !$respuesta["nro_comprobante"]
+				||  !$respuesta["proveedor"]
+				||  !is_numeric($respuesta["neto_105"])	
+				||  !is_numeric($respuesta["neto_21"])	
+				||  !is_numeric($respuesta["neto_exento"])
+				||  !is_numeric($respuesta["iva_105"])
+				||  !is_numeric($respuesta["iva_21"]) 	
+				||  !is_numeric($respuesta["ret_gan"])	
+				||  !is_numeric($respuesta["retencion"])
+				||  !is_numeric($respuesta["percepcion"])
+				||  !is_numeric($respuesta["total"])
+			) {
+				$data = array(
+					'status' => 'ERROR',
+					'msg' => 'Hubo campos mandatorios que se enviaron vacios',
+					'draw' => '',
+					'recordsTotal' => '',
+					'recordsFiltered' => '',
+					'data' =>  '',				
+			);
 				
-		// 		$jsonResponse = $serializer->serialize($data, 'json');
-		// 		return new Response($jsonResponse);
-		// 		exit();
-		// }
+				$jsonResponse = $serializer->serialize($data, 'json');
+				return new Response($jsonResponse);
+				exit();
+		}
 
 		$em = $this->getDoctrine()->getManager();
 
