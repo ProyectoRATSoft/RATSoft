@@ -90,8 +90,8 @@ class RazonsocialController extends Controller
 			)
 		);
 		// Genero el objeto Provincia y lo cargo en base al ID recibido
-		$provincia = new TblJurisdicciones();
-		$provincia = $em->getRepository("BackendBundle:TblJurisdicciones")->findOneBy(
+		$jurisdiccion = new TblJurisdicciones();
+		$jurisdiccion = $em->getRepository("BackendBundle:TblJurisdicciones")->findOneBy(
 			array(
 				'id' => $respuesta["jurisdiccion"]
 			)
@@ -106,7 +106,7 @@ class RazonsocialController extends Controller
 			$empresa->setCuit($respuesta["cuit"]);
 			$empresa->setActivo("1");
 			$empresa->setIva($situacionIva);
-			$empresa->setJurisdiccion($provincia);
+			$empresa->setJurisdiccion($jurisdiccion);
 
 			$em->persist($empresa);
 			$em->flush();	
@@ -212,8 +212,8 @@ class RazonsocialController extends Controller
 			)
 		);
 		// Genero el objeto Provincia y lo cargo en base al ID recibido
-		$provincia = new TblJurisdicciones();
-		$provincia = $em->getRepository("BackendBundle:TblJurisdicciones")->findOneBy(
+		$jurisdiccion = new TblJurisdicciones();
+		$jurisdiccion = $em->getRepository("BackendBundle:TblJurisdicciones")->findOneBy(
 			array(
 				'id' => $respuesta["jurisdiccion"]
 			)
@@ -230,7 +230,7 @@ class RazonsocialController extends Controller
 		$empresa->setActivo("1");
 		// $empresa->setActivo($respuesta["activo"]);
 		$empresa->setIva($situacionIva);
-		$empresa->setJurisdiccion($provincia);
+		$empresa->setJurisdiccion($jurisdiccion);
 
 		$em->persist($empresa);
 		$em->flush();	

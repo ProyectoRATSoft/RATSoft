@@ -77,6 +77,50 @@ class VentasController extends Controller
 			'usuario' => '1',
 			// 'rubro' => $request->request->get("rubro"),
 		);
+		$data = array(
+				'status' => 'OK',
+				'msg' => 'La empresa ha sido registrada con exito',
+				'draw' => '',
+				'recordsTotal' => '',
+				'recordsFiltered' => '',
+				'data' => '',
+			);
+
+		$serializer = SerializerBuilder::create()->build();
+
+		// Me aseguro que no me hayan mandado ningun campo vacío
+
+		// if ( 
+		// 		   empty($respuesta["periodo_mes"])
+		// 		|| empty($respuesta["periodo_ano"])
+		// 		|| empty($respuesta["fecha"])	
+		// 		|| empty($respuesta["cod_comprobante"])
+		// 		|| empty($respuesta["tipo_comprobante"])
+		// 		|| empty($respuesta["nro_comprobante"])
+		// 		|| empty($respuesta["proveedor"])
+		// 		|| empty($respuesta["neto_105"])	
+		// 		|| empty($respuesta["neto_21"])		
+		// 		|| empty($respuesta["neto_exento"])
+		// 		|| empty($respuesta["iva_105"])	
+		// 		|| empty($respuesta["iva_21"])			
+		// 		|| empty($respuesta["ret_gan"])		
+		// 		|| empty($respuesta["retencion"])
+		// 		|| empty($respuesta["percepcion"])
+		// 		|| empty($respuesta["total"])
+		// 	) {
+		// 		$data = array(
+		// 			'status' => 'ERROR',
+		// 			'msg' => 'Hubo campos mandatorios que se enviaron vacios',
+		// 			'draw' => '',
+		// 			'recordsTotal' => '',
+		// 			'recordsFiltered' => '',
+		// 			'data' => '',
+		// 			);
+				
+		// 		$jsonResponse = $serializer->serialize($data, 'json');
+		// 		return new Response($jsonResponse);
+		// 		exit();
+		// }
 
 		$em = $this->getDoctrine()->getManager();
 
@@ -160,11 +204,12 @@ class VentasController extends Controller
 		$result = $em->getRepository("BackendBundle:TblVentas")->findBy(array('empresa' => $id));
 		$ventas["data"] = $result;
 
-
-		$serializer = SerializerBuilder::create()->build();
 		$jsonResponse = $serializer->serialize($ventas, 'json');
 		//return new Response($jsonResponse);		
-		return new Response($jsonResponse);
+		$response = new Response ();
+		$response->setContent($request);
+		$response->headers->set('Content-Type', 'application/json');
+		return $response;
 	}
 	/**
 	*	@Route("/contable/ventas/{id}/update",name="ventas_update")
