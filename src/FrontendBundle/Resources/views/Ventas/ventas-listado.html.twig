@@ -72,6 +72,7 @@
         $.unblockUI();     
 
     });
+
     window.arrayrespuesta = {{ respuesta|raw }};
     window.idEmpresa = {{ empresa|raw }};
       //cargamos los valores para el Combo Comprobantes que esta en el modal
@@ -431,6 +432,7 @@
                                   // { responsivePriority: 1, targets: 0 },
                                   // { responsivePriority: 2, targets: 0 },
                                   { targets: [0, 1, 2, 3, 4, 5, 6, 7, 8], visible: true},
+
                                   //{ targets: '_all', visible: false }
                                 
                     ],
@@ -467,14 +469,10 @@
                        { 
                         "data": "fecha",
                         "title": "Fecha",
-                         // "mRender": function(data, type, full) {
-                         //    if (data === null) return 'N/A';
-                         //    if (data === '') return 'N/A';
-                         //    if (data == '0000-00-00 00:00:00') return 'N/A';
-                         //    var tdat = data.split(' ');
-                         //    var tedat = tdat[0].split('-');
-                         //    return tedat[2] + '-' + tedat[1] + '-' + tedat[0];
-                         //  }
+                        "render":function (value) {
+                            if (value === null) return "";
+                            return moment(value).format('DD/MM/YYYY');
+                           }
                       },
                       { 
                         "mData": null,

@@ -207,7 +207,7 @@ class VentasController extends Controller
 		$jsonResponse = $serializer->serialize($ventas, 'json');
 		//return new Response($jsonResponse);		
 		$response = new Response ();
-		$response->setContent($jsonResponse);
+		$response->setContent($request);
 		$response->headers->set('Content-Type', 'application/json');
 		return $response;
 	}
