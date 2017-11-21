@@ -190,8 +190,8 @@ class VentasController extends Controller
     	$ventas->setUsuario($usuario);
     	$ventas->setActivo("1");
 
-    	$em->persist($ventas);
-		$em->flush();
+    	//$em->persist($ventas);
+		//$em->flush();
 
 		$ventas = array(
 			'status'=> 'OK',
@@ -207,7 +207,7 @@ class VentasController extends Controller
 		$jsonResponse = $serializer->serialize($ventas, 'json');
 		//return new Response($jsonResponse);		
 		$response = new Response ();
-		$response->setContent($request);
+		$response->setContent($jsonResponse);
 		$response->headers->set('Content-Type', 'application/json');
 		return $response;
 	}
