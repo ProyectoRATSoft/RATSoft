@@ -109,7 +109,9 @@ class RazonsocialController extends Controller
 			$empresa->setJurisdiccion($jurisdiccion);
 
 			$em->persist($empresa);
-			$em->flush();	
+			$em->flush();
+
+			
 		} else {
 			$data = array(
 				'status' => 'ERROR',

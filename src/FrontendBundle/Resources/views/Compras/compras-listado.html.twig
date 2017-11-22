@@ -29,6 +29,9 @@
   .ui-autocomplete {
     position: absolute;
   }
+  .id-compra {
+    display: none;
+  }
 </style> 
 {% endblock %}
 {% block Scripts %}
@@ -92,6 +95,8 @@
     $.get("/proveedores/hash",function(resp,estado,jqXHR){
       var arrayResp = JSON.parse(resp);
       window.hashProv = arrayResp.hash;
+      console.log(window.hashProv);
+      console.log(parseInt(Cookies.get("hashProv"),10));
     })
     
 
@@ -297,6 +302,13 @@
                     retrieve: true,
                     data : window.arrayrespuesta.data,
                      "columns": [
+
+                      {
+                          "class":          "details-control",
+                          "orderable":      false,
+                          "data":           null,
+                          "defaultContent": ""
+                      },
                       { 
                         "data": "id",
                         "title": "ID",
@@ -325,7 +337,11 @@
                       },
                       { 
                         "data": "fecha",
-                        "title": "Fecha"
+                        "title": "Fecha",
+                        "render":function (value) {
+                            if (value === null) return "";
+                            return moment(value).format('DD/MM/YYYY');
+                           }
                       },
                       { 
                         "mData": null,
