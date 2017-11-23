@@ -1,5 +1,10 @@
 {% extends 'FrontendBundle::Default/base.html.twig' %}
 {% block body %}
+<style>
+   .colHidden{
+    display: none;
+   }
+</style>
   <!-- ACA EMPIEZO A TRABAJAR LA INTERFAZ Content Wrapper. Contains page content -->
   <div class="content-wrapper">
     <!-- Content Header (Page header) -->
@@ -9,7 +14,7 @@
         <small>Buscador</small>
       </h2>
       <ol class="breadcrumb">
-        <li><a href="/home"><i class="fa fa-home"></i> Home</a></li>
+        <li><a href="/"><i class="fa fa-home"></i> Home</a></li>
         <li class="active"><i class="fa fa-search" aria-hidden="true"></i>Buscador de Empresas</li>
       </ol>
     </section>

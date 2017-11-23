@@ -88,6 +88,45 @@ class ComprasController extends Controller
 			'usuario' => '1',
 		);
 
+		// Me aseguro que no me hayan mandado ningun campo vacío
+
+		if ( 
+				    !$respuesta["periodo_mes"]
+				|| 	!$respuesta["periodo_ano"]
+				||  !$respuesta["fecha"]
+				||  !$respuesta["cai"]
+				||  !$respuesta["cod_comprobante"]
+				||  !$respuesta["tipo_comprobante"]
+				||  !$respuesta["nro_comprobante"]
+				||  !$respuesta["proveedor"]
+				||	!$respuesta["imputacion"]
+				||  !is_numeric($respuesta["neto_105"])	
+				||  !is_numeric($respuesta["neto_21"])
+				||  !is_numeric($respuesta["neto_27"])	
+				||  !is_numeric($respuesta["exento"])
+				||  !is_numeric($respuesta["nogravado"])
+				||  !is_numeric($respuesta["iva_105"])
+				||  !is_numeric($respuesta["iva_21"])
+				||  !is_numeric($respuesta["iva_27"]) 	
+				||  !is_numeric($respuesta["ret_ganancia"])
+				||  !is_numeric($respuesta["perc_iva"])
+				||  !is_numeric($respuesta["perc_iibb"])	
+				||  !is_numeric($respuesta["total"])
+			) {
+				$data = array(
+					'status' => 'ERROR',
+					'msg' => 'Hubo campos mandatorios que se enviaron vacios',
+					'draw' => '',
+					'recordsTotal' => '',
+					'recordsFiltered' => '',
+					'data' =>  '',				
+			);
+				
+				$jsonResponse = $serializer->serialize($data, 'json');
+				return new Response($jsonResponse);
+				exit();
+		}
+
 		$em = $this->getDoctrine()->getManager();
 
 		$comprobantes = new TblComprobantes();
@@ -220,6 +259,46 @@ class ComprasController extends Controller
 			//'usuario' => $request->request->get("usuario"),
 			'usuario' => '1',
 		);
+
+		// Me aseguro que no me hayan mandado ningun campo vacío
+
+		if ( 
+				    !$respuesta["periodo_mes"]
+				|| 	!$respuesta["periodo_ano"]
+				|| 	!$respuesta["id"]
+				||  !$respuesta["fecha"]
+				||  !$respuesta["cai"]
+				||  !$respuesta["cod_comprobante"]
+				||  !$respuesta["tipo_comprobante"]
+				||  !$respuesta["nro_comprobante"]
+				||  !$respuesta["proveedor"]
+				||	!$respuesta["imputacion"]
+				||  !is_numeric($respuesta["neto_105"])	
+				||  !is_numeric($respuesta["neto_21"])
+				||  !is_numeric($respuesta["neto_27"])	
+				||  !is_numeric($respuesta["exento"])
+				||  !is_numeric($respuesta["nogravado"])
+				||  !is_numeric($respuesta["iva_105"])
+				||  !is_numeric($respuesta["iva_21"])
+				||  !is_numeric($respuesta["iva_27"]) 	
+				||  !is_numeric($respuesta["ret_ganancia"])
+				||  !is_numeric($respuesta["perc_iva"])
+				||  !is_numeric($respuesta["perc_iibb"])	
+				||  !is_numeric($respuesta["total"])
+			) {
+				$data = array(
+					'status' => 'ERROR',
+					'msg' => 'Hubo campos mandatorios que se enviaron vacios',
+					'draw' => '',
+					'recordsTotal' => '',
+					'recordsFiltered' => '',
+					'data' =>  '',				
+			);
+				
+				$jsonResponse = $serializer->serialize($data, 'json');
+				return new Response($jsonResponse);
+				exit();
+		}
 
 		$em = $this->getDoctrine()->getManager();
 

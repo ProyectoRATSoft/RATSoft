@@ -77,6 +77,50 @@ class VentasController extends Controller
 			'usuario' => '1',
 			// 'rubro' => $request->request->get("rubro"),
 		);
+		$data = array(
+				'status' => 'OK',
+				'msg' => 'La empresa ha sido registrada con exito',
+				'draw' => '',
+				'recordsTotal' => '',
+				'recordsFiltered' => '',
+				'data' => '',
+			);
+
+		$serializer = SerializerBuilder::create()->build();
+
+		// Me aseguro que no me hayan mandado ningun campo vacío
+
+		if ( 
+				    !$respuesta["periodo_mes"]
+				|| 	!$respuesta["periodo_ano"]
+				||  !$respuesta["fecha"]	
+				||  !$respuesta["cod_comprobante"]
+				||  !$respuesta["tipo_comprobante"]
+				||  !$respuesta["nro_comprobante"]
+				||  !$respuesta["proveedor"]
+				||  !is_numeric($respuesta["neto_105"])	
+				||  !is_numeric($respuesta["neto_21"])	
+				||  !is_numeric($respuesta["neto_exento"])
+				||  !is_numeric($respuesta["iva_105"])
+				||  !is_numeric($respuesta["iva_21"]) 	
+				||  !is_numeric($respuesta["ret_gan"])	
+				||  !is_numeric($respuesta["retencion"])
+				||  !is_numeric($respuesta["percepcion"])
+				||  !is_numeric($respuesta["total"])
+			) {
+				$data = array(
+					'status' => 'ERROR',
+					'msg' => 'Hubo campos mandatorios que se enviaron vacios',
+					'draw' => '',
+					'recordsTotal' => '',
+					'recordsFiltered' => '',
+					'data' =>  '',				
+			);
+				
+				$jsonResponse = $serializer->serialize($data, 'json');
+				return new Response($jsonResponse);
+				exit();
+		}
 
 		$em = $this->getDoctrine()->getManager();
 
@@ -160,11 +204,12 @@ class VentasController extends Controller
 		$result = $em->getRepository("BackendBundle:TblVentas")->findBy(array('empresa' => $id));
 		$ventas["data"] = $result;
 
-
-		$serializer = SerializerBuilder::create()->build();
 		$jsonResponse = $serializer->serialize($ventas, 'json');
 		//return new Response($jsonResponse);		
-		return new Response($jsonResponse);
+		$response = new Response ();
+		$response->setContent($request);
+		$response->headers->set('Content-Type', 'application/json');
+		return $response;
 	}
 	/**
 	*	@Route("/contable/ventas/{id}/update",name="ventas_update")
@@ -197,7 +242,44 @@ class VentasController extends Controller
 			'usuario' => '1',
 			// 'rubro' => $request->request->get("rubro"),
 		);
-$em = $this->getDoctrine()->getManager();
+
+		$serializer = SerializerBuilder::create()->build();
+
+		// Me aseguro que no me hayan mandado ningun campo vacío
+
+		if ( 
+				    !$respuesta["periodo_mes"]
+				|| 	!$respuesta["periodo_ano"]
+				||  !$respuesta["fecha"]	
+				||  !$respuesta["cod_comprobante"]
+				||  !$respuesta["tipo_comprobante"]
+				||  !$respuesta["nro_comprobante"]
+				||  !$respuesta["proveedor"]
+				||  !is_numeric($respuesta["neto_105"])	
+				||  !is_numeric($respuesta["neto_21"])	
+				||  !is_numeric($respuesta["neto_exento"])
+				||  !is_numeric($respuesta["iva_105"])
+				||  !is_numeric($respuesta["iva_21"]) 	
+				||  !is_numeric($respuesta["ret_gan"])	
+				||  !is_numeric($respuesta["retencion"])
+				||  !is_numeric($respuesta["percepcion"])
+				||  !is_numeric($respuesta["total"])
+			) {
+				$data = array(
+					'status' => 'ERROR',
+					'msg' => 'Hubo campos mandatorios que se enviaron vacios',
+					'draw' => '',
+					'recordsTotal' => '',
+					'recordsFiltered' => '',
+					'data' =>  '',				
+			);
+				
+				$jsonResponse = $serializer->serialize($data, 'json');
+				return new Response($jsonResponse);
+				exit();
+		}
+
+		$em = $this->getDoctrine()->getManager();
 
 		$comprobantes = new TblComprobantes();
 		$comprobantes = $em->getRepository("BackendBundle:TblComprobantes")->findOneBy(
@@ -282,12 +364,13 @@ $em = $this->getDoctrine()->getManager();
 
 		$result = $em->getRepository("BackendBundle:TblVentas")->findBy(array('empresa' => $id));
 		$ventas["data"] = $result;
-
-
-		$serializer = SerializerBuilder::create()->build();
+		
 		$jsonResponse = $serializer->serialize($ventas, 'json');
 		//return new Response($jsonResponse);		
-		return new Response($jsonResponse);
+		$response = new Response ();
+		$response->setContent($request);
+		$response->headers->set('Content-Type', 'application/json');
+		return $response;
 	}
 
 	/**

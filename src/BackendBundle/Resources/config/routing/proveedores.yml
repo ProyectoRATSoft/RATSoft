@@ -2,3 +2,8 @@ proveedores_all:
     path: /
     defaults: { _controller: BackendBundle:Proveedores:all }
     methods: GET
+
+proveedores_getHash:
+    path: /hash
+    defaults: { _controller: BackendBundle:Proveedores:getHash }
+    methods: GET
