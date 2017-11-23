@@ -243,6 +243,34 @@
           }else{
             $("#perc_iibb").removeAttr("disabled");
           }
+          if(item.autoiva == 1){
+              window.autoiva=1
+          }else{
+              window.autoiva=0
+          }
+          if(item.autoneto == 1){
+              window.autoneto=1
+          }else{
+              window.autoneto=0
+          }
+          if(item.autototal == 1){
+              window.autototal=1
+          }else{
+              window.autototal=0
+          }
+          $('#exento').val('0');
+          $('#neto105').val('0');
+          $('#neto21').val('0');
+          $('#neto27').val('0');
+          $('#iva105').val('0');
+          $('#iva21').val('0');-
+          $('#iva27').val('0');
+          $('#nogravado').val('0');
+          $('#perc_iva').val('0');
+          $('#perc_iibb').val('0');
+          $('#ret_ganancia').val('0');
+          $('#total').val('0');
+
         }
       })
     });
@@ -972,28 +1000,59 @@
     });
 
     $(".calcularIva").on("change",function(){
-      var iva105 = parseFloat($('#neto105').val()) * parseFloat("0.105");
-      $("#iva105").val(iva105);
-      var iva21 = parseFloat($('#neto21').val()) * parseFloat("0.21");
-      $("#iva21").val(iva21);
-      var iva27 = parseFloat($('#neto27').val()) * parseFloat("0.27");
-      $("#iva27").val(iva27);
+      if(window.autoiva==1){
+        console.log("autoiva");
+        var iva105 = parseFloat($('#neto105').val()) * parseFloat("0.105");
+        $("#iva105").val(iva105);
+        var iva21 = parseFloat($('#neto21').val()) * parseFloat("0.21");
+        $("#iva21").val(iva21);
+        var iva27 = parseFloat($('#neto27').val()) * parseFloat("0.27");
+        $("#iva27").val(iva27);
+      }
     });
 
     $(".calculado").on("change",function(){
-      var comprasTotal = 
-        parseFloat($('#exento').val()) +
-        parseFloat($('#neto105').val()) +
-        parseFloat($('#neto21').val()) +
-        parseFloat($('#neto27').val()) +
-        parseFloat($('#iva105').val()) +
-        parseFloat($('#iva21').val()) +
-        parseFloat($('#iva27').val()) +
-        parseFloat($('#nogravado').val()) +
-        parseFloat($('#perc_iva').val()) +
-        parseFloat($('#perc_iibb').val()) +
-        parseFloat($('#ret_ganancia').val());
-      $('#total').val(comprasTotal);
+      if(window.autototal==1){
+        console.log("autototal");
+        var comprasTotal = 
+          parseFloat($('#exento').val()) +
+          parseFloat($('#neto105').val()) +
+          parseFloat($('#neto21').val()) +
+          parseFloat($('#neto27').val()) +
+          parseFloat($('#iva105').val()) +
+          parseFloat($('#iva21').val()) +
+          parseFloat($('#iva27').val()) +
+          parseFloat($('#nogravado').val()) +
+          parseFloat($('#perc_iva').val()) +
+          parseFloat($('#perc_iibb').val()) +
+          parseFloat($('#ret_ganancia').val());
+        $('#total').val(comprasTotal);
+      }else{
+        console.log("no entre en el fuckin IF");
+      }
+    });
+
+    $("#total").on("change",function(){
+      if(window.autoneto==1){
+        console.log("autoneto"); 
+        var neto21calc = parseFloat($("#total").val()) / parseFloat("1.21");
+        var iva21calc = neto21calc * parseFloat("0.21");
+        $('#neto105').val('0');
+        $('#neto21').val('0');
+        $('#neto27').val('0');
+        $('#iva105').val('0');
+        $('#iva21').val('0');
+        $('#iva27').val('0');
+        $('#nogravado').val('0');
+        $('#perc_iva').val('0');
+        $('#perc_iibb').val('0');
+        $('#ret_ganancia').val('0');
+        $('#exento').val('0');
+        $("#neto21").val(neto21calc.toFixed(2));
+        $("#iva21").val(iva21calc.toFixed(2));
+      }else{
+        console.log("no entre en el fuckin IF");
+      }
     });
    
   });
