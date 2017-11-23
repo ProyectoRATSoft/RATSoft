@@ -36,6 +36,9 @@
 <script src="{{ asset('ratsoft/ratsoft.js') }}"></script>
 <script src="{{ asset('ratsoft/empresa-listado.js') }}"></script>
 <script src="https://cdn.jsdelivr.net/npm/jquery-validation@1.17.0/dist/jquery.validate.min.js">
+
+	$('#link-iva').attr('href',"/imposivito/iva");//+item.id);
+	$('#link-iibb').attr('href',"/imposivito/iibb");//+item.id);
 </script>
 {% endblock %}
 {% block botones %}
