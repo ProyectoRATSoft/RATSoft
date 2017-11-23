@@ -1,0 +1,23 @@
+{% extends 'FrontendBundle::Iva/iva-listado.html.twig' %}
+{% block title %} Iva{% endblock %}
+{% block botones %}
+	<div class="text-center">
+		<div class="col-xs-2">
+			<button class="btn btn-default btn-block"> Volver</button>
+		</div>
+		<div class="col-xs-8">
+			<div class="form-group">                          
+            	<label class="control-label col-md-2" for="">Periodo: </label>
+            	<div class="col-md-6">
+              		<input type="" class="form-control input-sm" id="" placeholder="Ingrese periodo">
+            	</div>
+            	<div class="col-md-4">
+              		<button class="btn btn-primary btn-block" id="buscarPeriodo"><i class="fa fa-search" aria-hidden="true">Buscar</i></button>
+            	</div>
+			</div>
+		</div>
+		<div class="col-xs-2">
+			<button class="btn btn-primary btn-block" id="editCompra"><i class="fa fa-print" aria-hidden="true"> Exportar</i></button>
+		</div>
+	</div>   
+{% endblock %}

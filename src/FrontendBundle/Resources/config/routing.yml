@@ -23,4 +23,4 @@ frontend_impositivo:
 
 frontend_configuraciones:
     resource: "@FrontendBundle/Resources/config/routing/configuraciones.yml"
-    prefix: /configuraciones 
+    prefix: /configuraciones
