@@ -46,26 +46,40 @@ $(document).ready(function() {
   };
 
   loadTable();
+
+  // Metodo para refrescar la tabla.
   var tableReload = function(datosnuevos) {
     window.arrayrespuesta = datosnuevos;
     $('#tabla-empresas').DataTable().clear().draw();
     $('#tabla-empresas').DataTable().rows.add(datosnuevos).draw();
   };
 
+  // Pinta la fila.
   $('#tabla-empresas tbody').on('click', 'tr', function() {
     if ($(this).hasClass('active')) {
       $(this).removeClass('active');
     } else {
       window.table.$('tr.active').removeClass('active');
       $(this).addClass('active');
-      // metemos en una variable lo que hay en e campo cuit de la empresa seleccionada
+      // Busco el dato de la fila seleccionada.
       var username = window.table.$("tr.active").find(".username").text();
+      // Busco los datos del usuario seleccionado.
       window.arrayrespuesta.forEach(function(item, index, arr) {
         if (item.username == username) {
+          // Completo los datos de grilla de edición lateral derecha.
           $('div.form-group #userId').val(item.id);
           $('div.form-group #username').val(item.username);
           $('div.form-group #email').val(item.email);
           $('div.form-group #role').val(item.role);
+
+          // Completo el modal de edición de usuarios.
+          $('input#nuevoUsername').val(item.username);
+          $('input#nuevoPassword').val(item.password);
+          $('input#nuevoNombre').val(item.nombre);
+          $('input#nuevoApellido').val(item.apellido);
+          $('input#nuevoEmail').val(item.email);
+
+          window.userSelected = item;
         }
       });
     }
@@ -74,21 +88,22 @@ $(document).ready(function() {
   // Modal Agregar Empresa.
   $("#addEmpresa").click(function() {
     $("#modalAddEmpresa").modal();
-    //limpio los campos del modal
+    // Limpio los campos del modal
     $('input#nuevoUsername').val('');
     $('input#nuevoPassword').val('');
     $('input#nuevoNombre').val('');
     $('input#nuevoApellido').val('');
     $('select#nuevoEmail').val('');
-    //limpio los campos de la tabla del costado para arreglar efecto visual y evitar confusiones
-    $('div.form-group #empresaID').val('');
-    $('div.form-group #nombre').val('');
-    $('div.form-group #domicilio').val('');
-    $('div.form-group #localidad').val('');
 
-    //deselecciono la empresa de la tabla
+    // Limpio los campos de la tabla del costado para arreglar efecto visual y evitar confusiones (Ver!!!!)
+    // $('div.form-group #empresaID').val('');
+    // $('div.form-group #nombre').val('');
+    // $('div.form-group #domicilio').val('');
+    // $('div.form-group #localidad').val('');
+
+    // Deselecciono la empresa de la tabla
     $('#tabla-empresas tbody tr').removeClass('active');
-    //si esta en modo responsive hay q ver como hacer para que quede cerrado el "+" con sus campos
+
     //edito el titulo del modal
     $("h4.modal-title").text("Nuevo Usuario");
     //establecemos que botones corresponde poder verse  en este caso, como agregamos no hace falta editar ni borrar
@@ -99,14 +114,15 @@ $(document).ready(function() {
 
   // Se ejecuta al seleccionar "Guardar", del modal Agregar Empresa.
   $("#newEmpresa").click(function() {
-    // Guardo los valores recibidos, en cada variable.
+    // Guardo los valores recibidos del form en cada variable.
     var username = $('div.modal-body div.form-group #nuevoUsername').val();
     var password = $('div.modal-body div.form-group #nuevoPassword').val();
     var nombre = $('div.modal-body div.form-group #nuevoNombre').val();
     var apellido = $('div.modal-body div.form-group #nuevoApellido').val();
     var email = $('div.modal-body div.form-group #nuevoEmail').val();
     var role = 1;
-    //realizo un post pasando la url correspondiente al backend, los datos previamente capturados y realizo la funcion correspondiente que me devolvera la respuesta.
+
+    // Envío los datos del nuevo usuario al backend.
     $.ajax({
         type: "POST",
         url: "/user/new",
@@ -122,21 +138,77 @@ $(document).ready(function() {
         dataType: "json"
       })
       .done(function(respuesta) {
-        if (respuesta.status == 'OK') {
-          alert("va como piña");
-        } else {
-          alert("no funca");
-        }
+        alert(respuesta.msg);
         $("#modalAddEmpresa").modal('toggle');
-        tableReload(respuesta.data);
+        tableReload(respuesta.users);
+
         $('div.form-group #username').val('');
         $('div.form-group #password').val('');
         $('div.form-group #nombre').val('');
         $('div.form-group #apellido').val('');
         $('div.form-group #email').val('');
         $('div.form-group #role').val('');
-        //deberiamos mostrar algun mensaje tanto como de error, como de que todo salio bien. y luego recargar la grilla para que aparezca la nueva empresa en la tabla.
-        //alert(resp);
+      });
+  });
+
+  $("#editEmpresa").click(function() {
+    $("#modalAddEmpresa").modal();
+    // Con esto remuevo el seleccionar del dropdown
+    // $('select#nuevaProvincia :contains(--seleccionar--)').attr("disabled", "true").removeAttr("selected");
+    // $('select#nuevaSituacionIVA :contains(--seleccionar--)').attr("disabled", "true").removeAttr("selected");
+    // $('select#nuevoRubro :contains(--seleccionar--)').attr("disabled", "true").removeAttr("selected");
+    // $('select#nuevoCodIngresosBrutos :contains(--seleccionar--)').attr("disabled", "true").removeAttr("selected");
+
+    $("h4.modal-title").text("Editar Usuario");
+    $('button#newEmpresa').css("display", "none");
+    $('button#editDatesEmpresa').css("display", "");
+    $('button#deleteEmpresa').css("display", "");
+
+    // Cuando editamos un usuario, ocultamos su contraseña.
+    $('input#nuevoPassword').css("display", "none");
+    $('label#nuevoPassword').css("display", "none");
+  });
+
+  // Se ejecuta al seleccionar "Guardar", del modal editar empresa.
+  $("#editDatesEmpresa").click(function() {
+    // Guardo los valores recibidos del form en cada variable.
+    var id = window.userSelected.id;
+    var username = $('div.modal-body div.form-group #nuevoUsername').val();
+    var nombre = $('div.modal-body div.form-group #nuevoNombre').val();
+    var apellido = $('div.modal-body div.form-group #nuevoApellido').val();
+    var email = $('div.modal-body div.form-group #nuevoEmail').val();
+    var role = window.userSelected.role;
+    var password = window.userSelected.password;
+
+    debugger
+
+    // Envío al backend los datos del usuario a editar.
+    $.ajax({
+        type: "POST",
+        url: "/user/edit",
+        async: false,
+        data: {
+          "id": id,
+          "username": username,
+          "password": password,
+          "nombre": nombre,
+          "apellido": apellido,
+          "email": email,
+          "role": role
+        },
+        dataType: "json"
+      })
+      .done(function(respuesta) {
+        alert(respuesta.msg);
+
+        $("#modalAddEmpresa").modal('toggle');
+        tableReload(respuesta.users);
+        $('div.modal-body div.form-group #nuevoId').val();
+        $('div.modal-body div.form-group #nuevoUsername').val();
+        $('div.modal-body div.form-group #nuevoPassword').val();
+        $('div.modal-body div.form-group #nuevoNombre').val();
+        $('div.modal-body div.form-group #nuevoApellido').val();
+        $('div.modal-body div.form-group #nuevoEmail').val();
       });
   });
 });
