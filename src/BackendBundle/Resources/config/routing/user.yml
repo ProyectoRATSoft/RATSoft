@@ -8,6 +8,11 @@ user_edit:
     defaults: { _controller: "BackendBundle:User:edit" }
     methods: POST
 
+user_delete:
+    path: /delete
+    defaults: { _controller: "BackendBundle:User:delete" }
+    methods: POST
+
 user_all:
     path: /
     defaults: { _controller: "BackendBundle:User:all" }

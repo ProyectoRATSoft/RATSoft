@@ -180,8 +180,6 @@ $(document).ready(function() {
     var role = window.userSelected.role;
     var password = window.userSelected.password;
 
-    debugger
-
     // Envío al backend los datos del usuario a editar.
     $.ajax({
         type: "POST",
@@ -210,5 +208,30 @@ $(document).ready(function() {
         $('div.modal-body div.form-group #nuevoApellido').val();
         $('div.modal-body div.form-group #nuevoEmail').val();
       });
+  });
+
+  $("#deleteEmpresa").click(function(){
+    var id =  window.userSelected.id;
+    var result = confirm("Esta seguro de que desea borrar la empresa?");
+    if (result) {
+      $.ajax({
+        type: "POST",
+        url: "/user/delete",
+        async: false,
+        data: {
+          "id": id,
+        },
+        dataType: "json",
+      })
+      .done(function(respuesta){
+        $("#modalAddEmpresa").modal('toggle');
+        tableReload(respuesta.users);
+        // $('div.form-group #empresaID').val('');
+        // $('div.form-group #nombre').val('');
+        // $('div.form-group #domicilio').val('');
+        // $('div.form-group #localidad').val('');
+        // $('div.form-group #provincia').val('');
+      });
+    }
   });
 });

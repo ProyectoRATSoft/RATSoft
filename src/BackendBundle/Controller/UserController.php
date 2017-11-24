@@ -135,88 +135,105 @@ class UserController extends Controller
       'msg' => 'El usuario no pudo ser editado.'
       );
 
+      // cambiar la tabla tbl_user por la tabla users que usa el FOS Bundle
+      // poner los datos del usuario logueado arriba
+      // crear el botón logout
+
     if ($params->id != null) {
       // Busco la entidad correspondiente al usuario logueado.
       $em = $this->getDoctrine()->getManager();
       $user = $em->getRepository("BackendBundle:TblUser")->findOneBy(
         array(
           'id' => $params->id
-        ));
+        )
+      );
 
-        // poner los datos del usuario logueado arriba
-        // crear el botón logout
-        // al eliminar un usuario pasarlo a Activo = 0
-
-      // Busco en la DB si existe un usuario con el email ingresado.
-      $isset_email = $em->getRepository("BackendBundle:TblUser")->findBy(
-          array(
-             'email' => $params->email,
-             ));
-
+      // Busco en la DB si existe un usuario con el username envíado, donde el Id sea distinto al usuario a editar.
       $qb = $em->createQueryBuilder();
       $qb->select('u')
          ->from('BackendBundle:TblUser', 'u')
-         ->where('u.id != '.$params->id)
+         ->where('u.id != :id')
          ->andWhere('u.username = :username')
-         ->setParameter('username', $params->username);
+         ->setParameters(array('id' => $params->id, 'username' => $params->username));
       $query = $qb->getQuery();
       $result = $query->getResult();
 
-       var_dump($result);
-       die();
+      // ver como hacemos esto, porque aunque no exista un usuario devuelve una lista vacía y entra siempre al IF.
+      if (!empty($result)) {
+        $data["msg"] = 'Ya existe un usuario con el username ingresado.';
 
-      // Busco en la DB si existe un usuario con el username ingresado.
-      $isset_username = $em->getRepository("BackendBundle:TblUser")->findBy(
-          array(
-             'username' => $params->username
-             ));
-
-      if (isset($isset_email)) {
-
-        $email = $isset_email->getEmail();
-        var_dump($email);
-        die();
-        if ($isset_email->email == $user->email && $isset_email->id != $user->id) {
-          // Crear la respuesta.. ya existe un usuario con este email.
-          $data["data"] = 'Ya existe un usuario con el email ingresado.';
-        }
+        $jsonResponse = $serializer->serialize($data, 'json');
+        return new Response($jsonResponse);
       }
 
-      if (isset($isset_username)) {
-        if ($isset_username->username == $user->username && $isset_username->id != $user->id) {
-          // Crear la respuesta.. ya existe un usuario con este username.
-          $data["data"] = 'Ya existe un usuario con el username ingresado.';
-        }
-      }
+      // Valido que email y username sean null
+      if ($params->email != null && $params->username != null) {
+        $user->setUsername($params->username);
+        $user->setNombre($params->nombre);
+        $user->setApellido($params->apellido);
+        $user->setEmail($params->email);
+        $user->setRole($params->role);
 
-      // Convertimos los datos del request a formato Json.
-      $json = $request->get('json', null);
-      $params = json_decode($json);
+        // Persisto los datos en la DB.
+        $em->persist($user);
+        $em->flush();
 
-      // Si $json es distinto a null, procedo a crear el usuario.
-      if ($json != null) {
-        $username = (isset($params->username)) ? $params->username : null;
-        $nombre = (isset($params->nombre)) ? $params->nombre : null;
-        $apellido = (isset($params->apellido)) ? $params->apellido : null;
-        $email = (isset($params->email)) ? $params->email : null;
+        $result = $em->getRepository("BackendBundle:TblUser")->findBy(array('activo' => 1));
 
-        // Valido que ninguno de los datos recibidos sea null.
-        if ($email != null && $username != null && $nombre != null && $apellido != null) {
-          $user->setUsername($username);
-          $user->setNombre($nombre);
-          $user->setApellido($apellido);
-          $user->setEmail($email);
+        $data = array(
+          'status' => 'OK',
+          'msg' => 'El usuario ha sido modificado con exito!',
+          'users' => $result
+        );
 
-          // Persisto los datos en la DB.
-          $em->persist($user);
-          $em->flush();
-
-          $data = array(
-            'status' => 'OK',
-            'msg' => 'El usuario ha sido modificado con exito!'
-          );
-        }
+        $jsonResponse = $serializer->serialize($data, 'json');
+        return new Response($jsonResponse);
       }
     }
+  }
+
+  public function deleteAction(Request $request) {
+    // Cargo los servicios que voy a utilizar.
+    $serializer = SerializerBuilder::create()->build();
+    $params = (object) [];
+
+    $params->id = $request->request->get("id");
+
+    // Por default $data devuelve un error generico.
+    $data = array(
+      'status' => 'ERROR',
+      'msg' => 'El usuario no pudo ser eliminado.'
+      );
+
+    if ($params->id != null) {
+      // Busco la entidad correspondiente al usuario logueado.
+      $em = $this->getDoctrine()->getManager();
+      $user = $em->getRepository("BackendBundle:TblUser")->findOneBy(
+        array(
+          'id' => $params->id
+        )
+      );
+
+      // Valido que el usuario exista en la DB.
+      if (!empty($user)) {
+        // Seteo el estado Activo en 0.
+        $user->setActivo('0');
+
+        // Persisto los datos en la DB.
+        $em->persist($user);
+        $em->flush();
+
+        $result = $em->getRepository("BackendBundle:TblUser")->findBy(array('activo' => 1));
+
+        $data = array(
+          'status' => 'OK',
+          'msg' => 'El usuario ha sido eliminado con exito!',
+          'users' => $result
+        );
+      }
+    }
+
+    $jsonResponse = $serializer->serialize($data, 'json');
+    return new Response($jsonResponse);
   }
 }
