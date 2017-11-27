@@ -109,6 +109,11 @@ BackendBundle\Entity\TblVentas:
             nullable: false
             options:
                 unsigned: false
+        nogravado:
+            type: decimal
+            nullable: false
+            precision: 10
+            scale: 2
     manyToOne:
         cliente:
             targetEntity: TblProveedores

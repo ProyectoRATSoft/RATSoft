@@ -17,4 +17,9 @@ BackendBundle\Entity\TblImputaciones:
             length: 45
             options:
                 fixed: false
+        codigo:
+            type: integer
+            nullable: false
+            options:
+                unsigned: false
     lifecycleCallbacks: {  }

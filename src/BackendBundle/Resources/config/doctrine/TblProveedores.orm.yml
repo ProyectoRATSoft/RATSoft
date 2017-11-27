@@ -5,9 +5,6 @@ BackendBundle\Entity\TblProveedores:
         FK_IVA_idx:
             columns:
                 - iva
-        FK_JURISDICCION_idx:
-            columns:
-                - jurisdiccion
         FK_JURISDICCION_PROV_idx:
             columns:
                 - jurisdiccion

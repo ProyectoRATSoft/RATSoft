@@ -834,4 +834,33 @@ class TblVentas
     {
         return $this->activo;
     }
+    /**
+     * @var string
+     */
+    private $nogravado;
+
+
+    /**
+     * Set nogravado
+     *
+     * @param string $nogravado
+     *
+     * @return TblVentas
+     */
+    public function setNogravado($nogravado)
+    {
+        $this->nogravado = $nogravado;
+
+        return $this;
+    }
+
+    /**
+     * Get nogravado
+     *
+     * @return string
+     */
+    public function getNogravado()
+    {
+        return $this->nogravado;
+    }
 }

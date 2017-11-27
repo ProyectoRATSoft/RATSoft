@@ -51,4 +51,33 @@ class TblImputaciones
     {
         return $this->nombre;
     }
+    /**
+     * @var integer
+     */
+    private $codigo;
+
+
+    /**
+     * Set codigo
+     *
+     * @param integer $codigo
+     *
+     * @return TblImputaciones
+     */
+    public function setCodigo($codigo)
+    {
+        $this->codigo = $codigo;
+
+        return $this;
+    }
+
+    /**
+     * Get codigo
+     *
+     * @return integer
+     */
+    public function getCodigo()
+    {
+        return $this->codigo;
+    }
 }

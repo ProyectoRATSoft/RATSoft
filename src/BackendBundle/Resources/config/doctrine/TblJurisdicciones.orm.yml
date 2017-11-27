@@ -13,8 +13,13 @@ BackendBundle\Entity\TblJurisdicciones:
     fields:
         nombre:
             type: string
-            nullable: true
+            nullable: false
             length: 45
             options:
                 fixed: false
+        codigo:
+            type: integer
+            nullable: false
+            options:
+                unsigned: false
     lifecycleCallbacks: {  }
