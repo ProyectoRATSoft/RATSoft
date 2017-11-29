@@ -238,10 +238,16 @@
             $("perc_iibb").removeAttr("disabled");
           }
           if(item.blk_perciva == 1){
-              $("#perc_iibb").removeAttr("disabled");
-              $("#perc_iibb").attr("disabled","true");
+              $("#perc_iva").removeAttr("disabled");
+              $("#perc_iva").attr("disabled","true");
           }else{
-            $("#perc_iibb").removeAttr("disabled");
+            $("#perc_iva").removeAttr("disabled");
+          }
+          if(item.blk_ret == 1){
+              $("#ret_ganancia").removeAttr("disabled");
+              $("#ret_ganancia").attr("disabled","true");
+          }else{
+            $("#ret_ganancia").removeAttr("disabled");
           }
           if(item.autoiva == 1){
               window.autoiva=1
@@ -399,7 +405,7 @@
                         "title": "Jurisdicción"
                       },
                       { 
-                        "data": "imputacion.id",
+                        "data": "imputacion.codigo",
                         "title": "Código de imputación"
                       },                      
                       { 
