@@ -5,7 +5,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
     <title>RATSoft |{% block title %} Home{% endblock %}</title>
-    
+
     {% block stylesheets %}
             <!-- Bootstrap 3.3.7 -->
         <link rel="stylesheet" href="{{ asset('bower_components/bootstrap/dist/css/bootstrap.min.css') }}">
@@ -46,7 +46,7 @@
         </script>
         <!-- Bootstrap 3.3.7 -->
         <script src="{{ asset('bower_components/bootstrap/dist/js/bootstrap.min.js') }}"></script>
-        
+
         <!-- Morris.js charts -->
         <script src="{{ asset('bower_components/raphael/raphael.min.js') }}"></script>
         <script src="{{ asset('bower_components/morris.js/morris.min.js') }}"></script>
@@ -67,7 +67,7 @@
         <!-- Slimscroll -->
         <script src="{{ asset('bower_components/jquery-slimscroll/jquery.slimscroll.min.js') }}"></script>
         <!-- FastClick -->
-        <script src="{{ asset('bower_components/fastclick/lib/fastclick.js') }}"></script>           
+        <script src="{{ asset('bower_components/fastclick/lib/fastclick.js') }}"></script>
         <!-- AdminLTE App -->
         <script src="{{ asset('dist/js/adminlte.min.js') }}"></script>
         <!-- AdminLTE dashboard demo (This is only for demo purposes) -->
@@ -76,14 +76,14 @@
         <script src="{{ asset('dist/js/demo.js') }}"></script>
 
         <!-- BLOCK UI -->
-        <script src="{{ asset('public/blockUI.js') }}"></script> 
+        <script src="{{ asset('public/blockUI.js') }}"></script>
     {% endblock %}
 
     {% block Scripts %}
     {% endblock %}
 
             <!-- <link rel="icon" type="image/x-icon" href="{{ asset('favicon.ico') }}" /> -->
-</head> 
+</head>
 <body data-ng-controller="frontendController" class="hold-transition skin-blue sidebar-mini">
     <div class="wrapper">
         {% block header %}
@@ -107,24 +107,26 @@
                             <li class="dropdown user user-menu">
                                 <a href="#" class="dropdown-toggle" data-toggle="dropdown">
                                     <img src="{{ asset('dist/img/user2-160x160.jpg') }}" class="user-image" alt="User Image">
-                                    <span class="hidden-xs">Iglesias Mathias</span>
+                                    <span class="hidden-xs">{{app.user.username}}</span>
+                                    {% if is_granted('ROLE_ADMIN') %}
+                                    {% endif %}
                                 </a>
                                 <ul class="dropdown-menu">
                                        <!-- User image -->
                                     <li class="user-header">
                                         <img src="{{ asset('dist/img/user2-160x160.jpg') }}" class="img-circle" alt="User Image">
-                                        <p>Tec. Iglesias Mathias - Analista de Sistemas
-                                            <small>Member since Nov. 2012</small>
+                                        <p>{{app.user.username}}
+                                            <small>Miembro desde Nov. 2012</small>
                                         </p>
                                     </li>
                                         <!-- </li>  sobra??-->
                                         <!-- Menu Footer-->
                                     <li class="user-footer">
                                         <div class="pull-left">
-                                            <a href="#" class="btn btn-default btn-flat">Profile</a>
+                                            <a href="#" class="btn btn-default btn-flat">Perfil</a>
                                         </div>
                                         <div class="pull-right">
-                                            <a href="#" class="btn btn-default btn-flat">Sign out</a>
+                                            <a href="{{ asset('/logout') }}" class="btn btn-default btn-flat">Cerrar sesión</a>
                                         </div>
                                     </li>
                                 </ul>
@@ -139,7 +141,7 @@
             </header>
         {% endblock %}
              <!-- Left side column. contains the logo and sidebar -->
-        {% block sidebar %}           
+        {% block sidebar %}
             <aside class="main-sidebar">
                         <!-- sidebar: style can be found in sidebar.less -->
                     <section class="sidebar">
@@ -150,20 +152,20 @@
                             <li>
                                 <a href="{{ asset('/contable') }}">
                                     <i class="fa fa-files-o"></i>
-                                    <span>Contable</span>            
-                                </a>   
+                                    <span>Contable</span>
+                                </a>
                             </li>
                             <li>
                                 <a href="{{ asset('/impositivo') }}" >
-                                    <i class="fa fa-th"></i> 
-                                    <span>Impositivo</span>           
+                                    <i class="fa fa-th"></i>
+                                    <span>Impositivo</span>
                                 </a>
                             </li>
                             <li>
                                 <a href="#">
                                     <i class="fa fa-pie-chart"></i>
                                     <span>Informes</span>
-                                </a>               
+                                </a>
                             </li>
                              <li class="treeview">
                               <a href="#">
@@ -174,7 +176,9 @@
                                 </span>
                               </a>
                               <ul class="treeview-menu">
+                                {% if is_granted('ROLE_ADMIN') %}
                                 <li><a href="{{ asset('/users') }}"><i class="fa fa-users"></i> Usuarios</a></li>
+                                {% endif %}
                                 <li><a href="{{ asset('/configuraciones/razon_social') }}"><i class="fa fa-map"></i>Jurisdicciones</a></li>
                                 <li><a href="../layout/fixed.html"><i class="fa fa-tags"></i>Imputaciones</a></li>
                                 <li><a href="../layout/collapsed-sidebar.html"><i class="fa fa-ticket"></i>Comprabantes</a></li>
@@ -187,7 +191,7 @@
                 </aside>
         {% endblock %}
         {% block body %}
-         
+
 
             <!-- al extender se insertara la interfaz aqui -->
 
@@ -201,8 +205,8 @@
                 <div class="pull-right hidden-xs">
                   <b>RatSoft</b> 1.0.0
                 </div>
-                <strong>Copyright &copy; 2017-2018 <!--<a href="https://adminlte.io">Almsaeed Studio</a>-->.</strong> All rights
-                reserved.
+                <strong>Copyright 2017-2018 <!--<a href="https://adminlte.io">Almsaeed Studio</a>-->.</strong>
+                Todos los derechos reservados.
             </footer>
         {% endblock %}
         {% block configuraciones %}
@@ -288,12 +292,12 @@
                 <!-- /.control-sidebar -->
                   <!-- Add the sidebar's background. This div must be placed
                   immediately after the control sidebar -->
-                  <div class="control-sidebar-bg"></div>        
-        {% endblock %} 
+                  <div class="control-sidebar-bg"></div>
+        {% endblock %}
     </div>
                 <!-- ./wrapper -->
-        
-        
-        
+
+
+
 </body>
 </html>

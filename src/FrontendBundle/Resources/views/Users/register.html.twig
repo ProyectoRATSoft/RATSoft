@@ -50,6 +50,7 @@
       Usuarios
       <small>Buscador</small>
     </h2>
+    <br>
     <ol class="breadcrumb">
       <li><a href="/home"><i class="fa fa-home"></i> Home</a></li>
     </ol>
@@ -149,20 +150,23 @@
               <input type="text" required="true" class="form-control input-sm" id="nuevoUsername" name="nuevoUsername" placeholder="Username Usuario" />
             </div>
             <div class="form-group">
-              <label for="nuevoPassword" id="nuevoPassword">Password: </label>
+              <label for="nuevoPassword">Password: </label>
               <input type="text" required="true" class="form-control input-sm" id="nuevoPassword" name="nuevoPassword" placeholder="Password Usuario" />
-            </div>
-            <div class="form-group">
-              <label for="nuevoNombre">Nombre: </label>
-              <input type="text" class="form-control input-sm" id="nuevoNombre" required="true" name="nuevoNombre" placeholder="Nombre Usuario" />
-            </div>
-            <div class="form-group">
-              <label for="nuevoApellido">Apellido: </label>
-              <input type="text" class="form-control input-sm" id="nuevoApellido" required="true" name="nuevoApellido" placeholder="Apellido Usuario" />
             </div>
             <div class="form-group">
               <label for="nuevoEmail">Email: </label>
               <input type="text" class="form-control input-sm" id="nuevoEmail" required="true" name="nuevoEmail" placeholder="Email Usuario" />
+            </div>
+            <div class="form-group">
+              <label for="Role">Role: </label>
+              <div class="input-sm">
+                <select name="Role" required="true" id="nuevoRole" class="selectpicker dropdown-toggle" type="button" data-toggle="dropdown">
+                  <option disabled selected value>--Seleccione una opcion--</option>
+                  <option>ROLE_USER</option>
+                  <option>ROLE_ADMIN</option>
+                </select>
+              </div>
+              <br>
             </div>
           </div>
 
