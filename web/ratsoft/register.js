@@ -70,15 +70,20 @@ $(document).ready(function() {
           $('div.form-group #userId').val(item.id);
           $('div.form-group #username').val(item.username);
           $('div.form-group #email').val(item.email);
-          $('div.form-group #role').val(item.role);
+          var roleFormat = (item.roles.length === 0) ? 'ROLE_USER' :'ROLE_ADMIN';
+          $('div.form-group #role').val(roleFormat);
 
           // Completo el modal de edición de usuarios.
           $('input#nuevoUsername').val(item.username);
-          $('input#nuevoPassword').val(item.password);
-          $('input#nuevoNombre').val(item.nombre);
-          $('input#nuevoApellido').val(item.apellido);
+          // $('input#nuevoPassword').val(item.password);
           $('input#nuevoEmail').val(item.email);
 
+          var role = (item.roles.length != 0) ? 'ROLE_ADMIN' : 'ROLE_USER';
+          $("#nuevoRole").change(function(){
+            var option = $(this).find('option:selected').val(role);
+          });
+
+          // Cargo esta variable global para usar en distintos momentos.
           window.userSelected = item;
         }
       });
@@ -91,15 +96,8 @@ $(document).ready(function() {
     // Limpio los campos del modal
     $('input#nuevoUsername').val('');
     $('input#nuevoPassword').val('');
-    $('input#nuevoNombre').val('');
-    $('input#nuevoApellido').val('');
-    $('select#nuevoEmail').val('');
-
-    // Limpio los campos de la tabla del costado para arreglar efecto visual y evitar confusiones (Ver!!!!)
-    // $('div.form-group #empresaID').val('');
-    // $('div.form-group #nombre').val('');
-    // $('div.form-group #domicilio').val('');
-    // $('div.form-group #localidad').val('');
+    $('input#nuevoEmail').val('');
+    $('select#nuevoRole').val('');
 
     // Deselecciono la empresa de la tabla
     $('#tabla-empresas tbody tr').removeClass('active');
@@ -110,6 +108,9 @@ $(document).ready(function() {
     $('button#newEmpresa').css("display", "");
     $('button#editDatesEmpresa').css("display", "none");
     $('button#deleteEmpresa').css("display", "none");
+
+    $('input#nuevoPassword').css("display", "");
+    $('label#nuevoPassword').css("display", "");
   });
 
   // Se ejecuta al seleccionar "Guardar", del modal Agregar Empresa.
@@ -117,10 +118,8 @@ $(document).ready(function() {
     // Guardo los valores recibidos del form en cada variable.
     var username = $('div.modal-body div.form-group #nuevoUsername').val();
     var password = $('div.modal-body div.form-group #nuevoPassword').val();
-    var nombre = $('div.modal-body div.form-group #nuevoNombre').val();
-    var apellido = $('div.modal-body div.form-group #nuevoApellido').val();
+    var role = $('div.modal-body div.form-group #nuevoRole').val();
     var email = $('div.modal-body div.form-group #nuevoEmail').val();
-    var role = 1;
 
     // Envío los datos del nuevo usuario al backend.
     $.ajax({
@@ -130,8 +129,6 @@ $(document).ready(function() {
         data: {
           "username": username,
           "password": password,
-          "nombre": nombre,
-          "apellido": apellido,
           "email": email,
           "role": role
         },
@@ -143,22 +140,14 @@ $(document).ready(function() {
         tableReload(respuesta.users);
 
         $('div.form-group #username').val('');
-        $('div.form-group #password').val('');
-        $('div.form-group #nombre').val('');
-        $('div.form-group #apellido').val('');
         $('div.form-group #email').val('');
         $('div.form-group #role').val('');
+        $('div.form-group #password').val('');
       });
   });
 
   $("#editEmpresa").click(function() {
     $("#modalAddEmpresa").modal();
-    // Con esto remuevo el seleccionar del dropdown
-    // $('select#nuevaProvincia :contains(--seleccionar--)').attr("disabled", "true").removeAttr("selected");
-    // $('select#nuevaSituacionIVA :contains(--seleccionar--)').attr("disabled", "true").removeAttr("selected");
-    // $('select#nuevoRubro :contains(--seleccionar--)').attr("disabled", "true").removeAttr("selected");
-    // $('select#nuevoCodIngresosBrutos :contains(--seleccionar--)').attr("disabled", "true").removeAttr("selected");
-
     $("h4.modal-title").text("Editar Usuario");
     $('button#newEmpresa').css("display", "none");
     $('button#editDatesEmpresa').css("display", "");
@@ -174,12 +163,14 @@ $(document).ready(function() {
     // Guardo los valores recibidos del form en cada variable.
     var id = window.userSelected.id;
     var username = $('div.modal-body div.form-group #nuevoUsername').val();
-    var nombre = $('div.modal-body div.form-group #nuevoNombre').val();
-    var apellido = $('div.modal-body div.form-group #nuevoApellido').val();
-    var email = $('div.modal-body div.form-group #nuevoEmail').val();
-    var role = window.userSelected.role;
+    var role = $('div.modal-body div.form-group #nuevoRole').val();
     var password = window.userSelected.password;
+    var email = $('div.modal-body div.form-group #nuevoEmail').val();
 
+    $("#nuevoRole").change(function(){
+      role = $(this).find('option:selected').val();
+    });
+    debugger
     // Envío al backend los datos del usuario a editar.
     $.ajax({
         type: "POST",
@@ -189,10 +180,8 @@ $(document).ready(function() {
           "id": id,
           "username": username,
           "password": password,
-          "nombre": nombre,
-          "apellido": apellido,
-          "email": email,
-          "role": role
+          "role": role,
+          "email": email
         },
         dataType: "json"
       })
@@ -202,11 +191,16 @@ $(document).ready(function() {
         $("#modalAddEmpresa").modal('toggle');
         tableReload(respuesta.users);
         $('div.modal-body div.form-group #nuevoId').val();
+        $('div.modal-body div.form-group #nuevoEmail').val();
         $('div.modal-body div.form-group #nuevoUsername').val();
         $('div.modal-body div.form-group #nuevoPassword').val();
-        $('div.modal-body div.form-group #nuevoNombre').val();
-        $('div.modal-body div.form-group #nuevoApellido').val();
-        $('div.modal-body div.form-group #nuevoEmail').val();
+        $('div.modal-body div.form-group #nuevoRole').val();
+
+        // Completo los datos de grilla de edición lateral derecha.
+        $('div.form-group #userId').val(id);
+        $('div.form-group #username').val(username);
+        $('div.form-group #email').val(email);
+        $('div.form-group #role').val(role);
       });
   });
 
@@ -225,12 +219,7 @@ $(document).ready(function() {
       })
       .done(function(respuesta){
         $("#modalAddEmpresa").modal('toggle');
-        tableReload(respuesta.users);
-        // $('div.form-group #empresaID').val('');
-        // $('div.form-group #nombre').val('');
-        // $('div.form-group #domicilio').val('');
-        // $('div.form-group #localidad').val('');
-        // $('div.form-group #provincia').val('');
+          tableReload(respuesta.users);
       });
     }
   });
