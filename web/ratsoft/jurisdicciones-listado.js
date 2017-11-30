@@ -123,6 +123,9 @@
          $("#modalAddJurisdiccion").modal();
          //reseteo las validaciones
          $("#modal-formulario").validate().resetForm();
+         $("#modal-formulario").find('.has-error').removeClass("has-error"); //limpia las clases has-error que pone los recuadros rojos
+         $("#modal-formulario").find('.has-success').removeClass("has-success");//limpia los recuadros verdes de los datos correctos ingresados
+
         //limpio los campos
          $('#nuevoId').val('');
          $('#nuevaProvincia').val('');
@@ -133,7 +136,7 @@
          $("h4.modal-title").text("Nueva Jurisdiccion");
          //muestro los botones correspondientes
          $('button#newJurisdiccion').css("display", "");
-         $('button#editDatesJurisdiccion').css("display", "none");
+         $('button#editJurisdiccion').css("display", "none");
          $('button#deleteJurisdiccion').css("display", "none");
       });
 
@@ -174,6 +177,8 @@
       $("#boton-editar").click(function(){        
         $("#modalAddJurisdiccion").modal();
         $("#modal-formulario").validate().resetForm();
+        $("#modal-formulario").find('.has-error').removeClass("has-error"); //limpia las clases has-error que pone los recuadros rojos
+        $("#modal-formulario").find('.has-success').removeClass("has-success");//limpia los recuadros verdes de los datos correctos ingresados
         //limpio los campos
         $("h4.modal-title").text("Editar Jurisdiccion");
         $('button#newJurisdiccion').css("display", "none");
@@ -257,6 +262,23 @@
                 //minlength: 3
               },                   
           },
+          highlight: function(element) {
+              $(element).closest('.form-group').addClass('has-error');
+              //$(element).addClass('has-error fa fa-times');
+          },
+          unhighlight: function(element) {
+              $(element).closest('.form-group').removeClass('has-error');
+              //$(element).('.input-sm').removeClass('glyphicon-remove');
+          },
+          errorElement: 'span',
+          errorClass: 'help-block',
+          errorPlacement: function(error, element) {
+              if(element.parent('.input-group').length) {
+                  error.insertAfter(element.parent());
+              } else {
+                  error.insertAfter(element);
+              }
+          }    
           
       });
 
