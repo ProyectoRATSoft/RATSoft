@@ -89,6 +89,10 @@ $(document).ready(function() {
   // Modal Agregar Empresa.
   $("#addEmpresa").click(function() {
     $("#modalAddEmpresa").modal();
+    $("#modal-formulario").validate().resetForm();
+    $("#modal-formulario").find('.has-error').removeClass("has-error"); //limpia las clases has-error que pone los recuadros rojos
+    $("#modal-formulario").find('.has-success').removeClass("has-success");//limpia los recuadros verdes de los datos correctos ingresados       
+        
     // Limpio los campos del modal
     $('input#nuevoUsername').val('');
     $('input#nuevoPassword').val('');
@@ -111,39 +115,45 @@ $(document).ready(function() {
 
   // Se ejecuta al seleccionar "Guardar", del modal Agregar Empresa.
   $("#newEmpresa").click(function() {
-    // Guardo los valores recibidos del form en cada variable.
-    var username = $('div.modal-body div.form-group #nuevoUsername').val();
-    var password = $('div.modal-body div.form-group #nuevoPassword').val();
-    var role = $('div.modal-body div.form-group #nuevoRole').val();
-    var email = $('div.modal-body div.form-group #nuevoEmail').val();
+    if ($("#modal-formulario").valid()){
+      // Guardo los valores recibidos del form en cada variable.
+      var username = $('div.modal-body div.form-group #nuevoUsername').val();
+      var password = $('div.modal-body div.form-group #nuevoPassword').val();
+      var role = $('div.modal-body div.form-group #nuevoRole').val();
+      var email = $('div.modal-body div.form-group #nuevoEmail').val();
 
-    // Envío los datos del nuevo usuario al backend.
-    $.ajax({
-        type: "POST",
-        url: "/user/new",
-        async: false,
-        data: {
-          "username": username,
-          "password": password,
-          "email": email,
-          "role": role
-        },
-        dataType: "json"
-      })
-      .done(function(respuesta) {
-        alert(respuesta.msg);
-        $("#modalAddEmpresa").modal('toggle');
-        tableReload(respuesta.users);
+      // Envío los datos del nuevo usuario al backend.
+      $.ajax({
+          type: "POST",
+          url: "/user/new",
+          async: false,
+          data: {
+            "username": username,
+            "password": password,
+            "email": email,
+            "role": role
+          },
+          dataType: "json"
+        })
+        .done(function(respuesta) {
+          alert(respuesta.msg);
+          $("#modalAddEmpresa").modal('toggle');
+          tableReload(respuesta.users);
 
-        $('div.form-group #username').val('');
-        $('div.form-group #email').val('');
-        $('div.form-group #role').val('');
-        $('div.form-group #password').val('');
-      });
+          $('div.form-group #username').val('');
+          $('div.form-group #email').val('');
+          $('div.form-group #role').val('');
+          $('div.form-group #password').val('');
+        });
+    }
   });
 
   $("#editEmpresa").click(function() {
     $("#modalAddEmpresa").modal();
+    $("#modal-formulario").validate().resetForm();
+    $("#modal-formulario").find('.has-error').removeClass("has-error"); //limpia las clases has-error que pone los recuadros rojos
+    $("#modal-formulario").find('.has-success').removeClass("has-success");//limpia los recuadros verdes de los datos correctos ingresados       
+        
     $("h4.modal-title").text("Editar Usuario");
     $('button#newEmpresa').css("display", "none");
     $('button#editDatesEmpresa').css("display", "");
@@ -156,48 +166,50 @@ $(document).ready(function() {
 
   // Se ejecuta al seleccionar "Guardar", del modal editar empresa.
   $("#editDatesEmpresa").click(function() {
-    // Guardo los valores recibidos del form en cada variable.
-    var id = window.userSelected.id;
-    var username = $('div.modal-body div.form-group #nuevoUsername').val();
-    var role = $('div.modal-body div.form-group #nuevoRole').val();
-    var password = window.userSelected.password;
-    var email = $('div.modal-body div.form-group #nuevoEmail').val();
+    if ($("#modal-formulario").valid()){
+      // Guardo los valores recibidos del form en cada variable.
+      var id = window.userSelected.id;
+      var username = $('div.modal-body div.form-group #nuevoUsername').val();
+      var role = $('div.modal-body div.form-group #nuevoRole').val();
+      var password = window.userSelected.password;
+      var email = $('div.modal-body div.form-group #nuevoEmail').val();
 
-    $("#nuevoRole").change(function(){
-      role = $(this).find('option:selected').val();
-    });
-    debugger
-    // Envío al backend los datos del usuario a editar.
-    $.ajax({
-        type: "POST",
-        url: "/user/edit",
-        async: false,
-        data: {
-          "id": id,
-          "username": username,
-          "password": password,
-          "role": role,
-          "email": email
-        },
-        dataType: "json"
-      })
-      .done(function(respuesta) {
-        alert(respuesta.msg);
-
-        $("#modalAddEmpresa").modal('toggle');
-        tableReload(respuesta.users);
-        $('div.modal-body div.form-group #nuevoId').val();
-        $('div.modal-body div.form-group #nuevoEmail').val();
-        $('div.modal-body div.form-group #nuevoUsername').val();
-        $('div.modal-body div.form-group #nuevoPassword').val();
-        $('div.modal-body div.form-group #nuevoRole').val();
-
-        // Completo los datos de grilla de edición lateral derecha.
-        $('div.form-group #userId').val(id);
-        $('div.form-group #username').val(username);
-        $('div.form-group #email').val(email);
-        $('div.form-group #role').val(role);
+      $("#nuevoRole").change(function(){
+        role = $(this).find('option:selected').val();
       });
+      debugger
+      // Envío al backend los datos del usuario a editar.
+      $.ajax({
+          type: "POST",
+          url: "/user/edit",
+          async: false,
+          data: {
+            "id": id,
+            "username": username,
+            "password": password,
+            "role": role,
+            "email": email
+          },
+          dataType: "json"
+        })
+        .done(function(respuesta) {
+          alert(respuesta.msg);
+
+          $("#modalAddEmpresa").modal('toggle');
+          tableReload(respuesta.users);
+          $('div.modal-body div.form-group #nuevoId').val();
+          $('div.modal-body div.form-group #nuevoEmail').val();
+          $('div.modal-body div.form-group #nuevoUsername').val();
+          $('div.modal-body div.form-group #nuevoPassword').val();
+          $('div.modal-body div.form-group #nuevoRole').val();
+
+          // Completo los datos de grilla de edición lateral derecha.
+          $('div.form-group #userId').val(id);
+          $('div.form-group #username').val(username);
+          $('div.form-group #email').val(email);
+          $('div.form-group #role').val(role);
+        });
+    }
   });
 
   $("#deleteEmpresa").click(function(){
@@ -248,6 +260,23 @@ $(document).ready(function() {
         required: "Este campo es requerido"
         // minlength: "Este campo de contener al menos 8 caracteres"
       }
-    }
+    },
+    highlight: function(element) {
+              $(element).closest('.form-group').addClass('has-error');
+              //$(element).addClass('has-error fa fa-times');
+    },
+    unhighlight: function(element) {
+        $(element).closest('.form-group').removeClass('has-error');
+        //$(element).('.input-sm').removeClass('glyphicon-remove');
+    },
+    errorElement: 'span',
+    errorClass: 'help-block',
+    errorPlacement: function(error, element) {
+        if(element.parent('.input-group').length) {
+            error.insertAfter(element.parent());
+        } else {
+            error.insertAfter(element);
+        }
+      } 
   });
 });

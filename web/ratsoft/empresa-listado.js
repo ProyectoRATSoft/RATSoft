@@ -311,7 +311,7 @@
 
       $("#editDatesEmpresa").click(function(){
         if ($("#modal-formulario").valid()){
-    //guardamos id para pasarlo en la url
+      //guardamos id para pasarlo en la url
         var id =  $('div.modal-body div.form-group #nuevoId').val();
         var nombre = $('div.modal-body div.form-group #nuevoNombre').val();
         var domicilio = $('div.modal-body div.form-group #nuevoDomicilio').val();
