@@ -261,7 +261,7 @@ class EmpresasController extends Controller
 			)
 		);
 		// Genero el objeto Tiposiibb y lo cargo en base al ID recibido
-		$tipoiibb = new TblRubros();
+		$tipoiibb = new TblTiposiibb();
 		$tipoiibb = $em->getRepository("BackendBundle:TblTiposiibb")->findOneBy(
 			array(
 				'id' => $respuesta["iibbtipo"]

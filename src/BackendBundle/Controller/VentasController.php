@@ -32,7 +32,11 @@ class VentasController extends Controller
 			'data' => '',
 		);
 
-		$result = $em->getRepository("BackendBundle:TblVentas")->findBy(array('empresa' => $id));
+		$result = $em->getRepository("BackendBundle:TblVentas")->findBy(
+			array(
+				'empresa' => $id,
+				'activo' => "1"
+			));
 		$ventas["data"] = $result;
 		$serializer = SerializerBuilder::create()->build();
 		$jsonResponse = $serializer->serialize($ventas, 'json');
@@ -65,6 +69,7 @@ class VentasController extends Controller
 			'neto_105' => $request->request->get("neto_105"),
 			'neto_21' => $request->request->get("neto_21"),
 			'neto_exento' => $request->request->get("neto_exento"),
+			'nogravado' => $request->request->get("nogravado"),
 			'iva_105' => $request->request->get("iva_105"),
 			'iva_21' => $request->request->get("iva_21"),
 			'ret_gan' => $request->request->get("ret_gan"),
@@ -77,7 +82,7 @@ class VentasController extends Controller
 			'usuario' => '1',
 			// 'rubro' => $request->request->get("rubro"),
 		);
-		$data = array(
+		$ventas = array(
 				'status' => 'OK',
 				'msg' => 'La empresa ha sido registrada con exito',
 				'draw' => '',
@@ -101,6 +106,7 @@ class VentasController extends Controller
 				||  !is_numeric($respuesta["neto_105"])	
 				||  !is_numeric($respuesta["neto_21"])	
 				||  !is_numeric($respuesta["neto_exento"])
+				||  !is_numeric($respuesta["nogravado"])
 				||  !is_numeric($respuesta["iva_105"])
 				||  !is_numeric($respuesta["iva_21"]) 	
 				||  !is_numeric($respuesta["ret_gan"])	
@@ -108,7 +114,7 @@ class VentasController extends Controller
 				||  !is_numeric($respuesta["percepcion"])
 				||  !is_numeric($respuesta["total"])
 			) {
-				$data = array(
+				$ventas = array(
 					'status' => 'ERROR',
 					'msg' => 'Hubo campos mandatorios que se enviaron vacios',
 					'draw' => '',
@@ -117,7 +123,7 @@ class VentasController extends Controller
 					'data' =>  '',				
 			);
 				
-				$jsonResponse = $serializer->serialize($data, 'json');
+				$jsonResponse = $serializer->serialize($ventas, 'json');
 				return new Response($jsonResponse);
 				exit();
 		}
@@ -178,6 +184,7 @@ class VentasController extends Controller
     	$ventas->setIva105($respuesta["iva_105"]);
     	$ventas->setIva21($respuesta["iva_21"]);
     	$ventas->setNetoExento($respuesta["neto_exento"]);
+    	$ventas->setNogravado($respuesta["nogravado"]);
     	$ventas->setRetGan($respuesta["ret_gan"]);
     	$ventas->setRetencion($respuesta["retencion"]);
     	$ventas->setPercepcion($respuesta["percepcion"]);
@@ -205,11 +212,11 @@ class VentasController extends Controller
 		$ventas["data"] = $result;
 
 		$jsonResponse = $serializer->serialize($ventas, 'json');
-		//return new Response($jsonResponse);		
-		$response = new Response ();
-		$response->setContent($request);
-		$response->headers->set('Content-Type', 'application/json');
-		return $response;
+		return new Response($jsonResponse);		
+		//$response = new Response ();
+		//$response->setContent($request);
+		//$response->headers->set('Content-Type', 'application/json');
+		//return $response;
 	}
 	/**
 	*	@Route("/contable/ventas/{id}/update",name="ventas_update")
@@ -230,6 +237,7 @@ class VentasController extends Controller
 			'neto_105' => $request->request->get("neto_105"),
 			'neto_21' => $request->request->get("neto_21"),
 			'neto_exento' => $request->request->get("neto_exento"),
+			'nogravado' => $request->request->get("nogravado"),
 			'iva_105' => $request->request->get("iva_105"),
 			'iva_21' => $request->request->get("iva_21"),
 			'ret_gan' => $request->request->get("ret_gan"),
@@ -258,6 +266,7 @@ class VentasController extends Controller
 				||  !is_numeric($respuesta["neto_105"])	
 				||  !is_numeric($respuesta["neto_21"])	
 				||  !is_numeric($respuesta["neto_exento"])
+				||  !is_numeric($respuesta["nogravado"])
 				||  !is_numeric($respuesta["iva_105"])
 				||  !is_numeric($respuesta["iva_21"]) 	
 				||  !is_numeric($respuesta["ret_gan"])	
@@ -265,7 +274,7 @@ class VentasController extends Controller
 				||  !is_numeric($respuesta["percepcion"])
 				||  !is_numeric($respuesta["total"])
 			) {
-				$data = array(
+				$ventas = array(
 					'status' => 'ERROR',
 					'msg' => 'Hubo campos mandatorios que se enviaron vacios',
 					'draw' => '',
@@ -274,7 +283,7 @@ class VentasController extends Controller
 					'data' =>  '',				
 			);
 				
-				$jsonResponse = $serializer->serialize($data, 'json');
+				$jsonResponse = $serializer->serialize($ventas, 'json');
 				return new Response($jsonResponse);
 				exit();
 		}
@@ -339,6 +348,7 @@ class VentasController extends Controller
     	$ventas->setIva105($respuesta["iva_105"]);
     	$ventas->setIva21($respuesta["iva_21"]);
     	$ventas->setNetoExento($respuesta["neto_exento"]);
+    	$ventas->setNogravado($respuesta["nogravado"]);
     	$ventas->setRetGan($respuesta["ret_gan"]);
     	$ventas->setRetencion($respuesta["retencion"]);
     	$ventas->setPercepcion($respuesta["percepcion"]);
@@ -366,11 +376,11 @@ class VentasController extends Controller
 		$ventas["data"] = $result;
 		
 		$jsonResponse = $serializer->serialize($ventas, 'json');
-		//return new Response($jsonResponse);		
-		$response = new Response ();
-		$response->setContent($request);
-		$response->headers->set('Content-Type', 'application/json');
-		return $response;
+		return new Response($jsonResponse);		
+		//$response = new Response ();
+		//$response->setContent($request);
+		//$response->headers->set('Content-Type', 'application/json');
+		//return $response;
 	}
 
 	/**

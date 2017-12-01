@@ -50,6 +50,7 @@
 <script src="{{ asset('public/Buttons-1.4.2/js/buttons.colVis.min.js') }}"></script>
 <script src="https://cdn.jsdelivr.net/npm/jquery-validation@1.17.0/dist/jquery.validate.min.js"></script>
 <script src="{{ asset('ratsoft/ratsoft.js') }}"></script>
+<script src="https://cdn.jsdelivr.net/npm/js-cookie@2/src/js.cookie.min.js"></script>
 <!-- <script src="{{ asset('') }}"></script>  --> 
 <script>
   //con esto bloqueamos la pantalla cuando inicia alguna accion ajax..
@@ -74,6 +75,7 @@
     });
 
     window.arrayrespuesta = {{ respuesta|raw }};
+    console.log(arrayrespuesta);
     window.idEmpresa = {{ empresa|raw }};
       //cargamos los valores para el Combo Comprobantes que esta en el modal
     comboFill("/comprobantes","id","detalle","#comprobante");
@@ -81,6 +83,90 @@
         var arrayResp = JSON.parse(resp);
         window.arrayTiposComp = arrayResp.data;
       });
+
+    $('#tipoComprobante').change(function(){
+      var option = $(this).find('option:selected').val();
+      window.arrayTiposComp.forEach(function(item,index,arr){
+        if(option == item.id){
+          if(item.blk_total == 1){
+            $("#total").removeAttr("disabled");
+            $("#total").attr("disabled","true");
+          }else{
+            $("#total").removeAttr("disabled");
+          }
+          if(item.blk_exe == 1){
+              $("#exento").removeAttr("disabled");
+              $("#exento").attr("disabled","true");
+          }else{
+            $("#exento").removeAttr("disabled");
+          }
+          if(item.blk_iva == 1){
+              $(".iva").removeAttr("disabled");
+              $(".iva").attr("disabled","true");
+          }else{
+            $(".iva").removeAttr("disabled");
+          }
+          if(item.blk_netos == 1){
+              $(".calcularIva").removeAttr("disabled");
+              $(".calcularIva").attr("disabled","true");
+          }else{
+            $(".calcularIva").removeAttr("disabled");
+          }
+          if(item.blk_nograv == 1){
+              $("#nogravado").removeAttr("disabled");
+              $("#nogravado").attr("disabled","true");
+          }else{
+            $("#nogravado").removeAttr("disabled");
+          }
+          if(item.blk_perciibb == 1){
+              $("retIibb").removeAttr("disabled");
+              $("retIibb").attr("disabled","true");
+          }else{
+            $("retIibb").removeAttr("disabled");
+          }
+          if(item.blk_perciva == 1){
+              $("#retIva").removeAttr("disabled");
+              $("#retIva").attr("disabled","true");
+          }else{
+            $("#retIva").removeAttr("disabled");
+          }
+          if(item.blk_perciva == 1){
+              $("#retGanancias").removeAttr("disabled");
+              $("#retGanancias").attr("disabled","true");
+          }else{
+            $("#retGanancias").removeAttr("disabled");
+          }
+          if(item.autoiva == 1){
+              window.autoiva=1
+          }else{
+              window.autoiva=0
+          }
+          if(item.autoneto == 1){
+              window.autoneto=1
+          }else{
+              window.autoneto=0
+          }
+          if(item.autototal == 1){
+              window.autototal=1
+          }else{
+              window.autototal=0
+          }
+          $('#exento').val('0');
+          $('#neto105').val('0');
+          $('#neto21').val('0');
+          //$('#neto27').val('0');
+          $('#iva105').val('0');
+          $('#iva21').val('0');-
+          //$('#iva27').val('0');
+          $('#nogravado').val('0');
+          $('#perc_iva').val('0');
+          $('#perc_iibb').val('0');
+          //$('#ret_ganancia').val('0');
+          $('#total').val('0');
+
+        }
+      })
+    });
 
     $("#addVenta").click(function(){
         //alert("entre");
@@ -113,11 +199,12 @@
         var opciones = "<option value='"+arrayrespuesta.data["0"].empresa.rubro.id+"'>"+arrayrespuesta.data["0"].empresa.rubro.nombre+"</option>";
         $('#rubro').prepend(opciones);
         $('#exento').val('0');
+        $('#nogravado').val('0');
         $('#neto105').val('0');
         $('#neto21').val('0');
         $('#iva105').val('0');
         $('#iva21').val('0');
-        $('#ret_ganancia').val('0');
+        $('#retGanancias').val('0');
         $('#total').val('0');
         $('#percepcion').val('0');
         
@@ -135,6 +222,7 @@
       //cargamos el modal
       window.idVenta = window.table.$("tr.active").find(".id-venta").text();
       console.log(idVenta);
+      console.log(arrayrespuesta);
         window.arrayrespuesta.data.forEach(function(item,index,arr){
           if (item.id == idVenta){
             console.log(item);
@@ -166,6 +254,7 @@
             $("#tipoComprobante").html(opciones);
             $("#tipoComprobante").val(item.tipo_comprobante.id);
             $('#exento').val(item.neto_exento);
+            $('#nogravado').val(item.nogravado);
             $('#neto105').val(item.neto105);
             $('#neto21').val(item.neto21);
             $('#iva105').val(item.iva105);
@@ -213,9 +302,10 @@
             "neto_105": $('#neto105').val(), 
             "neto_21": $('#neto21').val(),
             "neto_exento": $('#exento').val(),
+            "nogravado": $('#nogravado').val(),
             "iva_105": $('#iva105').val(),
             "iva_21": $('#iva21').val(),
-            "ret_gan": $('#ret_ganancia').val(),
+            //"ret_gan": $('#ret_ganancia').val(),
             "total": $('#total').val(),
             //ver
             "percepcion": $('#retIva ').val(),
@@ -254,11 +344,12 @@
         //console.log(arrayrespuesta.empresa.rubro.nombre);
         //$('#rubro').prepend(opciones);
         $('#exento').val('0');
+        $('#nogravado').val('0');
         $('#neto105').val('0');
         $('#neto21').val('0');
         $('#iva105').val('0');
         $('#iva21').val('0');
-        $('#ret_ganancia').val('0');
+        //$('#ret_ganancia').val('0');
         $('#total').val('0');
         $('#percepcion').val('0');
       //deberiamos mostrar algun mensaje tanto como de error, como de que todo salio bien. y luego recargar la grilla para que aparezca la nueva empresa en la tabla.
@@ -309,21 +400,21 @@
         //console.log(arrayrespuesta.empresa.rubro.nombre);
         //$('#rubro').prepend(opciones);
         $('#exento').val('0');
+        $('#nogravado').val('0');
         $('#neto105').val('0');
         $('#neto21').val('0');
         $('#iva105').val('0');
         $('#iva21').val('0');
-        $('#ret_ganancia').val('0');
+        //$('#ret_ganancia').val('0');
         $('#total').val('0');
         $('#percepcion').val('0');
       //deberiamos mostrar algun mensaje tanto como de error, como de que todo salio bien. y luego recargar la grilla para que aparezca la nueva empresa en la tabla.
       //alert(resp);
       });
-
     });
 
 
-    window.arrayproveedores = new Array();
+    /*window.arrayproveedores = new Array();
 
      $.ajax({
         type: "GET",
@@ -340,7 +431,58 @@
           window.mapping[window.arrayproveedores[i].nombre] = window.arrayproveedores[i].id;
           window.mappingCuit[window.arrayproveedores[i].nombre] = window.arrayproveedores[i].cuit;
         }
-      });
+      });*/
+
+    //Preparamos el array que vamos a usar para los proveedores
+    window.arrayproveedores = new Array();
+    //sessionStorage.arrayProv = new Array();
+    $.get("/proveedores/hash",function(resp,estado,jqXHR){
+      var arrayResp = JSON.parse(resp);
+      window.hashProv = arrayResp.hash;
+      console.log(window.hashProv);
+      console.log(parseInt(Cookies.get("hashProv"),10));
+    })
+    
+
+    // Traemos la info de proveedores y lo metemos en el array luego armamos el mapping entre nombre y id de proveedor para poder usarlo en el ABM
+    .done(function(){
+      if ( sessionStorage.arrayproveedores === undefined || Cookies.get("hashProv") === undefined ||   parseInt(Cookies.get("hashProv"),10) !== window.hashProv ) {
+        console.log("no se encontro la cookie")
+          $.ajax({
+          type: "GET",
+          url: "/proveedores",
+          dataType: "json",
+          //async: false
+        })
+        .done(function(respuesta){
+          window.arrayproveedores = respuesta.data;
+          window.source  = [ ];
+          window.mapping = { };
+          window.mappingCuit = { };
+          for(var i = 0; i < window.arrayproveedores.length; ++i) {
+            window.source.push(window.arrayproveedores[i].nombre);
+            window.mapping[window.arrayproveedores[i].nombre] = window.arrayproveedores[i].id;
+            window.mappingCuit[window.arrayproveedores[i].nombre] = window.arrayproveedores[i].cuit;
+          }
+          var minutes = 120;
+          var date = new Date();
+          date.setTime(date.getTime() + (minutes * 60 * 1000));
+          sessionStorage.arrayproveedores=JSON.stringify(window.arrayproveedores);
+          Cookies.set("hashProv",hashProv);
+        });
+      }else{
+        console.log("la encontré, es al pedo que la llame con ajax")
+        arrayproveedores = JSON.parse(sessionStorage.arrayproveedores);
+        window.source  = [ ];
+        window.mapping = { };
+        window.mappingCuit = { };
+        for(var i = 0; i < window.arrayproveedores.length; ++i) {
+          window.source.push(window.arrayproveedores[i].nombre);
+          window.mapping[window.arrayproveedores[i].nombre] = window.arrayproveedores[i].id;
+          window.mappingCuit[window.arrayproveedores[i].nombre] = window.arrayproveedores[i].cuit;
+        }
+      }
+    });
 
 
       // Aplicamos el autocomplete al campo "Razon Social" del Modal
@@ -522,6 +664,11 @@
                          className: 'none'
                       },
                       { 
+                        "data": "nogravado",
+                        "title": "No Gravado",
+                         className: 'none'
+                      },
+                      { 
                         "data": "iva105",
                         "title": "IVA 10.5%",
                          className: 'none'
@@ -550,7 +697,11 @@
                   }); 
     table.buttons().container().appendTo( '#tabla-ventas .col-sm-6:eq(0)' );                 
     var tableReload = function(datosnuevos){
-      window.arrayrespuesta = datosnuevos;
+      //console.log(datosnuevos);
+      //console.log("mostra algo hijo de re mil putas")
+      window.arrayrespuesta.data = datosnuevos;
+      console.log(datosnuevos);
+      console.log(window.arrayrespuesta);
       $('#tabla-ventas').DataTable().clear().draw();
       $('#tabla-ventas').DataTable().rows.add(datosnuevos).draw();
       };                 
@@ -597,9 +748,10 @@
             "neto_105": $('#neto105').val(), 
             "neto_21": $('#neto21').val(),
             "neto_exento": $('#exento').val(),
+            "nogravado": $('#nogravado').val(),
             "iva_105": $('#iva105').val(),
             "iva_21": $('#iva21').val(),
-            "ret_gan": $('#ret_ganancia').val(),
+            //"ret_gan": $('#ret_ganancia').val(),
             "total": $('#total').val(),
             //ver
             "percepcion": $('#retIva ').val(),
@@ -615,7 +767,7 @@
           if(respuesta.status = 'OK'){
             alert("venta agregada con éxito");
           }else{
-            alert("no se pudo agregar la compra")
+            alert("no se pudo agregar la venta")
           } 
           $("#modal-ventas").modal('toggle');
           tableReload(respuesta.data);
@@ -638,11 +790,12 @@
           $('#rubro').empty();
           $('#rubro').prepend('<option disabled selected value>--Seleccionar--</option>');
           $('#exento').val('0');
+          $('#nogravado').val('0');
           $('#neto105').val('0');
           $('#neto21').val('0');
           $('#iva105').val('0');
           $('#iva21').val('0');
-          $('#ret_ganancia').val('0');
+          //$('#ret_ganancia').val('0');
           $('#total').val('0');
           $('#percepcion').val('0');
         //deberiamos mostrar algun mensaje tanto como de error, como de que todo salio bien. y luego recargar la grilla para que aparezca la nueva empresa en la tabla.
@@ -689,6 +842,10 @@
                 required: true,
                 //minlength: 3
               },
+              nogravado: { 
+                required: true,
+                //minlength: 3
+              },
               neto105: { 
                 required: true,
                 //minlength: 3
@@ -705,7 +862,7 @@
                 required: true
                 //minlength: 3
               },
-              ret_ganancia: { 
+              retGanancias: { 
                 required: true
                 //minlength: 3
               },
@@ -755,6 +912,10 @@
                  required: "Este campo es requerido",
                 //minlength: 3
               },
+              nogravado: { 
+                 required: "Este campo es requerido",
+                //minlength: 3
+              },
               neto105: { 
                  required: "Este campo es requerido",
                 //minlength: 3
@@ -771,7 +932,7 @@
                  required: "Este campo es requerido",               
                 //minlength: 3
               },
-              ret_ganancia: { 
+              retGanancias: { 
                  required: "Este campo es requerido",               
                 //minlength: 3
               },
@@ -801,6 +962,61 @@
                   error.insertAfter(element);
               }
           }           
+      });
+      $(".calcularIva").on("change",function(){
+        if(window.autoiva==1){
+          console.log("autoiva");
+          var iva105 = parseFloat($('#neto105').val()) * parseFloat("0.105");
+          $("#iva105").val(iva105);
+          var iva21 = parseFloat($('#neto21').val()) * parseFloat("0.21");
+          $("#iva21").val(iva21);
+          //var iva27 = parseFloat($('#neto27').val()) * parseFloat("0.27");
+          //$("#iva27").val(iva27);
+        }
+      });
+
+      $(".calculado").on("change",function(){
+        if(window.autototal==1){
+          console.log("autototal");
+          var comprasTotal = 
+            parseFloat($('#exento').val()) +
+            parseFloat($('#neto105').val()) +
+            parseFloat($('#neto21').val()) +
+            //parseFloat($('#neto27').val()) +
+            parseFloat($('#iva105').val()) +
+            parseFloat($('#iva21').val()) +
+            //parseFloat($('#iva27').val()) +
+            parseFloat($('#nogravado').val()) +
+            parseFloat($('#retIva').val()) +
+            parseFloat($('#retIibb').val()) +
+            parseFloat($('#retGanancias').val());
+          $('#total').val(comprasTotal);
+        }else{
+          console.log("no entre en el fuckin IF");
+        }
+      });
+
+      $("#total").on("change",function(){
+        if(window.autoneto==1){
+          console.log("autoneto"); 
+          var neto21calc = parseFloat($("#total").val()) / parseFloat("1.21");
+          var iva21calc = neto21calc * parseFloat("0.21");
+          $('#neto105').val('0');
+          $('#neto21').val('0');
+          //$('#neto27').val('0');
+          $('#iva105').val('0');
+          $('#iva21').val('0');
+          //$('#iva27').val('0');
+          $('#nogravado').val('0');
+          $('#perc_iva').val('0');
+          $('#perc_iibb').val('0');
+          $('#retGanancias').val('0');
+          $('#exento').val('0');
+          $("#neto21").val(neto21calc.toFixed(2));
+          $("#iva21").val(iva21calc.toFixed(2));
+        }else{
+          console.log("no entre en el fuckin IF");
+        }
       });
 
   });  
@@ -943,40 +1159,44 @@
             </div>
             <div class="col-xs-6">            
               <div class="form-group">
-                <label for="neto105">Exento :</label>                    
-                <input type="text" class="form-control input-sm" id="exento" name="exento" />
-              </div>            
+                <label for="exento">Exento :</label>                    
+                <input type="text" class="form-control input-sm calculado" id="exento" name="exento" />
+              </div>
+               <div class="form-group">
+                <label for="nogravado">No Gravado :</label>                    
+                <input type="text" class="form-control input-sm calculado" id="nogravado" name="nogravado" />
+              </div>          
               <div class="form-group">
                 <label for="neto105">Neto al 10,5% :</label>                    
-                <input type="text" class="form-control input-sm" id="neto105" name="neto105" />
+                <input type="text" class="form-control input-sm calculado calcularIva" id="neto105" name="neto105" />
               </div>
               <div class="form-group">
                 <label for="neto21">Neto al 21% :</label>                    
-                <input type="text" class="form-control input-sm" id="neto21" name="neto21" />
+                <input type="text" class="form-control input-sm calculado calcularIva" id="neto21" name="neto21" />
               </div>
               <div class="form-group">
                 <label for="iva105">IVA 10,5%: </label>                    
-                <input type="text" class="form-control input-sm" id="iva105" name="iva105" />
+                <input type="text" class="form-control input-sm calculado iva" id="iva105" name="iva105" />
               </div>
               <div class="form-group">
                 <label for="iva21">IVA 21% : </label>                    
-                <input type="text" class="form-control input-sm" id="iva21" name="iva21" />
+                <input type="text" class="form-control input-sm calculado iva" id="iva21" name="iva21" />
               </div>
               <div class="form-group">
                 <label for="retGanancias">Ret Ganancias : </label>                    
-                <input type="text" class="form-control input-sm" id="retGanancias" name="retGanancias" />
+                <input type="text" class="form-control input-sm calculado" id="retGanancias" name="retGanancias" />
               </div>
               <div class="form-group">
                 <label for="retIva">Ret IVA: </label>                    
-                <input type="text" class="form-control input-sm" id="retIva" name="retIva" />
+                <input type="text" class="form-control input-sm calculado" id="retIva" name="retIva" />
               </div>
               <div class="form-group">
                 <label for="retIibb">Ret IIBB: </label>                    
-                <input type="text" class="form-control input-sm" id="retIibb" name="retIibb" />
+                <input type="text" class="form-control input-sm calculado" id="retIibb" name="retIibb" />
               </div>
               <div class="form-group">
                 <label for="total">Total: </label>                    
-                <input type="text" class="form-control input-sm" id="total" name="total" />
+                <input type="text" class="form-control input-sm calculado" id="total" name="total" />
               </div>
             </div>                    
           </div>      
