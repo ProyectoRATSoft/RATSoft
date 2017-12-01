@@ -177,8 +177,10 @@
       $("#addEmpresa").click(function(){        
         $("#modalAddEmpresa").modal();
           //limpio los campos del modal
-        $("#modal-formulario").validate().resetForm();       
-    //limpio los campos del modal
+        $("#modal-formulario").validate().resetForm();
+        $("#modal-formulario").find('.has-error').removeClass("has-error"); //limpia las clases has-error que pone los recuadros rojos
+        $("#modal-formulario").find('.has-success').removeClass("has-success");//limpia los recuadros verdes de los datos correctos ingresados       
+        //limpio los campos del modal
         $('input#nuevoNombre').val('');
         $('input#nuevoId').val('');
         $('input#nuevoDomicilio').val('');
@@ -291,6 +293,9 @@
       
         $("#modalAddEmpresa").modal();
         $("#modal-formulario").validate().resetForm();
+        $("#modal-formulario").find('.has-error').removeClass("has-error"); //limpia las clases has-error que pone los recuadros rojos
+        $("#modal-formulario").find('.has-success').removeClass("has-success");//limpia los recuadros verdes de los datos correctos ingresados       
+        
         //con esto remuevo el seleccionar del dropdown
         $('select#nuevaProvincia :contains(--seleccionar--)').attr("disabled","true").removeAttr("selected");
         $('select#nuevaSituacionIVA :contains(--seleccionar--)').attr("disabled","true").removeAttr("selected");
@@ -494,6 +499,23 @@
               },
                                    
           },
+          highlight: function(element) {
+              $(element).closest('.form-group').addClass('has-error');
+              //$(element).addClass('has-error fa fa-times');
+          },
+          unhighlight: function(element) {
+              $(element).closest('.form-group').removeClass('has-error');
+              //$(element).('.input-sm').removeClass('glyphicon-remove');
+          },
+          errorElement: 'span',
+          errorClass: 'help-block',
+          errorPlacement: function(error, element) {
+              if(element.parent('.input-group').length) {
+                  error.insertAfter(element.parent());
+              } else {
+                  error.insertAfter(element);
+              }
+          } 
           
       });
       

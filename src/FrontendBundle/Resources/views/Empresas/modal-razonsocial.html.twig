@@ -1,0 +1,132 @@
+<script>
+	comboFill("/jurisdicciones","id","nombre","#nuevaProvincia")
+    comboFill("/iva","id","codigo","#nuevaSituacionIVA")
+
+    $("#addEmpresa").click(function(){        
+        $("#modalAddEmpresa").modal();
+          //limpio los campos del modal
+        $("#modal-formulario").validate().resetForm();       
+        //limpio los campos del modal
+        $('input#nuevoId').val('');
+        $('input#nuevoNombre').val('');        
+        $('select#nuevaProvincia').val('');
+        $('select#nuevaSituacionIVA').val('');
+        $('input#nuevoIva').val('');
+        $('input#nuevoCuit').val('');
+       //establecemos que botones corresponde poder verse  en este caso, como agregamos no hace falta editar ni borrar
+        $('button#newEmpresa').css("display", "");
+        $('button#editDatesEmpresa').css("display", "none");
+        $('button#deleteEmpresa').css("display", "none");
+             
+      });
+
+     $("#newEmpresa").click(function(){
+    //guardo los valores en cada variable                            
+        if ($("#modal-formulario").valid()){
+
+            var nombre = $('div.modal-body div.form-group #nuevoNombre').val();
+            var jurisdiccion = $('div.modal-body div.form-group #nuevaProvincia').val();
+            var iva = $('div.modal-body div.form-group #nuevaSituacionIVA').val();
+            var cuit = $('div.modal-body div.form-group #nuevoCuit').val();
+    //realizo un post pasando la url correspondiente al backend, los datos previamente capturados y realizo la funcion correspondiente que me devolvera la respuesta.
+            
+            $.ajax({
+              type: "POST",
+              url: "/razonsocial/new",
+              async: true,
+              data: {                  
+                "nombre" : nombre , 
+                "jurisdiccion" : jurisdiccion,
+                "iva" : iva, 
+                "cuit" : cuit,
+                },
+              dataType: "json"
+            })
+            .done(function(respuesta){
+              if(respuesta.status = 'OK'){
+                alert("va como piña");
+                console.log(respuesta.data);
+              }else{
+                alert('no va como piña');
+              }
+              $("#modalAddEmpresa").modal('toggle');
+              //$("#modalAddCompra").modal('show'); // cambiar para venta
+              $('div.form-group #empresaID').val('');
+              $('div.modal-body div.form-group #nuevoNombre').val('');
+              $('div.modal-body div.form-group #nuevaProvincia').val('');
+              $('div.modal-body div.form-group #nuevaSituacionIVA').val('');
+              $('div.modal-body div.form-group #nuevoCuit').val('');
+			    //deberiamos mostrar algun mensaje tanto como de error, como de que todo salio bien. y luego recargar la grilla para que aparezca la nueva empresa en la tabla.
+			    //alert(resp);
+            });
+        }
+      });
+
+</script>
+{% block Modal %}
+ <!-- MODAL ADD EMPRESA -->
+  <div class="modal fade" id="modalAddEmpresa" role="dialog">
+    <div class="modal-dialog">
+      <!-- Modal content-->
+      <form id="modal-formulario">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h4 class="modal-title">Nuevo Cliente</h4>
+        </div>
+        <div class="modal-body">
+          <h4>Datos de la empresa</h4>
+          <div class="form-group">
+            <input id="nuevoId" style="display: none" enable="true"/>
+          </div>
+          <div class="form-group">
+            <label for="nuevoNombre">Nombre: </label>
+            <input type="text" required="true" class="form-control input-sm" id="nuevoNombre" name="nuevoNombre"
+            placeholder="Nombre Empresa"/>
+          </div>
+          <div class="form-group">
+            <div class="col-xs-3" style="padding-left: 0px">
+                   <label for="nuevaProvincia">Provincia: </label>
+              </div>
+              <div class="col-xs-9  input-sm">
+                <select name="nuevaProvincia" id="nuevaProvincia" required="true" class="selectpicker dropdown-toggle form-control input-sm" type="button" data-toggle="dropdown">
+                  <option disabled selected value>--Seleccione una opcion--</option>
+                </select>
+              </div>
+          </div>
+          <div style="margin: 65px"></div>
+          <div class="form-group">
+              <div class="col-xs-3" style="padding-left: 0px">
+                  <label for="nuevaSituacionIVA">Situacion IVA: </label>
+              </div>
+              <div class="col-xs-9  input-sm" style="margin-bottom: 20px;">
+                <select name="nuevaSituacionIVA" id="nuevaSituacionIVA" required="true" class="selectpicker dropdown-toggle form-control input-sm" type="button" data-toggle="dropdown">
+                  <option disabled selected value>--Seleccione una opcion--</option>
+                </select>
+              </div>
+              <div style="margin: 65px"></div>
+              <br>
+              <input type="text"  class="form-control input-sm" id="nuevoIva" name="situacionIVACompleto"
+              disabled="true" placeholder="Situacion IVA descripcion completa" />
+          </div>
+          <div class="form-group">
+            <label for="nuevoCuit">Cuit: </label>
+            <input type="number" required="true" class="form-control input-sm" id="nuevoCuit" name="nuevoCuit" placeholder="Cuit"/>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <div class="col-xs-6 " id="colDelete">
+            <button type="submit" onclick="return false" class="btn btn-danger pull-left" id="deleteEmpresa" style="display: none">Borrar</button>
+          </div>
+          <div class="col-xs-6 ">
+            <button type="submit" onclick="return false" class="btn btn-success" id="editDatesEmpresa" style="display: none">Guardar</button>
+            <button type="submit" onclick="return false" class="btn btn-success" id="newEmpresa" style="display: none" >Guardar</button>
+            <button type="submit" onclick="return false" class="btn btn-default" data-dismiss="modal">Cerrar</button>
+          </div>
+        </div>
+      </div>
+      </form>
+    </div>
+  </div>
+  <!-- /MODAL ADD EMPRESA -->
+
+{% endblock %}
