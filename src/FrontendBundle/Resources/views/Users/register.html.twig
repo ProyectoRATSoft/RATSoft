@@ -1,6 +1,7 @@
 {% extends 'FrontendBundle::Default/base.html.twig' %} {% block title %} Configuración{% endblock %} {% block CSs %}
 <link rel="stylesheet" href="{{ asset('public/Buttons-1.4.2/css/buttons.bootstrap.min.css') }}">
 <link rel="stylesheet" href="{{ asset('public/responsive-2.2.0/css/responsive.bootstrap.min.css') }}">
+
 <style>
   table {
     width: 50%
@@ -33,12 +34,11 @@
 <script src="{{ asset('public/Buttons-1.4.2/js/buttons.html5.min.js') }}"></script>
 <script src="{{ asset('public/Buttons-1.4.2/js/buttons.print.min.js') }}"></script>
 <script src="{{ asset('public/Buttons-1.4.2/js/buttons.colVis.min.js') }}"></script>
+<script src="https://cdn.jsdelivr.net/npm/jquery-validation@1.17.0/dist/jquery.validate.min.js"></script>
 
 <!-- <script src="{{ asset('') }}"></script>  -->
 <script src="{{ asset('ratsoft/ratsoft.js') }}"></script>
 <script src="{{ asset('ratsoft/register.js') }}"></script>
-
-<script src="https://cdn.jsdelivr.net/npm/jquery-validation@1.17.0/dist/jquery.validate.min.js"></script>
 
 
 
@@ -58,6 +58,7 @@
 
   <section class="content">
     <!-- AGREGAR NUEVO USUARIO -->
+    {% if is_granted('ROLE_ADMIN') %}
     <div class="row" style="padding-bottom: 0.5em;">
       <div class="col-xs-6">
         <button class="btn btn-danger btn-block" id="addEmpresa">
@@ -72,6 +73,7 @@
     		</div>
       </div>
     </div>
+    {% endif %}
 
     <!-- LISTADO DE USUARIOS -->
     <div class="row">
@@ -146,24 +148,24 @@
               <input id="nuevoId" style="display: none" enable="true" />
             </div>
             <div class="form-group">
-              <label for="nuevoUsername">Username: </label>
+              <label for="">Username: </label>
               <input type="text" required="true" class="form-control input-sm" id="nuevoUsername" name="nuevoUsername" placeholder="Username Usuario" />
             </div>
             <div class="form-group">
-              <label for="nuevoPassword">Password: </label>
+              <label for="">Password: </label>
               <input type="text" required="true" class="form-control input-sm" id="nuevoPassword" name="nuevoPassword" placeholder="Password Usuario" />
             </div>
             <div class="form-group">
-              <label for="nuevoEmail">Email: </label>
+              <label for="">Email: </label>
               <input type="text" class="form-control input-sm" id="nuevoEmail" required="true" name="nuevoEmail" placeholder="Email Usuario" />
             </div>
             <div class="form-group">
-              <label for="Role">Role: </label>
+              <label for="">Role: </label>
               <div class="input-sm">
-                <select name="Role" required="true" id="nuevoRole" class="selectpicker dropdown-toggle" type="button" data-toggle="dropdown">
+                <select name="nuevoRole" required="true" id="nuevoRole" class="selectpicker dropdown-toggle" type="button" data-toggle="dropdown">
                   <option disabled selected value>--Seleccione una opcion--</option>
-                  <option>ROLE_USER</option>
-                  <option>ROLE_ADMIN</option>
+                  <option value="ROLE_USER">ROLE_USER</option>
+                  <option value="ROLE_ADMIN">ROLE_ADMIN</option>
                 </select>
               </div>
               <br>

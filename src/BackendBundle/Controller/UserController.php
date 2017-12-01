@@ -129,13 +129,7 @@ class UserController extends Controller
     $params->username = $request->request->get("username");
     $params->password = $request->request->get("password");
 
-    if ($params->role == 'ROLE_ADMIN') {
-      // $params->role = 'a:1:{i:0;s:10:"ROLE_ADMIN";}';
-      $params->role = ['ROLE_ADMIN'];
-    } else {
-      // $params->role = 'a:0:{}';
-      $params->role = [];
-    }
+    $params->role = ($params->role === 'ROLE_ADMIN') ? ['ROLE_ADMIN'] : [];
 
     // Por default $data devuelve un error generico.
     $data = array(

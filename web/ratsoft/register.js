@@ -77,12 +77,8 @@ $(document).ready(function() {
           $('input#nuevoUsername').val(item.username);
           // $('input#nuevoPassword').val(item.password);
           $('input#nuevoEmail').val(item.email);
-
           var role = (item.roles.length != 0) ? 'ROLE_ADMIN' : 'ROLE_USER';
-          $("#nuevoRole").change(function(){
-            var option = $(this).find('option:selected').val(role);
-          });
-
+          $("#nuevoRole").val(role);
           // Cargo esta variable global para usar en distintos momentos.
           window.userSelected = item;
         }
@@ -221,6 +217,37 @@ $(document).ready(function() {
         $("#modalAddEmpresa").modal('toggle');
           tableReload(respuesta.users);
       });
+    }
+  });
+
+  // $("#modalFormulario").validate({
+  $("#modal-formulario").validate({
+    rules: {
+      nuevoUsername: {
+        required: true,
+        minlength: 3
+      },
+      nuevoPassword: {
+        required: true,
+        minlength: 8
+      },
+      nuevoEmail: {
+        required: true
+      }
+    },
+    messages: {
+      nuevoUsername: {
+        required: "Este campo es requerido",
+        minlength: "Este campo de contener al menos 3 caracteres"
+      },
+      nuevoPassword: {
+        required: "Este campo es requerido",
+        minlength: "Este campo de contener al menos 8 caracteres"
+      },
+      nuevoEmail: {
+        required: "Este campo es requerido"
+        // minlength: "Este campo de contener al menos 8 caracteres"
+      }
     }
   });
 });

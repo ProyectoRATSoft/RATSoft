@@ -9,13 +9,13 @@
     tbody tr:hover td {
       background-color: #A9D0F5;
       cursor: pointer;
-    }               
+    }
     .table>tbody>tr.active>td {
       background-color: #A9D0F5;
       color: #000000;
       font:  bold 12px/18px;
     }
-  </style>              
+  </style>
 {% endblock %}
 {% block Scripts %}
  <!-- DataTables -->
@@ -32,13 +32,14 @@
 <script src="{{ asset('public/Buttons-1.4.2/js/buttons.print.min.js') }}"></script>
 <script src="{{ asset('public/Buttons-1.4.2/js/buttons.colVis.min.js') }}"></script>
 
-<!-- <script src="{{ asset('') }}"></script>  --> 
+<!-- <script src="{{ asset('') }}"></script>  -->
 <script src="{{ asset('ratsoft/ratsoft.js') }}"></script>
 <script src="{{ asset('ratsoft/razones_sociales-listado.js') }}"></script>
 <script src="https://cdn.jsdelivr.net/npm/jquery-validation@1.17.0/dist/jquery.validate.min.js">
 </script>
 {% endblock %}
 {% block botones %}
+  {% if is_granted('ROLE_ADMIN') %}
 	<div class="text-center">
 		<div class="col-xs-12">
 			<button class="btn btn-primary btn-block" id="boton-editar">
@@ -46,4 +47,5 @@
 			</button>
 		</div>
 	</div>	
+  {% endif %}
 {% endblock %}
