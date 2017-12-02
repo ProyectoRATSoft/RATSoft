@@ -831,10 +831,10 @@
       })
       .done(function(respuesta){
         console.log(respuesta);
-        if(respuesta.status = 'OK'){
-          alert("compra agregada con éxito");
+        if(respuesta.status == 'OK'){
+          alert(respuesta.msg);
         }else{
-          alert("no se pudo agregar la compra")
+          alert("ERROR \n Razon:" + respuesta.msg);
         } 
         $("#modal-compras").modal('toggle');
         tableReload(respuesta.data);
@@ -920,10 +920,10 @@
       })
       .done(function(respuesta){
         console.log(respuesta);
-        if(respuesta.status = 'OK'){
-          alert("compra agregada con éxito");
+        if(respuesta.status == 'OK'){
+          alert(respuesta.msg);
         }else{
-          alert("no se pudo agregar la compra")
+          alert("ERROR \n Razon:" + respuesta.msg);
         } 
         $("#modal-compras").modal('toggle');
         tableReload(respuesta.data);
@@ -969,10 +969,10 @@
       })
       .done(function(respuesta){
         console.log(respuesta);
-        if(respuesta.status = 'OK'){
-          alert("compra eliminada con éxito");
+        if(respuesta.status == 'OK'){
+          alert(respuesta.msg);
         }else{
-          alert("no se pudo eliminar la compra")
+          alert("no se pudo eliminar la compra \n Razon:" + respuesta.msg);
         } 
         $("#modal-compras").modal('toggle');
         tableReload(respuesta.data);

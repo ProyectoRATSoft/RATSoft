@@ -16,6 +16,8 @@ use BackendBundle\Entity\TblTiposComp;
 use BackendBundle\Entity\User;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
+use Doctrine\ORM\EntityManagerInterface;
+use Doctrine\ORM\EntityManager;
 
 class ComprasController extends Controller
 {
@@ -113,21 +115,67 @@ class ComprasController extends Controller
 				||  !is_numeric($respuesta["perc_iibb"])	
 				||  !is_numeric($respuesta["total"])
 			) {
+				$result = $em->getRepository("BackendBundle:TblCompras")->findBy(
+					array(
+						'empresa' => $id,
+						'activo' => "1"
+					));
 				$data = array(
 					'status' => 'ERROR',
 					'msg' => 'Hubo campos mandatorios que se enviaron vacios',
 					'draw' => '',
 					'recordsTotal' => '',
 					'recordsFiltered' => '',
-					'data' =>  '',				
+					'data' =>  $result,				
 			);
-				
+					
 				$jsonResponse = $serializer->serialize($data, 'json');
 				return new Response($jsonResponse);
 				exit();
 		}
 
 		$em = $this->getDoctrine()->getManager();
+
+
+	    $qb = $em->createQueryBuilder();
+	    $qb->select('c')
+	       ->from('BackendBundle:TblCompras', 'c')
+	       ->where('c.proveedor = :proveedor AND c.tipoComprobante = :tcomp AND c.nroComprobante = :ncomp')
+	       ->setParameters(
+	       		array(
+	       			'proveedor' => $respuesta["proveedor"], 
+	       			'tcomp' => $respuesta["tipo_comprobante"], 
+	       			'ncomp' => $respuesta["nro_comprobante"]
+	       		)
+	       	);
+	    
+	    $query = $qb->getQuery();
+		$validacion = new TblCompras();	    
+	    $validacion = $query->getResult();
+		
+	    
+	    if (!empty($validacion)) {
+      		$result = $em->getRepository("BackendBundle:TblCompras")->findBy(
+			array(
+				'empresa' => $id,
+				'activo' => "1"
+			));
+
+      		$data = array(
+					'status' => 'ERROR',
+					'msg' => 'Este comprobante esta duplicado',
+					'draw' => '',
+					'recordsTotal' => '',
+					'recordsFiltered' => '',
+					'data' =>  $result,				
+			);
+			$serializer = SerializerBuilder::create()->build();
+			$jsonResponse = $serializer->serialize($data, 'json');
+			return new Response($jsonResponse);
+			
+			exit();
+		}
+
 
 		$comprobantes = new TblComprobantes();
 		$comprobantes = $em->getRepository("BackendBundle:TblComprobantes")->findOneBy(
@@ -207,6 +255,7 @@ class ComprasController extends Controller
 			'draw' => '',
 			'recordsTotal' => '',
 			'recordsFiltered' => '',
+			'msg' => 'compra agregada con éxito',
 			'data' => '',
 		);
 
@@ -286,21 +335,67 @@ class ComprasController extends Controller
 				||  !is_numeric($respuesta["perc_iibb"])	
 				||  !is_numeric($respuesta["total"])
 			) {
-				$data = array(
-					'status' => 'ERROR',
-					'msg' => 'Hubo campos mandatorios que se enviaron vacios',
-					'draw' => '',
-					'recordsTotal' => '',
-					'recordsFiltered' => '',
-					'data' =>  '',				
-			);
+			$result = $em->getRepository("BackendBundle:TblCompras")->findBy(
+				array(
+					'empresa' => $id,
+					'activo' => "1"
+				));
+			$data = array(
+				'status' => 'ERROR',
+				'msg' => 'Hubo campos mandatorios que se enviaron vacios',
+				'draw' => '',
+				'recordsTotal' => '',
+				'recordsFiltered' => '',
+				'data' =>  $data,				
+				);
 				
-				$jsonResponse = $serializer->serialize($data, 'json');
-				return new Response($jsonResponse);
-				exit();
+			$jsonResponse = $serializer->serialize($data, 'json');
+			return new Response($jsonResponse);
+			exit();
 		}
 
 		$em = $this->getDoctrine()->getManager();
+
+
+	    $qb = $em->createQueryBuilder();
+	    $qb->select('c')
+	       ->from('BackendBundle:TblCompras', 'c')
+	       ->where('c.proveedor = :proveedor AND c.tipoComprobante = :tcomp AND c.nroComprobante = :ncomp AND c.id <> :id')
+	       ->setParameters(
+	       		array(
+	       			'proveedor' => $respuesta["proveedor"], 
+	       			'tcomp' => $respuesta["tipo_comprobante"], 
+	       			'ncomp' => $respuesta["nro_comprobante"],
+	       			'id' => $respuesta["id"]
+	       		)
+	       	);
+	    
+	    $query = $qb->getQuery();
+		$validacion = new TblCompras();	    
+	    $validacion = $query->getResult();
+		
+	    
+	    if (!empty($validacion)) {
+      		$result = $em->getRepository("BackendBundle:TblCompras")->findBy(
+			array(
+				'empresa' => $id,
+				'activo' => "1"
+			));
+
+      		$data = array(
+					'status' => 'ERROR',
+					'msg' => 'Este comprobante esta duplicado',
+					'draw' => '',
+					'recordsTotal' => '',
+					'recordsFiltered' => '',
+					'data' =>  $result,				
+			);
+			$serializer = SerializerBuilder::create()->build();
+			$jsonResponse = $serializer->serialize($data, 'json');
+			return new Response($jsonResponse);
+			
+			exit();
+		}
 
 		$comprobantes = new TblComprobantes();
 		$comprobantes = $em->getRepository("BackendBundle:TblComprobantes")->findOneBy(
@@ -387,6 +482,7 @@ class ComprasController extends Controller
 			'draw' => '',
 			'recordsTotal' => '',
 			'recordsFiltered' => '',
+			'msg' => 'compra editada con éxito',
 			'data' => '',
 		);
 
