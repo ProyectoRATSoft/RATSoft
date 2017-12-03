@@ -2,3 +2,18 @@ jurisdicciones_all:
     path: /
     defaults: { _controller: BackendBundle:Jurisdicciones:all }
     methods: GET
+
+jurisdicciones_new:
+    path: /new
+    defaults: { _controller: BackendBundle:Jurisdicciones:new }
+    methods: POST
+
+jurisdicciones_edit:
+    path: /{id}/edit
+    defaults: { _controller: BackendBundle:Jurisdicciones:edit }
+    methods: POST
+
+# jurisdicciones_del:
+#     path: /{id}/del
+#     defaults: { _controller: BackendBundle:Jurisdicciones:del }
+#     methods: POST

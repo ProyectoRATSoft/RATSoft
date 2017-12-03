@@ -3,3 +3,15 @@ configuraciones_razonsocial:
     defaults: { _controller: "FrontendBundle:Modulos:razonsocial" } 
                               # bundle, dps controler y funcion que llama 
     methods: GET
+
+configuraciones_jurisdiccion:
+    path: /jurisdiccion
+    defaults: { _controller: "FrontendBundle:Modulos:jurisdiccion" } 
+                              # bundle, dps controler y funcion que llama 
+    methods: GET
+
+configuraciones_comprobantes:
+    path: /comprobantes
+    defaults: { _controller: "FrontendBundle:Modulos:comprobantes" } 
+                              # bundle, dps controler y funcion que llama 
+    methods: GET

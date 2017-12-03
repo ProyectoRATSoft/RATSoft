@@ -1,5 +1,5 @@
-{% extends 'FrontendBundle::Empresas/empresa-listado.html.twig' %}
-{% block title %} Impositivo{% endblock %}
+{% extends 'FrontendBundle::Comprobantes/comprobantes-listado.html.twig' %}
+{% block title %} Comprobantes{% endblock %}
 {% block CSs %}
 <link rel="stylesheet" href="{{ asset('public/Buttons-1.4.2/css/buttons.bootstrap.min.css') }}">
 <link rel="stylesheet" href="{{ asset('public/responsive-2.2.0/css/responsive.bootstrap.min.css') }}">
@@ -9,13 +9,13 @@
     tbody tr:hover td {
       background-color: #A9D0F5;
       cursor: pointer;
-    }
+    }               
     .table>tbody>tr.active>td {
       background-color: #A9D0F5;
       color: #000000;
       font:  bold 12px/18px;
     }
-  </style>
+  </style>              
 {% endblock %}
 {% block Scripts %}
  <!-- DataTables -->
@@ -32,29 +32,23 @@
 <script src="{{ asset('public/Buttons-1.4.2/js/buttons.print.min.js') }}"></script>
 <script src="{{ asset('public/Buttons-1.4.2/js/buttons.colVis.min.js') }}"></script>
 
-<!-- <script src="{{ asset('') }}"></script>  -->
+<!-- <script src="{{ asset('') }}"></script>  --> 
 <script src="{{ asset('ratsoft/ratsoft.js') }}"></script>
-<script src="{{ asset('ratsoft/empresa-listado.js') }}"></script>
+<script src="{{ asset('ratsoft/comprobantes-listado.js') }}"></script>
 <script src="https://cdn.jsdelivr.net/npm/jquery-validation@1.17.0/dist/jquery.validate.min.js">
-
-	$('#link-iva').attr('href',"/imposivito/iva");//+item.id);
-	$('#link-iibb').attr('href',"/imposivito/iibb");//+item.id);
 </script>
 {% endblock %}
 {% block botones %}
 	<div class="text-center">
-		<div class="col-xs-4">
-			<a id="link-iva"><button id="boton-iva" class="btn btn-default btn-block">IVA</button></a>
-		</div>
-		<div class="col-xs-4">
-			<a id="link-iibb"><button id="boton-iibb" class="btn btn-default btn-block">IIBB</button></a>
-		</div>
-    {% if is_granted('ROLE_ADMIN') %}
-		<div class="col-xs-4">
-			<button class="btn btn-primary btn-block" id="boton-editar">
-				<i class="fa fa-pencil" aria-hidden="true" id="editEmpresa"> Editar Datos</i>
+		<div class="col-xs-6">
+            <button class="btn btn-danger btn-block" id="boton-add">
+        <i class="fa fa-plus-circle" aria-hidden="true" id="agregarComprobante"> Agregar Comprobante</i>
 			</button>
 		</div>
-    {% endif %}
-	</div>
+    <div class="col-xs-6">
+      <button class="btn btn-primary btn-block" id="boton-editar">
+        <i class="fa fa-pencil" aria-hidden="true" id="editarComprobante"> Editar Comprobante</i>
+      </button>
+    </div>
+	</div>	
 {% endblock %}

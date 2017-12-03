@@ -22,6 +22,16 @@ class ModulosController extends Controller
         return $this->render('FrontendBundle:Empresas:razones_sociales-home.html.twig');
     }
 
+    public function jurisdiccionAction()
+    {
+        return $this->render('FrontendBundle:Jurisdicciones:jurisdicciones-home.html.twig');
+    }
+
+    public function comprobantesAction()
+    {
+        return $this->render('FrontendBundle:Comprobantes:comprobantes-home.html.twig');
+    }
+
     public function ivaAction()
     {
         return $this->render('FrontendBundle:Iva:iva-home.html.twig');
