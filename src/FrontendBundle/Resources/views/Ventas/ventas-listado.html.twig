@@ -774,7 +774,7 @@
           tableReload(respuesta.data);
           $('empresaID').val('');
           $("#fechaVenta").val('');
-          $("#periodo").val('');
+          //$("#periodo").val('');
           $("#cuit").val('');
           $('#nombre').val('');
           $('#empresaID').val('');
@@ -784,6 +784,29 @@
           $('#retIva ').val('0');
           $('#retIibb').val('0');
           $('#comprobante').val('');
+          
+
+          //preparamos el próximo número de comprobante
+          /*
+          var numero = $('#comprobanteNumero').val().split('-');
+          var longitud = numero[1].length;
+          var proximo = parseFloat(numero[1]) + 1;
+          var proximoStr = new String();
+          proximoStr = String(proximo);
+          var proximoLong = proximoStr.length;
+          var j = parseFloat("8") - parseFloat(proximoLong);
+          var i = 0;
+          var ceros = '';
+          while ( i < j ){
+            ceros = ceros + "0";
+            i++;
+          }
+          proximoStr = ceros + proximoStr;
+          var proximoCompleto = numero[0] + "-" + proximoStr;
+          $('#comprobanteNumero').val(proximoCompleto);
+          */
+          
+
           $('#comprobanteNumero').val('');
           //con esto vaciamos el campo y en la siguiente linea cargado nuevamente el seleccionar disabled
           $('#tipoComprobante').empty();
