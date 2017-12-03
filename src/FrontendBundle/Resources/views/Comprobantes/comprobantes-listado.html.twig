@@ -4,6 +4,17 @@
    .id{
     display: none;
    }
+   hr {
+        -moz-border-bottom-colors: none;
+        -moz-border-image: none;
+        -moz-border-left-colors: none;
+        -moz-border-right-colors: none;
+        -moz-border-top-colors: none;
+        border-color: #EEEEEE -moz-use-text-color #FFFFFF;
+        border-style: solid none;
+        border-width: 1px 0;
+        margin: 18px 0;
+      }
 </style>
   <!-- ACA EMPIEZO A TRABAJAR LA INTERFAZ Content Wrapper. Contains page content -->
   <div class="content-wrapper">
@@ -191,33 +202,37 @@
               <div class="col-xs-4">
                 
                 <input type="text" required="true" class="form-control input-sm" name="comprobanteDetalleModal" id="comprobanteDetalleModal" required="true" placeholder="Detalle del Comprobante" disabled="disabled"/>
+                <br>
+                <input type="text" required="true" class="form-control input-sm" id="codigoDetalleModal" name="codigoDetalleModal" placeholder="Codigo del Comprobante" disabled="disabled"/>
+
               </div>
             </div>
           </div>
           <div style="margin: 95px"></div>
-          <div class="form-group">
+          <div class="form-group"> 
+            <div class="col-xs-12">  
+              <div class="divider"><hr></div>
+            </div>
+          </div>
+          <!-- <div class="form-group">
             <div class="col-xs-12">
               <label for="codigoDetalleModal">Codigo del comprobante: </label>
             </div>
             <div class="col-xs-12">
               <div class="col-xs-4">
-                <select name="codigoComprobante" id="codigoComprobante" required="true" class="selectpicker dropdown-toggle form-control input-sm" type="button" data-toggle="dropdown">
-                        <option disabled selected value>--Seleccione una opcion--</option>  
-                </select>
+                
               </div> 
               <div class="col-xs-4">
-                <label class="checkbox-inline">
-                  <input type="checkbox" value="" id="chkCodigoComprobanteModal" name="chkCodigoComprobanteModal"> Seleccione para escribir un codigo de comprobante nuevo.
-                </label>
+                
               </div>
               <div class="col-xs-4">
-                <input type="number" required="true" class="form-control input-sm" id="codigoDetalleModal" name="codigoDetalleModal" placeholder="Codigo del Comprobante" disabled="disabled"/>
+                
               </div>        
             </div>
-          </div>
+          </div> -->
           <div class="form-group"> 
            <div class="col-xs-12">
-              <label for="TipocomprobanteDetalleModal">Tipo de comprobante: </label>
+              <label for="tipoComprobanteDetalleModal">Tipo de comprobante: </label>
             </div>
             <div class="col-xs-12">
               <div class="col-xs-4">
@@ -231,7 +246,7 @@
                 </label>
               </div>
               <div class="col-xs-4">
-                <input type="text" required="true" class="form-control input-sm" name="TipocomprobanteDetalleModal" id="TipocomprobanteDetalleModal" required="true" placeholder="Tipo de Comprobante" disabled="disabled" />
+                <input type="text" required="true" class="form-control input-sm" name="tipoComprobanteDetalleModal" id="tipoComprobanteDetalleModal" required="true" placeholder="Tipo de Comprobante" disabled="disabled" />
               </div>
             </div>
           </div>
@@ -244,34 +259,34 @@
                     <div class="col-md-12">
                       <div class="col-xs-4">
                         <label class="checkbox-inline">
-                          <input type="checkbox" value="" id="blk_exe" name="blk_exe"> Exento
+                          <input type="checkbox" value="" id="modalblk_exe" name="blk_exe"> Exento
                         </label>
                       </div>
                       <div class="col-xs-4">
                         <label class="checkbox-inline">
-                          <input type="checkbox" value="" id="blk_perciva" name="blk_perciva">Percepcion IVA
+                          <input type="checkbox" value="" id="modalblk_perciva" name="blk_perciva">Percepcion IVA
                         </label>
                       </div>
                       <div class="col-xs-4">
                          <label class="checkbox-inline">
-                            <input type="checkbox" value="" id="blk_perciibb" name="blk_perciibb">Percepcion IIBB
+                            <input type="checkbox" value="" id="modalblk_perciibb" name="blk_perciibb">Percepcion IIBB
                           </label>
                       </div>
                     </div>
                     <div class="col-md-12">
                       <div class="col-xs-4">
                         <label class="checkbox-inline">
-                          <input type="checkbox" value="" id="blk_ret" name="blk_ret">Retencion
+                          <input type="checkbox" value="" id="modalblk_ret" name="blk_ret">Retencion
                         </label>
                       </div>
                       <div class="col-xs-4">
                         <label class="checkbox-inline">
-                          <input type="checkbox" value="" id="blk_netos" name="blk_netos">Netos
+                          <input type="checkbox" value="" id="modalblk_netos" name="blk_netos">Netos
                         </label>
                       </div>
                       <div class="col-xs-4">
                          <label class="checkbox-inline">
-                            <input type="checkbox" value="" id="blk_iva" name="blk_iva">IVA
+                            <input type="checkbox" value="" id="modalblk_iva" name="blk_iva">IVA
                           </label>
                       </div>
                     </div>
@@ -279,12 +294,12 @@
                     <div class="col-md-12">
                       <div class="col-xs-4">
                         <label class="checkbox-inline">
-                          <input type="checkbox" value="" id="blk_nograv" name="blk_nograv">No gravado
+                          <input type="checkbox" value="" id="modalblk_nograv" name="blk_nograv">No gravado
                         </label>
                       </div>
                       <div class="col-xs-4">
                         <label class="checkbox-inline">
-                          <input type="checkbox" value="" id="blk_total" name="blk_total">Total
+                          <input type="checkbox" value="" id="modalblk_total" name="blk_total">Total
                         </label>
                       </div>
                       <div class="col-xs-4">
@@ -298,17 +313,17 @@
                     <div class="col-md-12">
                       <div class="col-xs-4">
                         <label class="checkbox-inline">
-                          <input type="checkbox" value="" id="autoiva" name="autoiva">IVA
+                          <input type="checkbox" value="" id="modalautoiva" name="autoiva">IVA
                         </label>
                       </div>
                       <div class="col-xs-4">
                         <label class="checkbox-inline">
-                          <input type="checkbox" value="" id="autoneto" name="autoneto" >Neto
+                          <input type="checkbox" value="" id="modalautoneto" name="autoneto" >Neto
                         </label>
                       </div>
                       <div class="col-xs-4">
                         <label class="checkbox-inline">
-                          <input type="checkbox" value="" id="autototal" name="autototal">Total
+                          <input type="checkbox" value="" id="modalautototal" name="autototal">Total
                         </label>
                       </div>
                     </div>

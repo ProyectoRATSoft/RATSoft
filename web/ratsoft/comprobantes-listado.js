@@ -19,11 +19,70 @@
      $(document).ajaxStop(function() {
       $.unblockUI();
     });
-     // comboFill("/comprobantes","id","detalle","#comprobanteDetalle");
-     // comboFill("/comprobantes","id","codigo","#codigoComprobante");
-     // comboFill("/comprobante/tipos","id","tipo_comp","#comprobante");
+      
+      $('#comprobanteDetalle').change(function(){
+        var option = $(this).find('option:selected').val();
+        var opciones = "<option value='' selected='selected'>--seleccionar--</option>";
+        window.arrayrespuesta.forEach(function(item,index,arr){
+          if(option == item.cod_comp.id){
+            opciones = opciones + "<option value='"+item.id+"'>"+item.tipo_comp+"</option>";
+
+          }
+        })
+        $("#tipoComprobante").html(opciones);
+      });
+      
+      var comboFill2 = function(url,value,text,text2,cssid) {
+            this.url = url;
+            this.value = value;
+            this.text = text;
+            this.cssid = cssid;
+            this.text2 = text2
+            $.get(url,function(resp,estado,jqXHR){
+                var arrayResp = JSON.parse(resp);
+                var opciones = "";
+                var obj = arrayResp.data[0];
+                arrayResp.data.forEach(
+                    function(item,index){
+                        var obj = arrayResp.data[index];
+                        opciones = opciones + "<option value='"+obj[value]+"'>"+obj[text]+" -- "+obj[text2]+"</option>";
+                    }
+                );
+                //agrego la opcion generica "--seleccionar--" al combo
+                opciones = opciones + '<option value="" selected="selected">--seleccionar--</option>';
+                $(cssid).html(opciones);
+            });
+       };
+
+       comboFill2("/comprobantes","id","codigo","detalle","#comprobanteDetalle");
+
     // Hacemos que la interfaz arranque con el boton de edición dehabilitado, porque no hay ninguna comprobantes seleccionada aún.
     $("#boton-editar").attr("disabled","true");
+    // selecciona el campo que desea
+
+    $('#chkComprobanteDetalle').on('change',function() {
+         if(this.checked){
+           $('#comprobanteDetalle').attr("disabled","disabled").val('');
+           $('#comprobanteDetalleModal').removeAttr("disabled").val('');
+           $('#codigoDetalleModal').removeAttr("disabled").val('');
+         }
+         else {
+           $('#comprobanteDetalle').removeAttr("disabled").val('');
+           $('#comprobanteDetalleModal').attr("disabled","disabled").val('');
+           $('#codigoDetalleModal').attr("disabled","disabled").val('');
+         }
+      });
+
+    $('#chkTipoComprobanteModal').on('change',function() {
+         if(this.checked){
+           $('#tipoComprobante').attr("disabled","disabled").val('');
+           $('#tipoComprobanteDetalleModal').removeAttr("disabled").val('');
+         }
+         else {
+           $('#tipoComprobante').removeAttr("disabled").val('');
+           $('#tipoComprobanteDetalleModal').attr("disabled","disabled").val('');
+         }
+      });
      // Vamos a traer el json para laburar con ajax
      window.arrayrespuesta = new Array();
      var loadTable = function(){
@@ -94,11 +153,11 @@
       loadTable();
       var tableReload = function(datosnuevos){
         window.arrayrespuesta = datosnuevos;
-        $('#tabla-comprobantes').DataTable().clear().draw();
-        $('#tabla-comprobantes').DataTable().rows.add(datosnuevos).draw();
+        $('#tabla-comprobante').DataTable().clear().draw();
+        $('#tabla-comprobante').DataTable().rows.add(datosnuevos).draw();
       };
       //--------------------------------CARGAR DATOS MODAL-----------------------------------//
-       $('#tabla-comprobantes tbody').on( 'click', 'tr', function () {
+       $('#tabla-comprobante tbody').on( 'click', 'tr', function () {
           if ( $(this).hasClass('active') ) {
             $(this).removeClass('active');
           }
@@ -111,10 +170,44 @@
             var id = window.table.$("tr.active").find(".id").text();
             window.arrayrespuesta.forEach(function(item,index,arr){
               if (item.id == id){
+                $('#comprobanteDetalle').val(item.cod_comp.id);               
+                $('#comprobanteDetalle').trigger('change'); 
+                $('#tipoComprobante').val(item.id); 
+              
               //llenamos el modal con los datos de la comprobantes
-              $('div.modal-body div.form-group #nuevoId').val(item.id);
-              $('div.modal-body div.form-group #nuevaProvincia').val(item.nombre);
-              $('div.modal-body div.form-group #nuevoCodigo').val(item.codigo);
+              
+              item.blk_exe == 1 ? $('#blk_exe').prop('checked', true) : $('#blk_exe').prop('checked', false) ;
+              item.blk_exe == 1 ? $('#modalblk_exe').prop('checked', true) : $('#modalblk_exe').prop('checked', false) ;
+              
+              item.blk_perciva == 1 ? $('#blk_perciva').prop('checked', true) : $('#blk_perciva').prop('checked', false) ;
+              item.blk_perciva == 1 ? $('#modalblk_perciva').prop('checked', true) : $('#modalblk_perciva').prop('checked', false) ;
+
+              item.blk_perciibb == 1 ? $('#blk_perciibb').prop('checked', true) : $('#blk_perciibb').prop('checked', false) ;
+              item.blk_perciibb == 1 ? $('#modalblk_perciibb').prop('checked', true) : $('#modalblk_perciibb').prop('checked', false) ;
+
+              item.blk_ret == 1 ? $('#blk_ret').prop('checked', true) : $('#blk_ret').prop('checked', false) ;
+              item.blk_ret == 1 ? $('#modalblk_ret').prop('checked', true) : $('#modalblk_ret').prop('checked', false) ;
+
+              item.blk_netos == 1 ? $('#blk_netos').prop('checked', true) : $('#blk_netos').prop('checked', false) ;
+              item.blk_netos == 1 ? $('#modalblk_netos').prop('checked', true) : $('#modalblk_netos').prop('checked', false) ;
+
+              item.blk_iva == 1 ? $('#blk_iva').prop('checked', true) : $('#blk_iva').prop('checked', false) ;
+              item.blk_iva == 1 ? $('#modalblk_iva').prop('checked', true) : $('#modalblk_iva').prop('checked', false) ;
+
+              item.blk_nograv == 1 ? $('#blk_nograv').prop('checked', true) : $('#blk_nograv').prop('checked', false) ;
+              item.blk_nograv == 1 ? $('#modalblk_nograv').prop('checked', true) : $('#modalblk_nograv').prop('checked', false) ;
+
+              item.blk_total == 1 ? $('#blk_total').prop('checked', true) : $('#blk_total').prop('checked', false) ;
+              item.blk_total == 1 ? $('#modalblk_total').prop('checked', true) : $('#modalblk_total').prop('checked', false) ;
+
+              item.autoiva == 1 ? $('#autoiva').prop('checked', true) : $('#autoiva').prop('checked', false) ;
+              item.autoiva == 1 ? $('#modalautoiva').prop('checked', true) : $('#modalautoiva').prop('checked', false) ;
+
+              item.autoneto == 1 ? $('#autoneto').prop('checked', true) : $('#autoneto').prop('checked', false) ;
+              item.autoneto == 1 ? $('#modalautoneto').prop('checked', true) : $('#modalautoneto').prop('checked', false) ;
+              
+              item.autototal == 1 ? $('#autototal').prop('checked', true) : $('#autototal').prop('checked', false) ;
+              item.autototal == 1 ? $('#modalautototal').prop('checked', true) : $('#modalautototal').prop('checked', false) ;
               }
             });
           }
@@ -124,59 +217,171 @@
       $("#boton-add").click(function(){        
          $("#modalAddComprobante").modal();
          //reseteo las validaciones
-         $("#modal-formulario").validate().resetForm();
+         // $("#modal-formulario").validate().resetForm();
          $("#modal-formulario").find('.has-error').removeClass("has-error"); //limpia las clases has-error que pone los recuadros rojos
          $("#modal-formulario").find('.has-success').removeClass("has-success");//limpia los recuadros verdes de los datos correctos ingresados
-
-        //limpio los campos
-         $('#nuevoId').val('');
-         $('#nuevaProvincia').val('');
-         $('#nuevoCodigo').val('');
-         //limpio la comprobantes
          $('#tabla-comprobante tbody tr').removeClass('active');
          //cambio el titulo
-         $("h4.modal-title").text("Nuevo comprobantes");
+         $("h4.modal-title").text("Nuevo comprobante");
          //muestro los botones correspondientes
          $('button#newComprobante').css("display", "");
-         $('button#editcomprobante').css("display", "none");
+         $('button#editComprobante').css("display", "none");
          $('button#deletecomprobante').css("display", "none");
+         $("#boton-editar").attr("disabled","true");
+         //limpio los campos
+          $('#chkComprobanteDetalle').prop( "checked", false );
+          $('#comprobanteDetalle').val('');
+          $('#chkTipoComprobanteModal').prop( "checked", false );
+          $('#tipoComprobanteDetalleModal').val('');
+          $('#tipoComprobante').val('');
+          $('#codigoDetalleModal').val('');
+          $('#modalblk_exe').prop( "checked", false );
+          $('#modalblk_perciva').prop( "checked", false );
+          $('#modalblk_perciibb').prop( "checked", false );
+          $('#modalblk_ret').prop( "checked", false );
+          $('#modalblk_netos').prop( "checked", false );
+          $('#modalblk_iva').prop( "checked", false );
+          $('#modalblk_nograv').prop( "checked", false );
+          $('#modalblk_total').prop( "checked", false );
+          $('#modalautoiva').prop( "checked", false );
+          $('#modalautoneto').prop( "checked", false );
+          $('#modalautototal').prop( "checked", false );
+         //limpio los datos del comprobante
+          $('#blk_exe').prop( "checked", false );
+          $('#blk_perciva').prop( "checked", false );
+          $('#blk_perciibb').prop( "checked", false );
+          $('#blk_ret').prop( "checked", false );
+          $('#blk_netos').prop( "checked", false );
+          $('#blk_iva').prop( "checked", false );
+          $('#blk_nograv').prop( "checked", false );
+          $('#blk_total').prop( "checked", false );
+          $('#autoiva').prop( "checked", false );
+          $('#autoneto').prop( "checked", false );
+          $('#autototal').prop( "checked", false );
+         
       });
 
 
-       $("#newcomprobante").click(function(){
+       $("#newComprobante").click(function(){
     //guardo los valores en cada variable                            
-        if ($("#modal-formulario").valid()){
+        // if ($("#modal-formulario").valid()){
+            var detalle; //cod_comp.detalle
+            var codigo; //cod_comp.codigo
+            var tipo_comp; //tipo_comp
+            var blk_exe;//
+            var blk_perciva;//
+            var blk_perciibb;//
+            var blk_ret;//
+            var blk_netos;//
+            var blk_iva;//
+            var blk_nograv;//
+            var blk_total;//
+            var autoiva;//
+            var autoneto;//
+            var autototal;//
+            if ($('#chkComprobanteDetalle').is(':checked'))
+            {  
+              detalle = $('#comprobanteDetalleModal').val().toUpperCase();
+              codigo = $('#codigoDetalleModal').val().toUpperCase();
+            }
+            else
+            {
+              //detalle = 
+              var data = $('#comprobanteDetalle option:selected').text().replace(/\s/g,'');
+              var arr = data.split('--');
+              detalle = arr[0];
+              codigo = arr[1];
+              
+            }
 
-            var comprobantes = $('div.modal-body div.form-group #nuevaProvincia').val();
-            var codigo = $('div.modal-body div.form-group #nuevoCodigo').val();
+            if ($('#chkTipoComprobanteModal').is(':checked'))
+            {
+              tipo_comp = $('#tipoComprobanteDetalleModal').val().toUpperCase();
+            }
+            else
+            {
+              tipo_comp = $('#tipoComprobante option:selected').text();
+            }
+            ! $('#modalblk_exe').is(':checked') ? blk_exe =0 : blk_exe =1;
+            ! $('#modalblk_perciva').is(':checked') ?  blk_perciva=0 :  blk_perciva= 1;
+            ! $('#modalblk_perciibb').is(':checked') ?  blk_perciibb=0 : blk_perciibb =1;
+            ! $('#modalblk_ret').is(':checked') ? blk_ret=0 : blk_ret=1;
+            ! $('#modalblk_netos').is(':checked') ? blk_netos=0 : blk_netos=1;
+            ! $('#modalblk_iva').is(':checked') ? blk_iva=0 :  blk_iva=1;
+            ! $('#modalblk_nograv').is(':checked') ?  blk_nograv=0 :  blk_nograv= 1;
+            ! $('#modalblk_total').is(':checked') ?  blk_total=0 :  blk_total=1;
+            ! $('#modalautoiva').is(':checked') ?  autoiva=0 :  autoiva=1;
+            ! $('#modalautoneto').is(':checked') ?  autoneto=0 :  autoneto=1;
+            ! $('#modalautototal').is(':checked') ?  autototal=0 :  autototal=1;
+            // $('#').is(':checked') ?  = 1 :  = 0;
+           
     //realizo un post pasando la url correspondiente al backend, los datos previamente capturados y realizo la funcion correspondiente que me devolvera la respuesta.
             
-            $.ajax({
-              type: "POST",
-              url: "/comprobantes/tipos/new",
-              async: false,
-              data: {                  
-                "comprobantes" : comprobantes,
-                "codigo" : codigo, 
-                 },
-              dataType: "json"
-            })
-            .done(function(respuesta){
-              if(respuesta.status = 'OK'){
-                alert("va como piña");
-              }else{
-              }
-              $("#modalAddComprobante").modal('toggle');
-              tableReload(respuesta.data);
-              $('#nuevoId').val('');
-              $('#nuevaProvincia').val('');
-              $('#nuevoCodigo').val('');
-            });
-        }
+
+            // $.ajax({
+            //   type: "POST",
+            //   url: "/comprobantes/new",
+            //   async: false,
+            //   data: {                  
+            //  "detalle" : detalle,
+            //  "codigo" : codigo,
+            //  "tipo_comp" : tipo_comp,
+            //  "blk_exe" : blk_exe,
+            //  "blk_perciva" : blk_perciva,
+            //  "blk_perciibb" : blk_perciibb,
+            //  "blk_ret" : blk_ret,
+            //  "blk_netos" : blk_netos,
+            //  "blk_iva" : blk_iva,
+            //  "blk_nograv" : blk_nograv,
+            //  "blk_total" : blk_total,
+            //  "autoiva" : autoiva,
+            //  "autoneto" : autoneto,
+            //  "autototal" : autototal, 
+            //      },
+            //   dataType: "json"
+            // })
+            // .done(function(respuesta){
+            //   if(respuesta.status = 'OK'){
+            //     alert("va como piña");
+            //   }else{
+            //   }
+            //   $("#modalAddComprobante").modal('toggle');
+            //   tableReload(respuesta.data);
+            //   $('#nuevoId').val('');
+            //   $('#chkComprobanteDetalle').prop( "checked", false );
+            //   $('#comprobanteDetalle').val('');
+            //   $('#chkTipoComprobanteModal').prop( "checked", false );
+            //   $('#tipoComprobanteDetalleModal').val('');
+            //   $('#tipoComprobante').val('');
+            //   $('#codigoDetalleModal').val('');
+            //   $('#modalblk_exe').prop( "checked", false );
+            //   $('#modalblk_perciva').prop( "checked", false );
+            //   $('#modalblk_perciibb').prop( "checked", false );
+            //   $('#modalblk_ret').prop( "checked", false );
+            //   $('#modalblk_netos').prop( "checked", false );
+            //   $('#modalblk_iva').prop( "checked", false );
+            //   $('#modalblk_nograv').prop( "checked", false );
+            //   $('#modalblk_total').prop( "checked", false );
+            //   $('#modalautoiva').prop( "checked", false );
+            //   $('#modalautoneto').prop( "checked", false );
+            //   $('#modalautototal').prop( "checked", false );
+            //   $('#blk_exe').prop( "checked", false );
+            //   $('#blk_perciva').prop( "checked", false );
+            //   $('#blk_perciibb').prop( "checked", false );
+            //   $('#blk_ret').prop( "checked", false );
+            //   $('#blk_netos').prop( "checked", false );
+            //   $('#blk_iva').prop( "checked", false );
+            //   $('#blk_nograv').prop( "checked", false );
+            //   $('#blk_total').prop( "checked", false );
+            //   $('#autoiva').prop( "checked", false );
+            //   $('#autoneto').prop( "checked", false );
+            //   $('#autototal').prop( "checked", false );
+            // });
+        // }
       });
       //-----------------------------------/AGREGAR comprobantes----------------------------------//  
       //-----------------------------------EDITAR comprobantes----------------------------------//
-      $("#boton-editar").click(function(){        
+      $("#boton-editar").click(function(){
         $("#modalAddComprobante").modal();
         $("#modal-formulario").validate().resetForm();
         $("#modal-formulario").find('.has-error').removeClass("has-error"); //limpia las clases has-error que pone los recuadros rojos
@@ -189,33 +394,59 @@
       });
 
       $("#editComprobante").click(function(){
-        if ($("#modal-formulario").valid()){
-    //guardamos id para pasarlo en la url
-        var id =  $('div.modal-body div.form-group #nuevoId').val();
-        var comprobantes = $('div.modal-body div.form-group #nuevaProvincia').val();
-        var codigo= $('div.modal-body div.form-group #nuevoCodigo').val();        
-        $.ajax({
-              type: "POST",
-              url: "/comprobantes/tipos/"+id+"/edit",
-              async: false,
-              data: {                  
-                "comprobantes" : comprobantes,
-                "codigo" : codigo },
-              dataType: "json"
-            })
-            .done(function(respuesta){
-              if(respuesta.status = 'OK'){
-                alert("va como piña");
-              }else{
-              }
-              $("#modalAddComprobante").modal('toggle');
-              tableReload(respuesta.data);
-               $('#nuevoId').val('');
-               $('#nuevaProvincia').val('');
-               $('#nuevoCodigo').val('');
-               $("#boton-editar").attr("disabled","true");              
-            });
-          }
+    //     if ($("#modal-formulario").valid()){
+    // //guardamos id para pasarlo en la url
+    //     var id =  $('div.modal-body div.form-group #nuevoId').val();
+    //     var comprobantes = $('div.modal-body div.form-group #nuevaProvincia').val();
+    //     var codigo= $('div.modal-body div.form-group #nuevoCodigo').val();        
+    //     $.ajax({
+    //           type: "POST",
+    //           url: "/comprobantes/tipos/"+id+"/edit",
+    //           async: false,
+    //           data: {                  
+    //             "comprobantes" : comprobantes,
+    //             "codigo" : codigo },
+    //           dataType: "json"
+    //         })
+    //         .done(function(respuesta){
+    //           if(respuesta.status = 'OK'){
+    //             alert("va como piña");
+    //           }else{
+    //           }
+    //           $("#modalAddComprobante").modal('toggle');
+    //           tableReload(respuesta.data);
+    //            $('#chkComprobanteDetalle').prop( "checked", false );
+                 //  $('#comprobanteDetalle').val('');
+                 //  $('#chkTipoComprobanteModal').prop( "checked", false );
+                 //  $('#tipoComprobanteDetalleModal').val('');
+                 //  $('#tipoComprobante').val('');
+                 //  $('#codigoDetalleModal').val('');
+                 //  $('#modalblk_exe').prop( "checked", false );
+                 //  $('#modalblk_perciva').prop( "checked", false );
+                 //  $('#modalblk_perciibb').prop( "checked", false );
+                 //  $('#modalblk_ret').prop( "checked", false );
+                 //  $('#modalblk_netos').prop( "checked", false );
+                 //  $('#modalblk_iva').prop( "checked", false );
+                 //  $('#modalblk_nograv').prop( "checked", false );
+                 //  $('#modalblk_total').prop( "checked", false );
+                 //  $('#modalautoiva').prop( "checked", false );
+                 //  $('#modalautoneto').prop( "checked", false );
+                 //  $('#modalautototal').prop( "checked", false );
+                 // //limpio los datos del comprobante
+                 //  $('#blk_exe').prop( "checked", false );
+                 //  $('#blk_perciva').prop( "checked", false );
+                 //  $('#blk_perciibb').prop( "checked", false );
+                 //  $('#blk_ret').prop( "checked", false );
+                 //  $('#blk_netos').prop( "checked", false );
+                 //  $('#blk_iva').prop( "checked", false );
+                 //  $('#blk_nograv').prop( "checked", false );
+                 //  $('#blk_total').prop( "checked", false );
+                 //  $('#autoiva').prop( "checked", false );
+                 //  $('#autoneto').prop( "checked", false );
+                 //  $('#autototal').prop( "checked", false );
+    //            $("#boton-editar").attr("disabled","true");              
+    //         });
+    //       }
       });
       //-----------------------------------/EDITAR comprobantes----------------------------------//
       //-----------------------------------BORRAR comprobantes----------------------------------//
@@ -233,8 +464,35 @@
       //         $("#modalAddComprobante").modal('toggle');
       //         tableReload(respuesta.data);
       //         $('#nuevoId').val('');
-      //          $('#nuevaProvincia').val('');
-      //          $('#nuevoCodigo').val('');
+      //          $('#chkComprobanteDetalle').prop( "checked", false );
+                 //  $('#comprobanteDetalle').val('');
+                 //  $('#chkTipoComprobanteModal').prop( "checked", false );
+                 //  $('#tipoComprobanteDetalleModal').val('');
+                 //  $('#tipoComprobante').val('');
+                 //  $('#codigoDetalleModal').val('');
+                 //  $('#modalblk_exe').prop( "checked", false );
+                 //  $('#modalblk_perciva').prop( "checked", false );
+                 //  $('#modalblk_perciibb').prop( "checked", false );
+                 //  $('#modalblk_ret').prop( "checked", false );
+                 //  $('#modalblk_netos').prop( "checked", false );
+                 //  $('#modalblk_iva').prop( "checked", false );
+                 //  $('#modalblk_nograv').prop( "checked", false );
+                 //  $('#modalblk_total').prop( "checked", false );
+                 //  $('#modalautoiva').prop( "checked", false );
+                 //  $('#modalautoneto').prop( "checked", false );
+                 //  $('#modalautototal').prop( "checked", false );
+                 // //limpio los datos del comprobante
+                 //  $('#blk_exe').prop( "checked", false );
+                 //  $('#blk_perciva').prop( "checked", false );
+                 //  $('#blk_perciibb').prop( "checked", false );
+                 //  $('#blk_ret').prop( "checked", false );
+                 //  $('#blk_netos').prop( "checked", false );
+                 //  $('#blk_iva').prop( "checked", false );
+                 //  $('#blk_nograv').prop( "checked", false );
+                 //  $('#blk_total').prop( "checked", false );
+                 //  $('#autoiva').prop( "checked", false );
+                 //  $('#autoneto').prop( "checked", false );
+                 //  $('#autototal').prop( "checked", false );
       //          $("#boton-editar").attr("disabled","true");   
       //       });
       //     }                 

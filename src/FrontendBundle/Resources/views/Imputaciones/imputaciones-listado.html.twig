@@ -1,0 +1,119 @@
+{% extends 'FrontendBundle::Default/base.html.twig' %}
+{% block body %}
+<style>
+   .id{
+    display: none;
+   }
+</style>
+  <!-- ACA EMPIEZO A TRABAJAR LA INTERFAZ Content Wrapper. Contains page content -->
+  <div class="content-wrapper">
+    <!-- Content Header (Page header) -->
+    <section class="content-header">
+       <h2>
+        Rubros e Imputaciones
+        <small>Buscador</small>
+      </h2>
+      <ol class="breadcrumb">
+        <li><a href="/"><i class="fa fa-home"></i> Home</a></li>
+        <li class="active"><i class="fa fa-search" aria-hidden="true"></i> Buscador de Rubros e Imputaciones</li>
+      </ol>
+    </section>
+    <!-- Main content -->
+
+    <section class="content">
+      <!-- Small boxes (Stat box) -->
+      <div class="row" style="padding-bottom: 0.5em;">
+          <div class="col-xs-6">
+            <div class="form-group">
+                          {% block botones %}
+                          {% endblock %}
+            </div>
+          </div>
+          <div class="col-xs-6">
+            
+          </div>
+      </div>
+      <div class="row">
+        <div class="col-xs-6">
+          <div class="box">
+            <div class="box-header">
+              <h3 class="box-title">Busque la jurisdiccion deseada..</h3>
+            </div>
+            <!-- /.box-header -->
+            <div class="box-body">
+              <table id="tabla-rubros" class="table table-bordered table-striped table-hover dt-responsive">
+                <thead>
+                  <tr>
+                    <th class="id">id</th>
+                    <th>Jurisdiccion</th>
+                    <th>Codigo</th>
+                  </tr>
+                </thead>
+                <tbody></tbody>
+                <tfoot>
+                  <tr>
+                    <th class="id">id</th>
+                    <th>Jurisdiccion</th>
+                    <th>Codigo</th>
+                  </tr>
+                </tfoot>
+              </table>
+            </div>
+            <!-- /.box-body -->
+          </div>
+        </div>
+        <div class="col-xs-6">
+            <div class="panel panel-default">
+              <div class="panel-heading">
+                <h4 class="panel-title">
+                   Charts
+                  </h4>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+    <!-- /.content -->
+  </div>
+  <!-- /.content-wrapper -->
+  <!-- MODAL ADD EMPRESA -->
+  <div class="modal fade" id="modalAddRubros-Imputaciones" role="dialog">
+    <div class="modal-dialog">
+      <!-- Modal content-->
+      <form id="modal-formulario">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h4 class="modal-title">Nuevo Rubro</h4>
+        </div>
+        <div class="modal-body">
+          <h4>Datos del Rubro</h4>
+          <div class="form-group">
+            <input id="nuevoId" style="display: none" enable="true"/>
+          </div>
+          <div class="form-group">
+            <label for="nuevaProvincia">Provincia: </label>
+            <input type="text" required="true" class="form-control input-sm" name="nuevaProvincia" id="nuevaProvincia" required="true" placeholder="Provincia"/>
+          </div>
+          <div class="form-group">
+            <label for="nuevoCodigo">Codigo: </label>
+            <input type="number" required="true" class="form-control input-sm" id="nuevoCodigo" name="nuevoCodigo" placeholder="Codigo"/>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <div class="col-xs-6 " id="colDelete">
+            <button type="submit" onclick="return false" class="btn btn-danger pull-left" id="deleteJurisdiccion" style="display: none">Borrar</button>
+          </div>
+          <div class="col-xs-6 ">
+            <button type="submit" onclick="return false" class="btn btn-success" id="editJurisdiccion" style="display: none">Guardar</button>
+            <button type="submit" onclick="return false" class="btn btn-success" id="newJurisdiccion" style="display: none" >Guardar</button>
+            <button type="submit" onclick="return false" class="btn btn-default" data-dismiss="modal">Cerrar</button>
+          </div>
+        </div>
+      </div>
+      </form>
+    </div>
+  </div>
+  <!-- /MODAL ADD EMPRESA -->
+{% endblock %}
