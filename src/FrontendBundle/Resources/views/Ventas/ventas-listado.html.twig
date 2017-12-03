@@ -1125,7 +1125,13 @@
               </div>
               <div class="form-group">
                 <label for="nombre">Razón social: </label>
-                <input type="text" required="true" class="form-control input-sm" id="nombre" name="nombre"  /><div id="pos-nombre"></div>    
+                <div class="input-group">
+                  <input type="text" required="true" class="form-control input-sm" id="nombre" name="nombre" />
+                  <div id="pos-nombre"></div>
+                  <span class="input-group-btn" style="padding-left: 15px">
+                    <button type="button" class="btn btn-default" id="addEmpresa">Agregar</button>
+                  </span>
+                </div> 
               </div>                  
               <div class="form-group" style="display: none">
                 <label for="empresaID">ID: </label>
@@ -1235,4 +1241,5 @@
   </div>
 </div>
   <!-- /.content-wrapper -->
+{% include 'FrontendBundle::Empresas/modal-razonsocial.html.twig' %}
 {% endblock %}

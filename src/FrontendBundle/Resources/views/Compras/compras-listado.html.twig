@@ -32,6 +32,7 @@
   .id-compra {
     display: none;
   }
+  
 </style> 
 {% endblock %}
 {% block Scripts %}
@@ -71,6 +72,8 @@
     $(document).ajaxStop(function() {
         $.unblockUI();
     });
+
+     
     //cargamos los valores para el Combo Comprobantes que esta en el modal
     comboFill("/comprobantes","id","detalle","#comprobante");
     $.get("/comprobantes/tipos",function(resp,estado,jqXHR){
@@ -1142,8 +1145,14 @@
             </div>
             <div class="form-group">
               <label for="nombre">Razón social: </label>
-              <input type="text" required="true" class="form-control input-sm" id="nombre" name="nombre" /><div id="pos-nombre"></div>  
-            </div>                 
+              <div class="input-group">
+                <input type="text" required="true" class="form-control input-sm" id="nombre" name="nombre" />
+                <div id="pos-nombre"></div>
+                <span class="input-group-btn" style="padding-left: 15px">
+                  <button type="button" class="btn btn-default" id="addEmpresa">Agregar</button>
+                </span>
+              </div>
+              </div>                 
             <div class="form-group" style="display: none">
               <label for="empresaID">ID: </label>   
               <input type="number" required="true" class="form-control input-sm" id="empresaID" name="empresaID" disabled="true"  />
@@ -1262,4 +1271,5 @@
   </div>
 </div>
   <!-- /.content-wrapper -->
+{% include 'FrontendBundle::Empresas/modal-razonsocial.html.twig' %}
 {% endblock %}

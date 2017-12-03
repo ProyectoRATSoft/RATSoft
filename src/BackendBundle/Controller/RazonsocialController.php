@@ -11,6 +11,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 use BackendBundle\Entity\TblProveedores;
 use BackendBundle\Entity\TblSituacionIva;
 use BackendBundle\Entity\TblJurisdicciones;
+use BackendBundle\Entity\TblHashes;
 
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
@@ -82,6 +83,12 @@ class RazonsocialController extends Controller
 			)
 		);
 
+		$hash = $em->getRepository("BackendBundle:TblHashes")->findOneBy(
+			array(
+				"id" => "1"
+			)
+		);
+
 		// Genero el objeto SituacionIva y lo cargo en base al ID recibido
 		$situacionIva = new TblSituacionIva();
 		$situacionIva = $em->getRepository("BackendBundle:TblSituacionIva")->findOneBy(
@@ -111,6 +118,12 @@ class RazonsocialController extends Controller
 			$em->persist($empresa);
 			$em->flush();
 
+			$hash->setHash($hash->getHash() + 1);
+
+			$em->persist($hash);
+			$em->flush();
+
+
 			
 		} else {
 			$data = array(
@@ -122,6 +135,8 @@ class RazonsocialController extends Controller
 				'data' => '',
 			);
 		}
+
+
 		
 		$result = $em->getRepository("BackendBundle:TblProveedores")->findBy(array('activo' => 1));
 		$data["data"] = $result;

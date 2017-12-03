@@ -1,11 +1,66 @@
 <script>
-	comboFill("/jurisdicciones","id","nombre","#nuevaProvincia")
-    comboFill("/iva","id","codigo","#nuevaSituacionIVA")
+  $(document).ready(function(){  
+    comboFill("/jurisdicciones","id","nombre","#nuevaProvincia");
+    comboFill("/iva","id","codigo","#nuevaSituacionIVA");
+   
+    $.get("/iva",function(resp,estado,jqXHR){
+      var arrayResp = JSON.parse(resp);
+      window.arrayIva = arrayResp.data;
+    });
+    $("#nuevaSituacionIVA").change(function(){
+        console.log("me dio bola");
+        var option = $(this).find('option:selected').val();
+        window.arrayIva.forEach(function(item,index,arr){
+          if(option == item.id){
+            $('#nuevoIva').val(item.detalle);
+          }
+        })
+      });
+
+    $("#modal-razones").validate({
+          rules: {
+              nuevoNombre: { 
+                required: true,
+                //minlength: 3
+              },
+              nuevaProvincia: { 
+                required: true,
+                //minlength: 3
+              },
+              nuevaSituacionIVA: { 
+                required: true,
+                //minlength: 3
+              },
+              nuevoCuit: { 
+                required: true
+                //minlength: 3
+              },
+          },
+          messages: {
+              nuevoNombre: { 
+                required: "Este campo no puede dejarse en vacío",
+                //minlength: 3
+              },
+              nuevaProvincia: { 
+                required: "Este campo no puede dejarse en vacío",
+                //minlength: 3
+              },
+              nuevaSituacionIVA: { 
+                required: "Este campo no puede dejarse en vacío",
+                //minlength: 3
+              },
+              nuevoCuit: { 
+                required: "Este campo no puede dejarse en vacío",                
+                //minlength: 3
+              },
+          },
+            
+      });
 
     $("#addEmpresa").click(function(){        
         $("#modalAddEmpresa").modal();
           //limpio los campos del modal
-        $("#modal-formulario").validate().resetForm();       
+        $("#modal-razones").validate().resetForm();       
         //limpio los campos del modal
         $('input#nuevoId').val('');
         $('input#nuevoNombre').val('');        
@@ -22,7 +77,9 @@
 
      $("#newEmpresa").click(function(){
     //guardo los valores en cada variable                            
-        if ($("#modal-formulario").valid()){
+        if ($("#modal-razones").valid()){
+
+            console.log("entre?")
 
             var nombre = $('div.modal-body div.form-group #nuevoNombre').val();
             var jurisdiccion = $('div.modal-body div.form-group #nuevaProvincia').val();
@@ -51,24 +108,41 @@
               }
               $("#modalAddEmpresa").modal('toggle');
               //$("#modalAddCompra").modal('show'); // cambiar para venta
+              $.get("/proveedores/hash",function(resp,estado,jqXHR){
+                var arrayResp = JSON.parse(resp);
+                window.hashProv = arrayResp.hash;
+                console.log(window.hashProv);
+                console.log(parseInt(Cookies.get("hashProv"),10));
+              })
+              window.arrayproveedores = respuesta.data;
+              window.source  = [ ];
+              window.mapping = { };
+              window.mappingCuit = { };
+              for(var i = 0; i < window.arrayproveedores.length; ++i) {
+                window.source.push(window.arrayproveedores[i].nombre);
+                window.mapping[window.arrayproveedores[i].nombre] = window.arrayproveedores[i].id;
+                window.mappingCuit[window.arrayproveedores[i].nombre] = window.arrayproveedores[i].cuit;
+              }
+              sessionStorage.arrayproveedores=JSON.stringify(window.arrayproveedores);
+              Cookies.set("hashProv",hashProv);
               $('div.form-group #empresaID').val('');
               $('div.modal-body div.form-group #nuevoNombre').val('');
               $('div.modal-body div.form-group #nuevaProvincia').val('');
               $('div.modal-body div.form-group #nuevaSituacionIVA').val('');
               $('div.modal-body div.form-group #nuevoCuit').val('');
-			    //deberiamos mostrar algun mensaje tanto como de error, como de que todo salio bien. y luego recargar la grilla para que aparezca la nueva empresa en la tabla.
-			    //alert(resp);
+  			    //deberiamos mostrar algun mensaje tanto como de error, como de que todo salio bien. y luego recargar la grilla para que aparezca la nueva empresa en la tabla.
+  			    //alert(resp);
             });
         }
       });
-
+    });
 </script>
 {% block Modal %}
  <!-- MODAL ADD EMPRESA -->
   <div class="modal fade" id="modalAddEmpresa" role="dialog">
     <div class="modal-dialog">
       <!-- Modal content-->
-      <form id="modal-formulario">
+      <form id="modal-razones">
       <div class="modal-content">
         <div class="modal-header">
           <h4 class="modal-title">Nuevo Cliente</h4>
