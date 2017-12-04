@@ -188,7 +188,7 @@ class ImputacionesController extends Controller
 		} else {
 			$data = array(
 				'status' => 'ERROR',
-				'msg' => 'Ya existe unz imputacion registrada con el codigo ingresado',
+				'msg' => 'Ya existe una imputacion registrada con el codigo ingresado',
 				'draw' => '',
 				'recordsTotal' => '',
 				'recordsFiltered' => '',

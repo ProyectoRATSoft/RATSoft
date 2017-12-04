@@ -147,35 +147,88 @@ class RubrosController extends Controller
 		}
 		
 		// Busco en la DB si existe un rubro con el nombre ingresado.
+		//$em = $this->getDoctrine()->getManager();
+		// $isset_rubros = $em->getRepository("BackendBundle:TblRubros")->findOneBy(
+		// 	array(
+		// 		'nombre' => $respuesta["nombre"]
+		// 	)
+		// );
+
+		//------------------------------------------------------------------------------------------------
 		$em = $this->getDoctrine()->getManager();
-		$isset_rubros = $em->getRepository("BackendBundle:TblRubros")->findOneBy(
+		$qb = $em->createQueryBuilder();
+	    $qb->select('v')
+	       ->from('BackendBundle:TblRubros', 'v')
+	       ->where('v.nombre = :nombre AND v.servicio = :servicio AND v.id <> :id')
+	       ->setParameters(
+	       		array(
+	       			//'empresa' => $id, 
+	       			'servicio' => $respuesta["servicio"], 
+	       			'nombre' => $respuesta["nombre"],
+	       			'id' => $id
+	       		)
+	       	);
+	    
+	    $query = $qb->getQuery();
+		$validacion = new TblRubros();	    
+	    $validacion = $query->getResult();
+		
+	    
+	    if (!empty($validacion)) {
+      		$result = $em->getRepository("BackendBundle:TblRubros")->findBy(
 			array(
-				'nombre' => $respuesta["nombre"]
+				'id' => $id,
+				//'nombre' => "1"
+			));
+
+      		$data = array(
+					'status' => 'ERROR',
+					'msg' => 'Este rubro esta duplicado',
+					'draw' => '',
+					'recordsTotal' => '',
+					'recordsFiltered' => '',
+					'data' =>  $result,				
+			);
+			$serializer = SerializerBuilder::create()->build();
+			$jsonResponse = $serializer->serialize($data, 'json');
+			return new Response($jsonResponse);
+			
+			exit();
+		}
+
+		//------------------------------------------------------------------------------------------------
+
+    	// Si el codigo no existe, se inserta en la DB.
+		// if (empty($isset_rubros)) {
+	 //  	// Instanciamos un objeto rubro y seteamos sus datos.
+		// 	$rubros = $em->getRepository("BackendBundle:TblRubros")->findOneBy( array( 'id' => $id ) );
+
+			
+				
+		// } else {
+		// 	$data = array(
+		// 		'status' => 'ERROR',
+		// 		'msg' => 'Ya existe un Rubro registrada con el nombre ingresado',
+		// 		'draw' => '',
+		// 		'recordsTotal' => '',
+		// 		'recordsFiltered' => '',
+		// 		'data' => '',
+		// 	);
+		// }
+
+		$rubros = $em->getRepository("BackendBundle:TblRubros")->findOneBy(
+			array(
+				'id' => $id
 			)
 		);
 
-    	// Si el codigo no existe, se inserta en la DB.
-		if (empty($isset_rubros)) {
-	  	// Instanciamos un objeto rubro y seteamos sus datos.
-			$rubros = $em->getRepository("BackendBundle:TblRubros")->findOneBy( array( 'id' => $id ) );
-
-			$rubros->setNombre($respuesta["nombre"]);
-			$rubros->setServicio($respuesta["servicio"]);
-
-			$em->persist($rubros);
-			$em->flush();
-				
-		} else {
-			$data = array(
-				'status' => 'ERROR',
-				'msg' => 'Ya existe un Rubro registrada con el nombre ingresado',
-				'draw' => '',
-				'recordsTotal' => '',
-				'recordsFiltered' => '',
-				'data' => '',
-			);
-		}
 		
+		$rubros->setNombre($respuesta["nombre"]);
+		$rubros->setServicio($respuesta["servicio"]);
+
+		$em->persist($rubros);
+		$em->flush();
+
 		$result = $em->getRepository("BackendBundle:TblRubros")->findAll();
 		$data["data"] = $result;
 

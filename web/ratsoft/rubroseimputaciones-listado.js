@@ -135,7 +135,7 @@
          //limpio la jurisdiccion
          $('#tabla-jurisdicciones tbody tr').removeClass('active');
          //cambio el titulo
-         $("h4.modal-title").text("Nueva Jurisdiccion");
+         $("h4.modal-title").text("Nueva Imputacion");
          //muestro los botones correspondientes
          $('button#newImputacion').css("display", "");
          $('button#editImputacion').css("display", "none");
@@ -163,9 +163,10 @@
             })
             .done(function(respuesta){
               if(respuesta.status = 'OK'){
-                alert("va como piña");
+                   alert(respuesta.msg);
               }else{
-              }
+                alert("ERROR \n Razon:" + respuesta.msg);
+              } 
               $("#modalAddImputaciones").modal('toggle');
               tableReload2(respuesta.data);
               $('#nuevoIDImputacion').val('');
@@ -208,9 +209,10 @@
             .done(function(respuesta){
               if(respuesta.status = 'OK'){
                 console.log(respuesta);
-                alert("va como piña");
-              }else{
-              }
+                  alert(respuesta.msg);
+                }else{
+                  alert("ERROR \n Razon:" + respuesta.msg);
+                } 
               $("#modalAddJurisdiccion").modal('toggle');
               tableReload2(respuesta.data);
                $('#nuevoIDImputacion').val('');
@@ -224,7 +226,7 @@
       //-----------------------------------BORRAR JURISDICCION----------------------------------//
       //  $("#deleteJurisdiccion").click(function(){
       //     var id =  $('div.modal-body div.form-group #nuevaNombreImputacion').val();
-      //     var result = confirm("Esta seguro de que desea borrar la Imputacionn?");
+      //     var result = confirm("Esta seguro de que desea borrar la Imputacion?");
       //     if (result) {
       //       $.ajax({
       //         type: "GET",
@@ -445,10 +447,10 @@
             })
             .done(function(respuesta){
               if(respuesta.status = 'OK'){
-                alert("va como piña");
-                console.log(respuesta);
+                   alert(respuesta.msg);
               }else{
-              }
+                alert("ERROR \n Razon:" + respuesta.msg);
+              } 
               $("#modalAddRubros").modal('toggle');
               tableReload(respuesta.data);
               $('#nuevoIDRubro').val('');
@@ -490,9 +492,10 @@
             .done(function(respuesta){
               if(respuesta.status = 'OK'){
                 console.log(respuesta);
-                alert("va como piña");
+                 alert(respuesta.msg);
               }else{
-              }
+                alert("ERROR \n Razon:" + respuesta.msg);
+              } 
               $("#modalAddRubros").modal('toggle');
               tableReload(respuesta.data);
                $('#nuevoIDRubro').val('');
