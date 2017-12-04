@@ -150,8 +150,9 @@ class ImputacionesController extends Controller
 		// Me aseguro que no me hayan mandado ningun campo vacío
 
 		if ( empty($respuesta["nombre"])
-			|| !is_numeric($respuesta["codigo"])
-			) {
+			|| empty($respuesta["codigo"])
+			) 
+		{
 				$data = array(
 					'status' => 'ERROR',
 					'msg' => 'Hubo campos mandatorios que se enviaron vacios',
@@ -195,6 +196,65 @@ class ImputacionesController extends Controller
 				'data' => '',
 			);
 		}
+
+
+		//------------------------------------------------------------------------------------------------
+		// $em = $this->getDoctrine()->getManager();
+		// $qb = $em->createQueryBuilder();
+	 //    $qb->select('v')
+	 //       ->from('BackendBundle:TblImputaciones', 'v')
+	 //       ->where('v.nombre = :nombre AND v.codigo = :codigo AND v.id <> :id')
+	 //       ->setParameters(
+	 //       		array(
+	 //       			//'empresa' => $id, 
+	 //       			'codigo' => $respuesta["codigo"], 
+	 //       			'nombre' => $respuesta["nombre"],
+	 //       			'id' => $id
+	 //       		)
+	 //       	);
+	    
+	 //    $query = $qb->getQuery();
+		// $validacion = new TblImputaciones();	    
+	 //    $validacion = $query->getResult();
+		
+	    
+	 //    if (!empty($validacion)) {
+  //     		$result = $em->getRepository("BackendBundle:TblImputaciones")->findBy(
+		// 	array(
+		// 		'id' => $id,
+		// 	));
+
+  //     		$data = array(
+		// 			'status' => 'ERROR',
+		// 			'msg' => 'Este rubro esta duplicado',
+		// 			'draw' => '',
+		// 			'recordsTotal' => '',
+		// 			'recordsFiltered' => '',
+		// 			'data' =>  $result,				
+		// 	);
+		// 	$serializer = SerializerBuilder::create()->build();
+		// 	$jsonResponse = $serializer->serialize($data, 'json');
+		// 	return new Response($jsonResponse);
+			
+		// 	exit();
+		// }
+
+		// //------------------------------------------------------------------------------------------------
+
+
+		// $imputacion = $em->getRepository("BackendBundle:TblImputaciones")->findOneBy(
+		// 	array(
+		// 		'id' => $id
+		// 	)
+		// );
+
+		
+		// $imputacion->setNombre($respuesta["nombre"]);
+		// $imputacion->setCodigo($respuesta["codigo"]);
+
+		// $em->persist($imputacion);
+		// $em->flush();
+
 		
 		$result = $em->getRepository("BackendBundle:TblImputaciones")->findAll();
 		$data["data"] = $result;

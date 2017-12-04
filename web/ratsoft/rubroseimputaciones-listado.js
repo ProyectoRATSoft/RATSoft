@@ -22,7 +22,7 @@
 
      // ----------------------------------------Datos de IMPUTACION-----------------------------------------------------
 
-    // Hacemos que la interfaz arranque con el boton de edición dehabilitado, porque no hay ninguna jurisdiccion seleccionada aún.
+    // Hacemos que la interfaz arranque con el boton de edición dehabilitado, porque no hay ninguna imputaciones seleccionada aún.
     $("#boton-editar").attr("disabled","true");
      // Vamos a traer el json para laburar con ajax
      window.arrayImputaciones = new Array();
@@ -107,11 +107,11 @@
             $(this).addClass('active');
             $("#boton-editar").removeAttr("disabled");
             $("#boton-editar").attr("enabled","true");
-        // metemos en una variable lo que hay en e campo cuit de la jurisdiccion seleccionada
+        // metemos en una variable lo que hay en e campo cuit de la imputaciones seleccionada
             var id2 = window.table2.$("tr.active").find(".id").text();
             window.arrayImputaciones.forEach(function(item,index,arr){
               if (item.id == id2){
-              //llenamos el modal con los datos de la jurisdiccion
+              //llenamos el modal con los datos de la imputaciones
               $('div.modal-body div.form-group #nuevoIDImputacion').val(item.id);
               $('div.modal-body div.form-group #nuevaNombreImputacion').val(item.nombre);
               $('div.modal-body div.form-group #nuevoCodigo').val(item.codigo);
@@ -119,8 +119,8 @@
             });
           }
         }); 
-    // A partir de acá metemos lo que pasa cuando picamos sobre alguna Jurisdiccion
-    // ---------------------AGREGAR JURISDICCION---------------------------------------------//
+    // A partir de acá metemos lo que pasa cuando picamos sobre alguna imputaciones
+    // ---------------------AGREGAR imputaciones---------------------------------------------//
       $("#boton-agregar").click(function(){        
          $("#modalAddImputaciones").modal();
          //reseteo las validaciones
@@ -132,8 +132,8 @@
          $('#nuevoIDImputacion').val('');
          $('#nuevaNombreImputacion').val('');
          $('#nuevoCodigo').val('');
-         //limpio la jurisdiccion
-         $('#tabla-jurisdicciones tbody tr').removeClass('active');
+         //limpio la imputaciones
+         $('#tabla-imputaciones tbody tr').removeClass('active');
          //cambio el titulo
          $("h4.modal-title").text("Nueva Imputacion");
          //muestro los botones correspondientes
@@ -175,8 +175,8 @@
             });
        }
       });
-      //-----------------------------------/AGREGAR JURISDICCION----------------------------------//  
-      //-----------------------------------EDITAR JURISDICCION----------------------------------//
+      //-----------------------------------/AGREGAR imputaciones----------------------------------//  
+      //-----------------------------------EDITAR imputaciones----------------------------------//
       $("#boton-editar").click(function(){        
         $("#modalAddImputaciones").modal();
         $("#modal-formulario").validate().resetForm();
@@ -186,7 +186,7 @@
         $("h4.modal-title").text("Editar Imputacion");
         $('button#newImputacion').css("display", "none");
         $('button#editImputacion').css("display", "");
-        // $('button#deleteJurisdiccion').css("display", "");
+        // $('button#deleteImputacion').css("display", "");
       });
 
       $("#editImputacion").click(function(){
@@ -199,7 +199,7 @@
         console.log(codigo);     
         $.ajax({
               type: "POST",
-              url: "/jurisdicciones/"+id+"/edit",
+              url: "/imputaciones/"+id+"/edit",
               async: false,
               data: {                  
                 "nombre" : nombre,
@@ -207,13 +207,16 @@
               dataType: "json"
             })
             .done(function(respuesta){
-              if(respuesta.status = 'OK'){
-                console.log(respuesta);
+              if(respuesta.status = 'OK')
+                {
+                  console.log(respuesta);
                   alert(respuesta.msg);
-                }else{
+                }
+                else
+                {
                   alert("ERROR \n Razon:" + respuesta.msg);
                 } 
-              $("#modalAddJurisdiccion").modal('toggle');
+              $("#modalAddImputaciones").modal('toggle');
               tableReload2(respuesta.data);
                $('#nuevoIDImputacion').val('');
                $('#nuevaNombreImputacion').val('');
@@ -222,9 +225,9 @@
             });
           }
       });
-      //-----------------------------------/EDITAR JURISDICCION----------------------------------//
-      //-----------------------------------BORRAR JURISDICCION----------------------------------//
-      //  $("#deleteJurisdiccion").click(function(){
+      //-----------------------------------/EDITAR imputaciones----------------------------------//
+      //-----------------------------------BORRAR imputaciones----------------------------------//
+      //  $("#deleteImputacion").click(function(){
       //     var id =  $('div.modal-body div.form-group #nuevaNombreImputacion').val();
       //     var result = confirm("Esta seguro de que desea borrar la Imputacion?");
       //     if (result) {
@@ -235,7 +238,7 @@
       //         dataType: "json",
       //       })
       //       .done(function(respuesta){
-      //         $("#modalAddJurisdiccion").modal('toggle');
+      //         $("#modalAddImputacion").modal('toggle');
       //         tableReload2(respuesta.data);
       //         $('#nuevoIDImputacion').val('');
       //          $('#nuevaNombreImputacion').val('');
@@ -244,7 +247,7 @@
       //       });
       //     }                 
       // });   
-      //-----------------------------------/BORRAR JURISDICCION----------------------------------//
+      //-----------------------------------/BORRAR imputaciones----------------------------------//
 
       //---------------------------------validaciones-------------------------------------------//
       $("#modal-formulario").validate({
@@ -295,7 +298,7 @@
 
      // ----------------------------------------Datos de IMPUTACION-----------------------------------------------------
 
-    // Hacemos que la interfaz arranque con el boton de edición dehabilitado, porque no hay ninguna jurisdiccion seleccionada aún.
+    // Hacemos que la interfaz arranque con el boton de edición dehabilitado, porque no hay ninguna imputaciones seleccionada aún.
     $("#boton-edit").attr("disabled","true");
      // Vamos a traer el json para laburar con ajax
      window.arrayrespuesta = new Array();
@@ -388,7 +391,7 @@
             $(this).addClass('active');
             $("#boton-edit").removeAttr("disabled");
             $("#boton-edit").attr("enabled","true");
-        // metemos en una variable lo que hay en e campo cuit de la jurisdiccion seleccionada
+        // metemos en una variable lo que hay en e campo cuit de la imputaciones seleccionada
             var id = window.table.$("tr.active").find(".id").text();
             window.arrayrespuesta.forEach(function(item,index,arr){
               if (item.id == id){
@@ -400,7 +403,7 @@
             });
           }
         }); 
-    // A partir de acá metemos lo que pasa cuando picamos sobre alguna Jurisdiccion
+    // A partir de acá metemos lo que pasa cuando picamos sobre alguna imputaciones
     // --------------------------------AGREGAR RUBRO---------------------------------------------//
       $("#boton-add").click(function(){        
          $("#modalAddRubros").modal();
@@ -413,7 +416,7 @@
          $('#nuevoIDRubro').val('');
          $('#nuevoNombreRubro').val('');
          $('#nuevoServicio').val('');
-         //limpio la jurisdiccion
+         //limpio la imputaciones
          $('#tabla-rubros tbody tr').removeClass('active');
          //cambio el titulo
          $("h4.modal-title").text("Nuevo Rubro");
@@ -509,16 +512,16 @@
       //-----------------------------------BORRAR RUBRO----------------------------------//
       //  $("#deleteRubro").click(function(){
       //     var id =  $('div.modal-body div.form-group #nuevoId').val();
-      //     var result = confirm("Esta seguro de que desea borrar la jurisdiccion?");
+      //     var result = confirm("Esta seguro de que desea borrar el rubro?");
       //     if (result) {
       //       $.ajax({
       //         type: "GET",
-      //         url: "/jurisdicciones/"+id+"/del",
+      //         url: "/rubros/"+id+"/del",
       //         async: false,
       //         dataType: "json",
       //       })
       //       .done(function(respuesta){
-      //         $("#modalAddJurisdiccion").modal('toggle');
+      //         $("#modalAddRubro").modal('toggle');
       //         tableReload(respuesta.data);
       //         $('#nuevoIDRubro').val('');
       //          $('#nuevoNombreRubro').val('');

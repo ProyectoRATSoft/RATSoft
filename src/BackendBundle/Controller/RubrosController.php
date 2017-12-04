@@ -146,13 +146,6 @@ class RubrosController extends Controller
 				exit();
 		}
 		
-		// Busco en la DB si existe un rubro con el nombre ingresado.
-		//$em = $this->getDoctrine()->getManager();
-		// $isset_rubros = $em->getRepository("BackendBundle:TblRubros")->findOneBy(
-		// 	array(
-		// 		'nombre' => $respuesta["nombre"]
-		// 	)
-		// );
 
 		//------------------------------------------------------------------------------------------------
 		$em = $this->getDoctrine()->getManager();
@@ -178,7 +171,6 @@ class RubrosController extends Controller
       		$result = $em->getRepository("BackendBundle:TblRubros")->findBy(
 			array(
 				'id' => $id,
-				//'nombre' => "1"
 			));
 
       		$data = array(
@@ -198,23 +190,6 @@ class RubrosController extends Controller
 
 		//------------------------------------------------------------------------------------------------
 
-    	// Si el codigo no existe, se inserta en la DB.
-		// if (empty($isset_rubros)) {
-	 //  	// Instanciamos un objeto rubro y seteamos sus datos.
-		// 	$rubros = $em->getRepository("BackendBundle:TblRubros")->findOneBy( array( 'id' => $id ) );
-
-			
-				
-		// } else {
-		// 	$data = array(
-		// 		'status' => 'ERROR',
-		// 		'msg' => 'Ya existe un Rubro registrada con el nombre ingresado',
-		// 		'draw' => '',
-		// 		'recordsTotal' => '',
-		// 		'recordsFiltered' => '',
-		// 		'data' => '',
-		// 	);
-		// }
 
 		$rubros = $em->getRepository("BackendBundle:TblRubros")->findOneBy(
 			array(
