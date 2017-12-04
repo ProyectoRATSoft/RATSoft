@@ -5,6 +5,9 @@
 <script>
 	window.arrayempresa = {{ empresa|raw }};
 	console.log(arrayempresa);
+	function goBack() {
+					    window.history.back();
+					} 
 	$(document).ready(function(){
 		$("#titulo-empresa").text(arrayempresa.nombre);
 		$("#buscarPeriodo").on("click",function(){
