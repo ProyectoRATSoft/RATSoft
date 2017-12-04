@@ -52,5 +52,159 @@ class ImputacionesController extends Controller
 		return new Response($jsonResponse);		
 		
 	}
+
+	public function newAction(Request $request) {
+
+		$respuesta = array (
+			'nombre' => $request->request->get("nombre"),
+			'codigo' => $request->request->get("codigo"),
+		);
+		$data = array(
+				'status' => 'OK',
+				'msg' => 'El rubro ha sido registrado con exito',
+				'draw' => '',
+				'recordsTotal' => '',
+				'recordsFiltered' => '',
+				'data' => '',
+			);
+
+		$serializer = SerializerBuilder::create()->build();
+
+		// Me aseguro que no me hayan mandado ningun campo vacío
+
+		if ( empty($respuesta["nombre"])
+			|| empty($respuesta["codigo"])
+			) {
+				$data = array(
+					'status' => 'ERROR',
+					'msg' => 'Hubo campos mandatorios que se enviaron vacios',
+					'draw' => '',
+					'recordsTotal' => '',
+					'recordsFiltered' => '',
+					'data' => '',
+					);
+				
+				$jsonResponse = $serializer->serialize($data, 'json');
+				return new Response($jsonResponse);
+				exit();
+		}
+		
+		// Busco en la DB si existe una imputacion con el codigo ingresado.
+		$em = $this->getDoctrine()->getManager();
+		$isset_imputacion = $em->getRepository("BackendBundle:TblImputaciones")->findOneBy(
+			array(
+				'codigo' => $respuesta["codigo"]
+			)
+		);
+
+    	// Si el codigo no existe, se inserta en la DB.
+		if (empty($isset_imputacion)) {
+	  	// Instanciamos un objeto imputacion y seteamos sus datos.
+			$imputacion = new TblImputaciones();
+
+			$imputacion->setNombre($respuesta["nombre"]);
+			$imputacion->setCodigo($respuesta["codigo"]);
+
+			$em->persist($imputacion);
+			$em->flush();
+
+		} else {
+			$data = array(
+				'status' => 'ERROR',
+				'msg' => 'Ya existe una imputacion registrado con el codigo ingresado',
+				'draw' => '',
+				'recordsTotal' => '',
+				'recordsFiltered' => '',
+				'data' => '',
+			);
+		}
+		
+		$result = $em->getRepository("BackendBundle:TblImputaciones")->findAll();
+		$data["data"] = $result;
+
+		$jsonResponse = $serializer->serialize($data, 'json');
+		$response = new Response ();
+		$response->setContent($jsonResponse);
+		$response->headers->set('Content-Type', 'application/json');
+		return $response;
+		
+	}
+
+	public function editAction($id,Request $request) {
+
+		$respuesta = array (
+			'nombre' => $request->request->get("nombre"),
+			'codigo' => $request->request->get("codigo"),
+		);
+		$data = array(
+				'status' => 'OK',
+				'msg' => 'la imputacion ha sido registrado con exito',
+				'draw' => '',
+				'recordsTotal' => '',
+				'recordsFiltered' => '',
+				'data' => '',
+			);
+
+		$serializer = SerializerBuilder::create()->build();
+
+		// Me aseguro que no me hayan mandado ningun campo vacío
+
+		if ( empty($respuesta["nombre"])
+			|| !is_numeric($respuesta["codigo"])
+			) {
+				$data = array(
+					'status' => 'ERROR',
+					'msg' => 'Hubo campos mandatorios que se enviaron vacios',
+					'draw' => '',
+					'recordsTotal' => '',
+					'recordsFiltered' => '',
+					'data' => '',
+					);
+				
+				$jsonResponse = $serializer->serialize($data, 'json');
+				return new Response($jsonResponse);
+				exit();
+		}
+		
+		// Busco en la DB si existe un imputacion con el codigo ingresado.
+		$em = $this->getDoctrine()->getManager();
+		$isset_imputacion = $em->getRepository("BackendBundle:TblImputaciones")->findOneBy(
+			array(
+				'codigo' => $respuesta["codigo"]
+			)
+		);
+
+    	// Si el codigo no existe, se inserta en la DB.
+		if (empty($isset_imputacion)) {
+	  	// Instanciamos un objeto imputacion y seteamos sus datos.
+			$imputacion = $em->getRepository("BackendBundle:TblImputaciones")->findOneBy( array( 'id' => $id ) );
+
+			$imputacion->setNombre($respuesta["nombre"]);
+			$imputacion->setCodigo($respuesta["codigo"]);
+
+			$em->persist($imputacion);
+			$em->flush();
+				
+		} else {
+			$data = array(
+				'status' => 'ERROR',
+				'msg' => 'Ya existe unz imputacion registrada con el codigo ingresado',
+				'draw' => '',
+				'recordsTotal' => '',
+				'recordsFiltered' => '',
+				'data' => '',
+			);
+		}
+		
+		$result = $em->getRepository("BackendBundle:TblImputaciones")->findAll();
+		$data["data"] = $result;
+
+		$jsonResponse = $serializer->serialize($data, 'json');
+		$response = new Response ();
+		$response->setContent($jsonResponse);
+		$response->headers->set('Content-Type', 'application/json');
+		return $response;
+		
+	}
 }
 ?>

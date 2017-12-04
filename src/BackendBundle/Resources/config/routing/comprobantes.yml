@@ -7,3 +7,8 @@ comprobantes_tipos:
     path: /tipos
     defaults: { _controller: BackendBundle:Comprobantes:tipos }
     methods: GET
+
+comprobantes_tiposnew:
+    path: /new
+    defaults: { _controller: BackendBundle:Comprobantes:new }
+    methods: POST

@@ -38,7 +38,6 @@ class ModulosController extends Controller
         return $this->render('FrontendBundle:Comprobantes:comprobantes-home.html.twig');
     }
 
-
     /**
     *   @Route("/impositivo/iva/{id}",name="iva_byId")
     *   @Method({"GET"})
@@ -64,4 +63,10 @@ class ModulosController extends Controller
     {
     	return $this->render('FrontendBundle:Users:register.html.twig');
     }
+
+    public function imputacionesAction()
+    {
+        return $this->render('FrontendBundle:Imputaciones:imputaciones-home.html.twig');
+    }
+
 }
