@@ -1,0 +1,24 @@
+{% extends 'FrontendBundle::Iibb/iibb-listado.html.twig' %}
+{% block title %} IIBB{% endblock %}
+
+{% block botones %}
+	<div class="text-center">
+		<div class="col-xs-8">
+			<div class="form-group">                          
+            	<label class="control-label col-md-3" for="">Periodo: </label>
+            	<div class="col-md-6">
+              		<input type="month" class="form-control input-sm" id="periodo" placeholder="Ingrese periodo">
+            	</div>
+            	<div class="col-md-3">
+              		<button class="btn btn-primary btn-block" id="buscarPeriodo"><i class="fa fa-search" aria-hidden="true">Buscar</i></button>
+            	</div>
+			</div>
+		</div>
+		<div class="col-xs-2">
+			<button class="btn btn-primary btn-block" id="editCompra"><i class="fa fa-print" aria-hidden="true"> Exportar</i></button>
+		</div>
+		<div class="col-xs-2">
+			<button class="btn btn-default btn-block" onclick="goBack()"> Volver</button>
+		</div>
+	</div>   
+{% endblock %}

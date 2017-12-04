@@ -59,6 +59,26 @@ class ModulosController extends Controller
             ));
     }
 
+    // public function iibbAction($id,Request $request)
+    // {
+    //     $em = $this->getDoctrine()->getManager();
+    //     $result = $em->getRepository("BackendBundle:TblEmpresas")->findOneBy(
+    //         array(
+    //             'id' => $id,
+    //         ));
+    //     $serializer = SerializerBuilder::create()->build();
+    //     $jsonResponse = $serializer->serialize($result, 'json');
+    //     return $this->render('FrontendBundle:Iibb:iibb-home.html.twig',
+    //         array(
+    //             "empresa" => $jsonResponse,
+    //         ));
+    // }
+
+     public function iibbAction()
+    {
+        return $this->render('FrontendBundle:Iibb:iibb-home.html.twig');
+    }
+
     public function userAction()
     {
     	return $this->render('FrontendBundle:Users:register.html.twig');
