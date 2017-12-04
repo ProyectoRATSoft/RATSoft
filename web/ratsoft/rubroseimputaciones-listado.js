@@ -145,34 +145,34 @@
 
        $("#newImputacion").click(function(){
     //guardo los valores en cada variable                            
-    //     if ($("#modal-formulario").valid()){
+         if ($("#modal-formulario").valid()){
 
-    //         var jurisdiccion = $('div.modal-body div.form-group #nuevaProvincia').val();
-    //         var codigo = $('div.modal-body div.form-group #nuevoCodigo').val();
-    // //realizo un post pasando la url correspondiente al backend, los datos previamente capturados y realizo la funcion correspondiente que me devolvera la respuesta.
+            var nombre = $('div.modal-body div.form-group #nuevaNombreImputacion').val();
+            var codigo = $('div.modal-body div.form-group #nuevoCodigo').val();
+    //realizo un post pasando la url correspondiente al backend, los datos previamente capturados y realizo la funcion correspondiente que me devolvera la respuesta.
             
-    //         $.ajax({
-    //           type: "POST",
-    //           url: "/imputaciones/new",
-    //           async: false,
-    //           data: {                  
-    //             "jurisdiccion" : jurisdiccion,
-    //             "codigo" : codigo, 
-    //              },
-    //           dataType: "json"
-    //         })
-    //         .done(function(respuesta){
-    //           if(respuesta.status = 'OK'){
-    //             alert("va como piña");
-    //           }else{
-    //           }
-    //           $("#modalAddImputaciones").modal('toggle');
-    //           tableReload2(respuesta.data);
-    //           $('#nuevoIDImputacion').val('');
-    //           $('#nuevaNombreImputacion').val('');
-    //           $('#nuevoCodigo').val('');
-    //         });
-    //     }
+            $.ajax({
+              type: "POST",
+              url: "/imputaciones/new",
+              async: false,
+              data: {                  
+                "nombre" : nombre,
+                "codigo" : codigo, 
+                 },
+              dataType: "json"
+            })
+            .done(function(respuesta){
+              if(respuesta.status = 'OK'){
+                alert("va como piña");
+              }else{
+              }
+              $("#modalAddImputaciones").modal('toggle');
+              tableReload2(respuesta.data);
+              $('#nuevoIDImputacion').val('');
+              $('#nuevaNombreImputacion').val('');
+              $('#nuevoCodigo').val('');
+            });
+       }
       });
       //-----------------------------------/AGREGAR JURISDICCION----------------------------------//  
       //-----------------------------------EDITAR JURISDICCION----------------------------------//
@@ -189,51 +189,54 @@
       });
 
       $("#editImputacion").click(function(){
-    //     if ($("#modal-formulario").valid()){
-    // //guardamos id para pasarlo en la url
-    //     var id =  $('div.modal-body div.form-group #nuevoId').val();
-    //     var jurisdiccion = $('div.modal-body div.form-group #nuevaProvincia').val();
-    //     var codigo= $('div.modal-body div.form-group #nuevoCodigo').val();        
-    //     $.ajax({
-    //           type: "POST",
-    //           url: "/jurisdicciones/"+id+"/edit",
-    //           async: false,
-    //           data: {                  
-    //             "jurisdiccion" : jurisdiccion,
-    //             "codigo" : codigo },
-    //           dataType: "json"
-    //         })
-    //         .done(function(respuesta){
-    //           if(respuesta.status = 'OK'){
-    //             alert("va como piña");
-    //           }else{
-    //           }
-    //           $("#modalAddJurisdiccion").modal('toggle');
-    //           tableReload2(respuesta.data);
-    //            $('#nuevoIDImputacion').val('');
-    //            $('#nuevaNombreImputacion').val('');
-    //            $('#nuevoCodigo').val('');
-    //            $("#boton-editar").attr("disabled","true");              
-    //         });
-    //       }
+        if ($("#modal-formulario").valid()){
+    //guardamos id para pasarlo en la url
+        var id =  $('div.modal-body div.form-group #nuevoIDImputacion').val();
+        var nombre = $('div.modal-body div.form-group #nuevaNombreImputacion').val();
+        var codigo = $('div.modal-body div.form-group #nuevoCodigo').val();
+        console.log(nombre);
+        console.log(codigo);     
+        $.ajax({
+              type: "POST",
+              url: "/jurisdicciones/"+id+"/edit",
+              async: false,
+              data: {                  
+                "nombre" : nombre,
+                "codigo" : codigo },
+              dataType: "json"
+            })
+            .done(function(respuesta){
+              if(respuesta.status = 'OK'){
+                console.log(respuesta);
+                alert("va como piña");
+              }else{
+              }
+              $("#modalAddJurisdiccion").modal('toggle');
+              tableReload2(respuesta.data);
+               $('#nuevoIDImputacion').val('');
+               $('#nuevaNombreImputacion').val('');
+               $('#nuevoCodigo').val('');
+               $("#boton-editar").attr("disabled","true");              
+            });
+          }
       });
       //-----------------------------------/EDITAR JURISDICCION----------------------------------//
       //-----------------------------------BORRAR JURISDICCION----------------------------------//
       //  $("#deleteJurisdiccion").click(function(){
-      //     var id =  $('div.modal-body div.form-group #nuevoId').val();
-      //     var result = confirm("Esta seguro de que desea borrar la jurisdiccion?");
+      //     var id =  $('div.modal-body div.form-group #nuevaNombreImputacion').val();
+      //     var result = confirm("Esta seguro de que desea borrar la Imputacionn?");
       //     if (result) {
       //       $.ajax({
       //         type: "GET",
-      //         url: "/jurisdicciones/"+id+"/del",
+      //         url: "/imputaciones/"+id+"/del",
       //         async: false,
       //         dataType: "json",
       //       })
       //       .done(function(respuesta){
       //         $("#modalAddJurisdiccion").modal('toggle');
       //         tableReload2(respuesta.data);
-      //         $('#nuevoId').val('');
-      //          $('#nuevaProvincia').val('');
+      //         $('#nuevoIDImputacion').val('');
+      //          $('#nuevaNombreImputacion').val('');
       //          $('#nuevoCodigo').val('');
       //          $("#boton-editar").attr("disabled","true");   
       //       });
@@ -245,21 +248,21 @@
       $("#modal-formulario").validate({
           rules: {
               
-              nuevoCodigo: { 
+              nuevaNombreImputacion: { 
                 required: true,
                 minlength: 3
               },
-              nuevaProvincia: { 
+              nuevoCodigo: { 
                 required: true
                 //minlength: 3
               },                                
           },
           messages: {
-              nuevoCodigo: { 
+              nuevaNombreImputacion: { 
                 required: "Este campo no puede dejarse en vacío",
                 minlength: "Este campo de contener al menos 3 caracteres"
               },
-              nuevaProvincia: { 
+              nuevoCodigo: { 
                 required: "Este campo no puede dejarse en vacío",
                 //minlength: 3
               },                   
@@ -396,7 +399,7 @@
           }
         }); 
     // A partir de acá metemos lo que pasa cuando picamos sobre alguna Jurisdiccion
-    // ---------------------AGREGAR JURISDICCION---------------------------------------------//
+    // --------------------------------AGREGAR RUBRO---------------------------------------------//
       $("#boton-add").click(function(){        
          $("#modalAddRubros").modal();
          //reseteo las validaciones
@@ -421,37 +424,41 @@
 
        $("#newRubro").click(function(){
     //guardo los valores en cada variable                            
-    //     if ($("#modal-formulario").valid()){
+        if ($("#modal-formulario2").valid()){
 
-    //         var jurisdiccion = $('div.modal-body div.form-group #nuevaProvincia').val();
-    //         var codigo = $('div.modal-body div.form-group #nuevoCodigo').val();
-    // //realizo un post pasando la url correspondiente al backend, los datos previamente capturados y realizo la funcion correspondiente que me devolvera la respuesta.
+            var nombre = $('div.modal-body div.form-group #nuevoNombreRubro').val();
+            var servicio = $('div.modal-body div.form-group #nuevoServicio').val();
+
+            console.log(nombre);
+            console.log(servicio);
+    //realizo un post pasando la url correspondiente al backend, los datos previamente capturados y realizo la funcion correspondiente que me devolvera la respuesta.
             
-    //         $.ajax({
-    //           type: "POST",
-    //           url: "/rubro/new",
-    //           async: false,
-    //           data: {                  
-    //             "jurisdiccion" : jurisdiccion,
-    //             "codigo" : codigo, 
-    //              },
-    //           dataType: "json"
-    //         })
-    //         .done(function(respuesta){
-    //           if(respuesta.status = 'OK'){
-    //             alert("va como piña");
-    //           }else{
-    //           }
-    //           $("#modalAddRubro").modal('toggle');
-    //           tableReload(respuesta.data);
-    //           $('#nuevoIDRubro').val('');
-    //           $('#nuevoNombreRubro').val('');
-    //           $('#nuevoServicio').val('');
-    //         });
-    //     }
+            $.ajax({
+              type: "POST",
+              url: "/rubros/new",
+              async: false,
+              data: {                  
+                "nombre" : nombre,
+                "servicio" : servicio, 
+                 },
+              dataType: "json"
+            })
+            .done(function(respuesta){
+              if(respuesta.status = 'OK'){
+                alert("va como piña");
+                console.log(respuesta);
+              }else{
+              }
+              $("#modalAddRubros").modal('toggle');
+              tableReload(respuesta.data);
+              $('#nuevoIDRubro').val('');
+              $('#nuevoNombreRubro').val('');
+              $('#nuevoServicio').val('');
+            });
+          }
       });
-      //-----------------------------------/AGREGAR JURISDICCION----------------------------------//  
-      //-----------------------------------EDITAR JURISDICCION----------------------------------//
+      //-----------------------------------/AGREGAR RUBRO----------------------------------//  
+      //-----------------------------------EDITAR RUBRO----------------------------------//
       $("#boton-edit").click(function(){        
         $("#modalAddRubros").modal();
         $("#modal-formulario2").validate().resetForm();
@@ -461,40 +468,42 @@
         $("h4.modal-title").text("Editar Rubro");
         $('button#newRubro').css("display", "none");
         $('button#editRubro').css("display", "");
-        // $('button#deleteJurisdiccion').css("display", "");
+        // $('button#deleteRubro').css("display", "");
       });
 
       $("#editRubro").click(function(){
-    //     if ($("#modal-formulario").valid()){
-    // //guardamos id para pasarlo en la url
-    //     var id =  $('div.modal-body div.form-group #nuevoId').val();
-    //     var jurisdiccion = $('div.modal-body div.form-group #nuevaProvincia').val();
-    //     var codigo= $('div.modal-body div.form-group #nuevoCodigo').val();        
-    //     $.ajax({
-    //           type: "POST",
-    //           url: "/rubro/"+id+"/edit",
-    //           async: false,
-    //           data: {                  
-    //             "jurisdiccion" : jurisdiccion,
-    //             "codigo" : codigo },
-    //           dataType: "json"
-    //         })
-    //         .done(function(respuesta){
-    //           if(respuesta.status = 'OK'){
-    //             alert("va como piña");
-    //           }else{
-    //           }
-    //           $("#modalAddJurisdiccion").modal('toggle');
-    //           tableReload(respuesta.data);
-    //            $('#nuevoIDRubro').val('');
-    //            $('#nuevoNombreRubro').val('');
-    //            $('#nuevoServicio').val('');
-    //            $("#boton-edit").attr("disabled","true");              
-    //         });
-    //       }
+        if ($("#modal-formulario2").valid()){
+    //guardamos id para pasarlo en la url
+        var id =  $('div.modal-body div.form-group #nuevoIDRubro').val();
+        var nombre = $('div.modal-body div.form-group #nuevoNombreRubro').val();
+        var servicio = $('div.modal-body div.form-group #nuevoServicio').val();
+        console.log(servicio);        
+        $.ajax({
+              type: "POST",
+              url: "/rubros/"+id+"/edit",
+              async: false,
+              data: {                  
+                "nombre" : nombre,
+                "servicio" : servicio },
+              dataType: "json"
+            })
+            .done(function(respuesta){
+              if(respuesta.status = 'OK'){
+                console.log(respuesta);
+                alert("va como piña");
+              }else{
+              }
+              $("#modalAddRubros").modal('toggle');
+              tableReload(respuesta.data);
+               $('#nuevoIDRubro').val('');
+               $('#nuevoNombreRubro').val('');
+               $('#nuevoServicio').val('');
+               $("#boton-edit").attr("disabled","true");              
+            });
+          }
       });
-      //-----------------------------------/EDITAR JURISDICCION----------------------------------//
-      //-----------------------------------BORRAR JURISDICCION----------------------------------//
+      //-----------------------------------/EDITAR RUBRO----------------------------------//
+      //-----------------------------------BORRAR RUBRO----------------------------------//
       //  $("#deleteRubro").click(function(){
       //     var id =  $('div.modal-body div.form-group #nuevoId').val();
       //     var result = confirm("Esta seguro de que desea borrar la jurisdiccion?");
@@ -515,28 +524,28 @@
       //       });
       //     }                 
       // });   
-      //-----------------------------------/BORRAR JURISDICCION----------------------------------//
+      //-----------------------------------/BORRAR RUBRO----------------------------------//
 
          //---------------------------------validaciones-------------------------------------------//
 
       $("#modal-formulario2").validate({
           rules: {
               
-              nuevoCodigo: { 
+              nuevoNombreRubro: { 
                 required: true,
                 minlength: 3
               },
-              nuevaProvincia: { 
+              nuevoServicio: { 
                 required: true
                 //minlength: 3
               },                                
           },
           messages: {
-              nuevoCodigo: { 
+              nuevoNombreRubro: { 
                 required: "Este campo no puede dejarse en vacío",
                 minlength: "Este campo de contener al menos 3 caracteres"
               },
-              nuevaProvincia: { 
+              nuevoServicio: { 
                 required: "Este campo no puede dejarse en vacío",
                 //minlength: 3
               },                   

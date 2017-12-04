@@ -2,3 +2,13 @@ rubros_all:
     path: /
     defaults: { _controller: BackendBundle:Rubros:all }
     methods: GET
+
+rubros_new:
+    path: /new
+    defaults: { _controller: BackendBundle:Rubros:new }
+    methods: POST
+
+rubros_edit:
+    path: /{id}/edit
+    defaults: { _controller: BackendBundle:Rubros:edit }
+    methods: POST

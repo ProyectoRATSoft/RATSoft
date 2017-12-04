@@ -7,3 +7,13 @@ imputaciones_prov:
     path: /prov/
     defaults: { _controller: BackendBundle:Imputaciones:allProv }
     methods: GET
+
+imputaciones_new:
+    path: /new
+    defaults: { _controller: BackendBundle:Imputaciones:new }
+    methods: POST
+
+imputaciones_edit:
+    path: /{id}/edit
+    defaults: { _controller: BackendBundle:Imputaciones:edit }
+    methods: POST
