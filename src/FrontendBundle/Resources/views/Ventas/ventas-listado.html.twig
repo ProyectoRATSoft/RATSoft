@@ -1044,7 +1044,9 @@
       });
 
   });  
-
+function goBack() {
+    window.history.back();
+}
                              
                 
 </script>
@@ -1064,10 +1066,15 @@
         <li><a href="/contable"><i class="fa fa-calculator"></i> contable</a></li>
         <li class="active"><i class="fa fa-search"></i>Buscador de ventas</li>
       </ol>
-    </section>    
+    </section> 
     <section class="content">
       <!-- Small boxes (Stat box) -->                                                          
       <div class="row">
+        <div class="col-xs-12">
+            {% block botones %}            
+            {% endblock %} 
+            <!-- Main content -->        
+          </div>
         <div class="col-xs-12">
           <div class="box">
             <div class="box-header">
@@ -1082,14 +1089,7 @@
             </div>
             <!-- /.box-body -->
           </div>
-        </div>
-        <div class="row">
-          <div class="col-xs-12">
-            {% block botones %}            
-            {% endblock %} 
-    <!-- Main content -->        
-          </div>
-        </div>
+        </div>        
       </div>
     </section>    
     <!-- /.content -->
