@@ -1,4 +1,116 @@
 {% extends 'FrontendBundle::Default/base.html.twig' %}
+{% block title %}Reporte de IVA{% endblock %}
+{% block CSs %}{% endblock %}
+{% block Scripts %}
+<script>
+	window.arrayempresa = {{ empresa|raw }};
+	console.log(arrayempresa);
+	$(document).ready(function(){
+		$("#titulo-empresa").text(arrayempresa.nombre);
+		$("#buscarPeriodo").on("click",function(){
+			console.log($("#periodo").val());
+			console.log(typeof($("#periodo").val()));
+			$.get("/impositivo/iva/" + arrayempresa.id + "/" + $("#periodo").val(),function(resp,estado,jqXHR){
+    	    	var arrayIva = JSON.parse(resp);
+    	    	window.arrayIva= arrayIva.data;
+    	    	console.log(arrayIva);
+    	    	
+
+    	    	// primero calculamos los netos
+    	    	var ventasNetoTotal = parseFloat("0");
+    	    	var ventasNeto105 = parseFloat("0");
+    	    	var ventasNeto21 = parseFloat("0");
+    	    	var ventasExento = parseFloat("0");
+    	    	var ventasNogravado = parseFloat("0");
+    	    	
+    	    	var ventasIva21Total = parseFloat("0");
+    	    	var ventasIva21RI = parseFloat("0");
+    	    	var ventasIva21MON = parseFloat("0");
+    	    	var ventasIva21CF = parseFloat("0");
+    	    	var ventasIva21EXI = parseFloat("0");
+    	    	var ventasIva21SNC = parseFloat("0");
+
+    	    	var ventasIva105Total = parseFloat("0");
+    	    	var ventasIva105RI = parseFloat("0");
+    	    	var ventasIva105MON = parseFloat("0");
+    	    	var ventasIva105CF = parseFloat("0");
+    	    	var ventasIva105EXI = parseFloat("0");
+    	    	var ventasIva105SNC = parseFloat("0");
+    	    	arrayIva.data.ventas.forEach(function(item,index,arr){
+    	    		
+    	    		//Netos
+    	    		ventasNeto105 = parseFloat(ventasNeto105) + parseFloat(item.neto105);
+    	    		ventasNeto21 = parseFloat(ventasNeto21) + parseFloat(item.neto21);
+    	    		ventasExento = parseFloat(ventasExento) + parseFloat(item.neto_exento);
+    	    		ventasNogravado = parseFloat(ventasNogravado) + parseFloat(item.nogravado);
+
+    	    		//IVAs
+
+    	    		if (item.cliente.iva.codigo == "RI"){
+    	    			console.log("RI");
+    	    			ventasIva21RI = parseFloat(ventasIva21RI) + parseFloat(item.iva21);
+    	    			ventasIva105RI = parseFloat(ventasIva105RI) + parseFloat(item.iva105);
+    	    		};
+    	    		if (item.cliente.iva.codigo == "MON"){
+    	    			console.log("MON");
+    	    			ventasIva21MON = parseFloat(ventasIva21MON) + parseFloat(item.iva21);
+    	    			ventasIva105MON = parseFloat(ventasIva105MON) + parseFloat(item.iva105);
+    	    		};
+    	    		if (item.cliente.iva.codigo == "CF"){
+    	    			console.log("CF");
+    	    			ventasIva21CF = parseFloat(ventasIva21CF) + parseFloat(item.iva21);
+    	    			ventasIva105CF = parseFloat(ventasIva105CF) + parseFloat(item.iva105);
+    	    		};
+    	    		if (item.cliente.iva.codigo == "EXI"){
+    	    			console.log("EXI");
+    	    			ventasIva21EXI = parseFloat(ventasIva21EXI) + parseFloat(item.iva21);
+    	    			ventasIva105EXI = parseFloat(ventasIva105EXI) + parseFloat(item.iva105);
+    	    		};
+    	    		if (item.cliente.iva.codigo == "SNC"){
+    	    			console.log("SNC");
+    	    			ventasIva21SNC = parseFloat(ventasIva21SNC) + parseFloat(item.iva21);
+    	    			ventasIva105SNC = parseFloat(ventasIva105SNC) + parseFloat(item.iva105);
+    	    		};
+
+    	    		
+    	    	});
+    	    	ventasNetoTotal = parseFloat(ventasNetoTotal) + parseFloat(ventasNeto105) + parseFloat(ventasNeto21) +parseFloat(ventasExento) +parseFloat(ventasNogravado);
+
+    	    	ventasIva105Total = parseFloat(ventasIva105RI) + parseFloat(ventasIva105MON) +parseFloat(ventasIva105CF) + parseFloat(ventasIva105EXI) + parseFloat(ventasIva105SNC);
+
+    	    	ventasIva21Total = parseFloat(ventasIva21RI) + parseFloat(ventasIva21MON) +parseFloat(ventasIva21CF) + parseFloat(ventasIva21EXI) + parseFloat(ventasIva21SNC);
+
+				$("#netos-total").text(ventasNetoTotal);
+				$("#neto21").val(ventasNeto21);
+				$("#neto105").val(ventasNeto105);
+				$("#netoExento").val(ventasExento);
+				$("#netoNogravado").val(ventasNogravado);
+
+				$("#iva21-total").text(ventasIva21Total);
+				$("#iva21RI").val(ventasIva21RI);
+				$("#iva21MON").val(ventasIva21MON);
+				$("#iva21CF").val(ventasIva21CF);
+				$("#iva21EXI").val(ventasIva21EXI);
+				$("#iva21SNC").val(ventasIva21SNC);
+
+				$("#iva105-total").text(ventasIva105Total);
+				$("#iva105RI").val(ventasIva105RI);
+				$("#iva105MON").val(ventasIva105MON);
+				$("#iva105CF").val(ventasIva105CF);
+				$("#iva105EXI").val(ventasIva105EXI);
+				$("#iva105SNC").val(ventasIva105SNC);
+
+
+
+
+    		});
+
+		});
+
+
+	});
+</script>	
+{% endblock %}
 {% block body %}
 <div class="content-wrapper">
     <!-- Content Header (Page header) -->
@@ -7,6 +119,7 @@
         IVA
         <small>Periodo detallado</small>
       </h2>
+      <h2 id="titulo-empresa"></h2>
       <ol class="breadcrumb">
         <li><a href="/"><i class="fa fa-home"></i> Home</a></li>
         <li><a href="/impositivo"><i class="fa fa-search"></i> Impositivo</a></li>
@@ -35,8 +148,8 @@
 	                      <label>Netos</label>
 	                    </div>
 	                    <div class="text-right">
-	                      <label>total</label>
-	                      <Label id=""> 1000$</label>
+	                      <label>total: </label>
+	                      <Label id="netos-total"></label>
 	                    </div>
 	                  </a>
 	                </h4>
@@ -49,7 +162,7 @@
 	                    <div class="form-group">                          
 	                      <label class="control-label col-md-6" for="">Neto 21%: </label>
 	                      <div class="col-md-6">
-	                        <input type="" class="form-control input-sm" id="">
+	                        <input type="text" class="form-control input-sm" id="neto21"></input>
 	                      </div>             
 	                    </div>
 	                    <!--/  -->
@@ -57,7 +170,7 @@
 	                    <div class="form-group">                          
 	                      <label class="control-label col-md-6" for="">Neto 10.5%: </label>
 	                      <div class="col-md-6">
-	                        <input type="" class="form-control input-sm" id="">
+	                        <input type="text" class="form-control input-sm" id="neto105"></input>
 	                      </div>             
 	                    </div>
 	                    <!--/  -->
@@ -65,7 +178,13 @@
 	                    <div class="form-group">                          
 	                      <label class="control-label col-md-6" for="">Neto exento: </label>
 	                      <div class="col-md-6">
-	                        <input type="" class="form-control input-sm" id="">
+	                        <input type="text" class="form-control input-sm" id="netoExento"></input>
+	                      </div>             
+	                    </div>
+	                    <div class="form-group">                          
+	                      <label class="control-label col-md-6" for="">Neto No Gravado: </label>
+	                      <div class="col-md-6">
+	                        <input type="text" class="form-control input-sm" id="netoNogravado"></input>
 	                      </div>             
 	                    </div>
 	                    <!--/  -->
@@ -87,7 +206,7 @@
 	                    </div>
 	                    <div class="text-right">
 	                      <label>total</label>
-	                      <Label id="">$1000</label>
+	                      <Label id="iva21-total"></label>
 	                    </div>
 	                  </a>
 	                </h4>
@@ -100,7 +219,7 @@
 	                    <div class="form-group">                          
 	                      <label class="control-label col-md-6" for="">IVA 21 RI: </label>
 	                      <div class="col-md-6">
-	                        <input type="" class="form-control input-sm" id="">
+	                        <input type="text" class="form-control input-sm" id="iva21RI">
 	                      </div>             
 	                    </div>
 	                    <!--/  -->
@@ -108,7 +227,7 @@
 	                    <div class="form-group">                          
 	                      <label class="control-label col-md-6" for="">IVA 21 MON: </label>
 	                      <div class="col-md-6">
-	                        <input type="" class="form-control input-sm" id="">
+	                        <input type="text" class="form-control input-sm" id="iva21MON">
 	                      </div>             
 	                    </div>
 	                    <!--/  -->
@@ -116,7 +235,7 @@
 	                    <div class="form-group">                          
 	                      <label class="control-label col-md-6" for="">IVA 21 CF: </label>
 	                      <div class="col-md-6">
-	                        <input type="" class="form-control input-sm" id="">
+	                        <input type="text" class="form-control input-sm" id="iva21CF">
 	                      </div>             
 	                    </div>
 	                    <!--/  -->
@@ -124,7 +243,7 @@
 	                    <div class="form-group">                          
 	                      <label class="control-label col-md-6" for="">IVA 21 EXI: </label>
 	                      <div class="col-md-6">
-	                        <input type="" class="form-control input-sm" id="">
+	                        <input type="text" class="form-control input-sm" id="iva21EXI">
 	                      </div>             
 	                    </div>
 	                    <!--/  -->
@@ -132,7 +251,7 @@
 	                    <div class="form-group">                          
 	                      <label class="control-label col-md-6" for="">IVA 21 SNC: </label>
 	                      <div class="col-md-6">
-	                        <input type="" class="form-control input-sm" id="">
+	                        <input type="text" class="form-control input-sm" id="iva21SNC">
 	                      </div>             
 	                    </div>
 	                    <!--/  -->
@@ -154,7 +273,7 @@
 	                    </div>
 	                    <div class="text-right">
 	                      <label>total</label>
-	                      <Label id="">$1000</label>
+	                      <Label id="iva105-total"></label>
 	                    </div>
 	                  </a>
 	                </h4>
@@ -167,7 +286,7 @@
 	                    <div class="form-group">                          
 	                      <label class="control-label col-md-6" for="">IVA 10.5 RI: </label>
 	                      <div class="col-md-6">
-	                        <input type="" class="form-control input-sm" id="">
+	                        <input type="text" class="form-control input-sm" id="iva105RI">
 	                      </div>             
 	                    </div>
 	                    <!--/  -->
@@ -175,7 +294,7 @@
 	                    <div class="form-group">                          
 	                      <label class="control-label col-md-6" for="">IVA 10.5 MON: </label>
 	                      <div class="col-md-6">
-	                        <input type="" class="form-control input-sm" id="">
+	                        <input type="text" class="form-control input-sm" id="iva105MON">
 	                      </div>             
 	                    </div>
 	                    <!--/  -->
@@ -183,7 +302,7 @@
 	                    <div class="form-group">                          
 	                      <label class="control-label col-md-6" for="">IVA 10.5 CF: </label>
 	                      <div class="col-md-6">
-	                        <input type="" class="form-control input-sm" id="">
+	                        <input type="text" class="form-control input-sm" id="iva105CF">
 	                      </div>             
 	                    </div>
 	                    <!--/  -->
@@ -191,7 +310,7 @@
 	                    <div class="form-group">                          
 	                      <label class="control-label col-md-6" for="">IVA 10.5 EXI: </label>
 	                      <div class="col-md-6">
-	                        <input type="" class="form-control input-sm" id="">
+	                        <input type="text" class="form-control input-sm" id="iva105EXI">
 	                      </div>             
 	                    </div>
 	                    <!--/  -->
@@ -199,7 +318,7 @@
 	                    <div class="form-group">                          
 	                      <label class="control-label col-md-6" for="">IVA 10.5 SNC: </label>
 	                      <div class="col-md-6">
-	                        <input type="" class="form-control input-sm" id="">
+	                        <input type="text" class="form-control input-sm" id="iva105SNC">
 	                      </div>             
 	                    </div>
 	                    <!--/  -->

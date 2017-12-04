@@ -115,7 +115,7 @@ class VentasController extends Controller
 				||  !is_numeric($respuesta["percepcion"])
 				||  !is_numeric($respuesta["total"])
 			) {
-				$result = $em->getRepository("BackendBundle:TblCompras")->findBy(
+				$result = $em->getRepository("BackendBundle:TblVentas")->findBy(
 						array(
 							'empresa' => $id,
 							'activo' => "1"
@@ -319,7 +319,7 @@ class VentasController extends Controller
 				||  !is_numeric($respuesta["percepcion"])
 				||  !is_numeric($respuesta["total"])
 			) {
-				$result = $em->getRepository("BackendBundle:TblCompras")->findBy(
+				$result = $em->getRepository("BackendBundle:TblVentas")->findBy(
 					array(
 						'empresa' => $id,
 						'activo' => "1"

@@ -1,9 +1,14 @@
 iva_all:
     path: /
-    defaults: { _controller: BackendBundle:Iva:all }
+    defaults: { _controller: FrontendBundle:Modulos:iva }
     methods: GET
 
-iva_findById:
+iva_byId:
     path: /{id}
-    defaults: { _controller: BackendBundle:Iva:findById }
+    defaults: { _controller: FrontendBundle:Modulos:iva }
+    methods: GET
+
+iva_impositivo:
+    path: /{id}/{periodo}
+    defaults: { _controller: BackendBundle:Impositivo:iva }
     methods: GET

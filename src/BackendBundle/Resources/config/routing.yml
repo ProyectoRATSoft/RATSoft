@@ -34,17 +34,9 @@ backend_provincias:
   resource: "@BackendBundle/Resources/config/routing/provincias.yml"
   prefix: /provincias
 
-backend_iva:
-  resource: "@BackendBundle/Resources/config/routing/iva.yml"
-  prefix: /iva
-
 backend_jurisdicciones:
   resource: "@BackendBundle/Resources/config/routing/jurisdicciones.yml"
   prefix: /jurisdicciones
-
-backend_tiposiibb:
-  resource: "@BackendBundle/Resources/config/routing/iibb.yml"
-  prefix: /iibb
 
 backend_comprobantes:
   resource: "@BackendBundle/Resources/config/routing/comprobantes.yml"
@@ -57,3 +49,19 @@ backend_proveedores:
 backend_imputaciones:
   resource: "@BackendBundle/Resources/config/routing/imputaciones.yml"
   prefix: /imputaciones
+
+backend_impositivo_iva:
+  resource: "@BackendBundle/Resources/config/routing/iva.yml"
+  prefix: /impositivo/iva
+
+backend_impositivo_iibb:
+  resource: "@BackendBundle/Resources/config/routing/iibb.yml"
+  prefix: /impositivo/iibb
+
+backend_iva:
+  resource: "@BackendBundle/Resources/config/routing/tiposIva.yml"
+  prefix: /iva
+
+backend_tiposiibb:
+  resource: "@BackendBundle/Resources/config/routing/tiposIibb.yml"
+  prefix: /iibb

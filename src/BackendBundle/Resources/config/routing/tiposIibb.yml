@@ -1,4 +1,4 @@
-iibb_impositivo_all:
+iibb_all:
     path: /
     defaults: { _controller: BackendBundle:IIBB:all }
     methods: GET

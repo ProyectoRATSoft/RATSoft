@@ -42,6 +42,8 @@
     $("#boton-editar").attr("disabled","true");
     $("#boton-compras").attr("disabled","true");
     $("#boton-ventas").attr("disabled","true");
+    $("#boton-iva").attr("disabled","true");
+    $("#boton-iibb").attr("disabled","true");
 
     //window.arrayIva = new Array();
     $.get("/iva",function(resp,estado,jqXHR){
@@ -136,6 +138,10 @@
         $("#boton-compras").attr("enabled","true");
         $("#boton-ventas").removeAttr("disabled");
         $("#boton-ventas").attr("enabled","true");
+        $("#boton-iva").removeAttr("disabled");
+        $("#boton-iva").attr("enabled","true");
+        $("#boton-iibb").removeAttr("disabled");
+        $("#boton-iibb").attr("enabled","true");
     // metemos en una variable lo que hay en e campo cuit de la empresa seleccionada
         var cuit = window.table.$("tr.active").find(".cuit").text();
         window.arrayrespuesta.forEach(function(item,index,arr){
@@ -145,6 +151,10 @@
           $('#link-compras').attr('href',"/contable/compras/"+item.id);
           $('#link-ventas').removeAttr('href');
           $('#link-ventas').attr('href',"/contable/ventas/"+item.id);
+          $('#link-iva').removeAttr('href');
+          $('#link-iva').attr('href',"/impositivo/iva/"+item.id);
+          $('#link-iibb').removeAttr('href');
+          $('#link-iibb').attr('href',"/impositivo/iibb/"+item.id);
           $('div.form-group #nombre').val(item.nombre);
           $('div.form-group #domicilio').val(item.domicilio);
           $('div.form-group #localidad').val(item.localidad);

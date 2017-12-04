@@ -4,6 +4,12 @@ namespace FrontendBundle\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
+use Symfony\Component\HttpFoundation\Request;
+use JMS\Serializer\SerializerBuilder;
+use BackendBundle\Entity\TblEmpresas;
+
+
 
 class ModulosController extends Controller
 {
@@ -32,9 +38,26 @@ class ModulosController extends Controller
         return $this->render('FrontendBundle:Comprobantes:comprobantes-home.html.twig');
     }
 
-    public function ivaAction()
+
+    /**
+    *   @Route("/impositivo/iva/{id}",name="iva_byId")
+    *   @Method({"GET"})
+    */
+
+    public function ivaAction($id,Request $request)
     {
-        return $this->render('FrontendBundle:Iva:iva-home.html.twig');
+        
+        $em = $this->getDoctrine()->getManager();
+        $result = $em->getRepository("BackendBundle:TblEmpresas")->findOneBy(
+            array(
+                'id' => $id,
+            ));
+        $serializer = SerializerBuilder::create()->build();
+        $jsonResponse = $serializer->serialize($result, 'json');
+        return $this->render('FrontendBundle:Iva:iva-home.html.twig',
+            array(
+                "empresa" => $jsonResponse,
+            ));
     }
 
     public function userAction()
