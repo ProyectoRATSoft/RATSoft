@@ -15,3 +15,9 @@ configuraciones_comprobantes:
     defaults: { _controller: "FrontendBundle:Modulos:comprobantes" } 
                               # bundle, dps controler y funcion que llama 
     methods: GET
+
+configuraciones_imputaciones:
+    path: /rubros_imputaciones
+    defaults: { _controller: "FrontendBundle:Modulos:imputaciones" } 
+                              # bundle, dps controler y funcion que llama 
+    methods: GET

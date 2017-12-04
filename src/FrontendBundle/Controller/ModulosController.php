@@ -32,6 +32,11 @@ class ModulosController extends Controller
         return $this->render('FrontendBundle:Comprobantes:comprobantes-home.html.twig');
     }
 
+    public function imputacionesAction()
+    {
+        return $this->render('FrontendBundle:Imputaciones:imputaciones-home.html.twig');
+    }
+
     public function ivaAction()
     {
         return $this->render('FrontendBundle:Iva:iva-home.html.twig');
