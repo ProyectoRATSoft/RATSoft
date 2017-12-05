@@ -260,7 +260,10 @@ class RazonsocialController extends Controller
 			$em->persist($empresa);
 			$em->flush();
 
+			$hash->setHash($hash->getHash() + 1);
 
+			$em->persist($hash);
+			$em->flush();
 			
 		} else {
 			$data = array(
