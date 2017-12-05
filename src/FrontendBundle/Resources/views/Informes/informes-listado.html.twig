@@ -1,0 +1,64 @@
+{% extends 'FrontendBundle::Default/base.html.twig' %}
+{% block body %}
+<style>
+   .colHidden{
+    display: none;
+   }
+</style>
+  <!-- ACA EMPIEZO A TRABAJAR LA INTERFAZ Content Wrapper. Contains page content -->
+  <div class="content-wrapper">
+    <!-- Content Header (Page header) -->
+    <section class="content-header">
+       <h2>
+        Informes
+        <small>Buscador</small>
+      </h2>
+      <ol class="breadcrumb">
+        <li><a href="/"><i class="fa fa-home"></i> Home</a></li>
+        <li class="active"><i class="fa fa-bar-chart" aria-hidden="true"></i>Informes</li>
+      </ol>
+    </section>
+    <!-- Main content -->
+    <section class="content">
+      <!-- Small boxes (Stat box) -->
+      <div class="row">
+        <div class="col-xs-6">
+          <div class="box">
+            <div class="box-header">
+              <h3 class="box-title">Busque la empresa deseada..</h3>
+            </div>
+            <!-- /.box-header -->
+            <div class="box-body">
+              <table id="tabla-empresas" class="table table-bordered table-striped table-hover dt-responsive" width="99%">
+                <thead>
+                  <tr>
+                    <th>Razon Social</th>
+                    <th>Cuit</th>
+                    <th>Condicion IVA</th>
+                    <th>Jurisdiccion</th>
+                  </tr>
+                </thead>
+                <tbody></tbody>
+                <tfoot>
+                  <tr>
+                    <th>Razon Social</th>
+                    <th>Cuit</th>
+                    <th>Condicion IVA</th>
+                    <th>Jurisdiccion</th>
+                  </tr>
+                </tfoot>
+              </table>
+            </div>
+            <!-- /.box-body -->
+          </div>
+        </div>
+        <div class="col-xs-6">
+          {% block botones %}
+          {% endblock %}
+        </div>
+      </div>
+    </section>
+    <!-- /.content -->
+  </div>
+  <!-- /.content-wrapper -->
+{% endblock %}

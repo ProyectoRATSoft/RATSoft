@@ -43,6 +43,11 @@ class ModulosController extends Controller
     *   @Method({"GET"})
     */
 
+    public function informesAction()
+    {
+        return $this->render('FrontendBundle:Informes:informes-home.html.twig');
+    }
+
     public function ivaAction($id,Request $request)
     {
         

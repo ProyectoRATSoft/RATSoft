@@ -1,0 +1,119 @@
+{% extends 'FrontendBundle::Informes/informes-listado.html.twig' %}
+{% block title %} Informes{% endblock %}
+{% block CSs %}
+<link rel="stylesheet" href="{{ asset('public/Buttons-1.4.2/css/buttons.bootstrap.min.css') }}">
+<link rel="stylesheet" href="{{ asset('public/responsive-2.2.0/css/responsive.bootstrap.min.css') }}">
+<style>
+ tbody tr:hover.active td,
+  tbody tr:hover td {
+    background-color: #A9D0F5;
+    cursor: pointer;
+  }               
+  .table>tbody>tr.active>td {
+    background-color: #A9D0F5;
+    color: #000000;
+    font:  bold Georgia 12px/18px;
+  }
+  tr.group,
+              tr.group:hover {
+                background-color: #ddd !important;
+              }
+</style> 
+{% endblock %}
+{% block Scripts %}
+ <!-- DataTables -->
+<script src="{{ asset('bower_components/datatables.net/js/jquery.dataTables.min.js') }}"></script>
+<script src="{{ asset('bower_components/datatables.net-bs/js/dataTables.bootstrap.min.js') }}"></script>
+<script src="{{ asset('public/responsive-2.2.0/js/dataTables.responsive.min.js') }}"></script>
+<script src="{{ asset('public/responsive-2.2.0/js/responsive.bootstrap.min.js') }}"></script>
+<script src="{{ asset('public/Buttons-1.4.2/js/dataTables.buttons.min.js') }}"></script>
+<script src="{{ asset('public/Buttons-1.4.2/js/buttons.bootstrap.min.js') }}"></script>
+<script src="{{ asset('public/JSZip-2.5.0/jszip.min.js') }}"></script>
+<script src="{{ asset('public/pdfmake-0.1.32/pdfmake.min.js') }}"></script>
+<script src="{{ asset('public/pdfmake-0.1.32/vfs_fonts.js') }}"></script>
+<script src="{{ asset('public/Buttons-1.4.2/js/buttons.html5.min.js') }}"></script>
+<script src="{{ asset('public/Buttons-1.4.2/js/buttons.print.min.js') }}"></script>
+<script src="{{ asset('public/Buttons-1.4.2/js/buttons.colVis.min.js') }}"></script>
+<script src="https://cdn.jsdelivr.net/npm/jquery-validation@1.17.0/dist/jquery.validate.min.js"></script>
+<script src="{{ asset('ratsoft/ratsoft.js') }}"></script>
+<script src="{{ asset('ratsoft/informes-listado.js') }}"></script>
+<script src="https://cdn.jsdelivr.net/npm/js-cookie@2/src/js.cookie.min.js"></script>
+<!-- <script src="{{ asset('') }}"></script>  --> 
+
+{% endblock %}
+{% block botones %}
+<div class="text-center">
+   <div class="form-group">
+      <div class="col-xs-12">
+        <button class="btn btn-default btn-block"  onclick="goBack()"> Volver</button>
+      </div>
+    </div> 
+    <br> 
+  <div style="margin: 25px"></div>
+  <div class="form-group">
+    <div class="col-md-6">
+      <button class="btn btn-primary btn-block" id="">Compras Por Periodo</button>
+    </div>
+    <div class="col-md-6">
+      <button class="btn btn-primary btn-block" id="">Ventas Por Periodo</button>
+    </div>
+  </div>
+  <br> 
+  <div style="margin: 25px"></div>
+  <div class="form-group">
+    <div class="col-md-6">
+      <button class="btn btn-primary btn-block" id="">Compras Por Imputacion</button>
+    </div>
+    <div class="col-md-6">
+      <button class="btn btn-primary btn-block" id="">Ventas Por Rubro</button>
+    </div>
+  </div>
+  <br> 
+  <div style="margin: 25px"></div>
+  <div class="form-group">
+    <div class="col-md-6">
+      <button class="btn btn-primary btn-block" id="">Compras Por Jurisdiccion</button>
+    </div>
+    <div class="col-md-6">
+      <button class="btn btn-primary btn-block" id="">Ventas Por Jurisdiccion</button>
+    </div>
+  </div>
+  <br>   
+  <div style="margin: 25px"></div>
+  <div class="form-group">
+    <div class="col-md-6">
+      <button class="btn btn-primary btn-block" id="">Compras Por Proveedor</button>
+    </div>
+    <div class="col-md-6">
+      <button class="btn btn-primary btn-block" id="">Ventas Por Cliente</button>
+    </div>
+  </div>
+  <br> 
+  <div style="margin: 25px"></div>
+  <div class="form-group">
+    <div class="col-md-6">
+      <button class="btn btn-primary btn-block" id="">Compras Por Comprobante</button>
+    </div>
+    <div class="col-md-6">
+      <button class="btn btn-primary btn-block" id="">Ventas Por Comprobante</button>
+    </div>
+  </div>
+  <br> 
+  <div style="margin: 25px"></div>
+  <div class="form-group">
+    <div class="col-md-6">
+      <button class="btn btn-primary btn-block" id="">Compras Por Fecha</button>
+    </div>
+    <div class="col-md-6">
+      <button class="btn btn-primary btn-block" id="">Ventas Por Fecha</button>
+     </div>
+  </div>
+  <br> 
+  <div style="margin: 25px"></div>
+  <div class="form-group">
+    <div class="col-md-12">
+      <button class="btn btn-primary btn-block" id="">Informe Personalizado</button>
+    </div>
+  </div>        
+</div>
+{% endblock %}

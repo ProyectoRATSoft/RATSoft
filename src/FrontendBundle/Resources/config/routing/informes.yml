@@ -1,0 +1,4 @@
+informes_index:
+    path: /
+    defaults: { _controller: "FrontendBundle:Modulos:informes" }
+    methods: GET

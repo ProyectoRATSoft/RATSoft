@@ -23,7 +23,7 @@
     //cambio el titulo manteniendo el estilo utilizado
     $('h2').text('Clientes ').append( "<small> Buscador</small>" );
     //Cambio el detalle de los breadcrumb
-    $('li.active').text('').append( '<i class="fa fa-search" aria-hidden="true"></i> Buscador de Clientes' );
+    $('li#bc.active').text('').append( '<i class="fa fa-search" aria-hidden="true"></i> Buscador de Clientes' );
     //con esto cambio el detalle del boton "agregar"
     $('#addEmpresa').text('').append( '<i class="fa fa-plus-circle" aria-hidden="true"> Agregar Cliente </i>' );
     //con esto ocultamos los campos que no se utilizan para los proveedores/clientes aplicando el style colhidden
