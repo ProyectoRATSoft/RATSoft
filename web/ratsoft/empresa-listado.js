@@ -276,9 +276,10 @@
             })
             .done(function(respuesta){
               if(respuesta.status = 'OK'){
-                alert("va como piña");
+                   alert(respuesta.msg);
               }else{
-              }
+                alert("ERROR \n Razon:" + respuesta.msg);
+              } 
               $("#modalAddEmpresa").modal('toggle');
               tableReload(respuesta.data);
               $('div.form-group #empresaID').val('');
@@ -354,9 +355,10 @@
             })
             .done(function(respuesta){
               if(respuesta.status = 'OK'){
-                alert("va como piña");
+                   alert(respuesta.msg);
               }else{
-              }
+                alert("ERROR \n Razon:" + respuesta.msg);
+              } 
               $("#modalAddEmpresa").modal('toggle');
               tableReload(respuesta.data);
               $('div.form-group #empresaID').val('');
