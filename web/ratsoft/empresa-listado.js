@@ -62,7 +62,7 @@
               window.arrayrespuesta = respuesta.data;
               window.table = $('#tabla-empresas').DataTable({
                 "responsive": true,
-                 dom: "<'row'<'col-sm-7 text-left'B><'col-sm-5 text-right'f>>" +"<'row'<'col-sm-12't>>" +"<'row'<'col-sm-5 text-left'i><'col-sm-7 text-right'p>>",
+                 dom: "<'row'<'col-md-7 col-sm-7 col-xs-12 text-left'B><'col-md-5 col-sm-12 col-xs-12 text-right'f>>" +"<'row'<'col-md-12 col-sm-12 col-sm-12't>>" +"<'row'<'col-md-5 col-sm-12 col-xs-12 text-left'i><'col-md-7 col-sm-12 col-xs-12 text-right'p>>",
                 "language": {
                     "sProcessing":     "Procesando...",
                     "sLengthMenu":     "Mostrar _MENU_ registros",
