@@ -40,14 +40,14 @@
 {% endblock %}
 {% block botones %}
 	<div class="text-center">
-		<div class="col-xs-4">
+		<div class="col-md-4 col-sm-3 col-xs-12">
 			<a id="link-compras"><button id="boton-compras" class="btn btn-default btn-block">Compras</button></a>
 		</div>
-		<div class="col-xs-4">
+		<div class="col-md-4 col-sm-3 col-xs-12">
 			<a id="link-ventas"><button id="boton-ventas" class="btn btn-default btn-block">Ventas</button></a>
 		</div>
     {% if is_granted('ROLE_ADMIN') %}
-		<div class="col-xs-4">
+		<div class="col-md-4 col-sm-6 col-xs-12">
 			<button class="btn btn-primary btn-block" id="boton-editar">
 				<i class="fa fa-pencil" aria-hidden="true" id="editEmpresa"> Editar Datos</i>
 			</button>

@@ -23,7 +23,7 @@
     //cambio el titulo manteniendo el estilo utilizado
     $('h2').text('Clientes ').append( "<small> Buscador</small>" );
     //Cambio el detalle de los breadcrumb
-    $('li.active').text('').append( '<i class="fa fa-search" aria-hidden="true"></i> Buscador de Clientes' );
+    $('li#bc.active').text('').append( '<i class="fa fa-search" aria-hidden="true"></i> Buscador de Clientes' );
     //con esto cambio el detalle del boton "agregar"
     $('#addEmpresa').text('').append( '<i class="fa fa-plus-circle" aria-hidden="true"> Agregar Cliente </i>' );
     //con esto ocultamos los campos que no se utilizan para los proveedores/clientes aplicando el style colhidden
@@ -177,7 +177,9 @@
       $("#addEmpresa").click(function(){        
         $("#modalAddEmpresa").modal();
           //limpio los campos del modal
-        $("#modal-formulario").validate().resetForm();       
+        $("#modal-formulario").validate().resetForm();
+        $("#modal-formulario").find('.has-error').removeClass("has-error"); //limpia las clases has-error que pone los recuadros rojos
+        $("#modal-formulario").find('.has-success').removeClass("has-success");//limpia los recuadros verdes de los datos correctos ingresados              
         //limpio los campos del modal
         $('input#nuevoNombre').val('');
         $('input#nuevoId').val('');
@@ -253,11 +255,10 @@
             })
             .done(function(respuesta){
               if(respuesta.status = 'OK'){
-                alert("va como piña");
-                console.log(respuesta.data);
+                   alert(respuesta.msg);
               }else{
-                alert('no va como piña');
-              }
+                alert("ERROR \n Razon:" + respuesta.msg);
+              } 
               $("#modalAddEmpresa").modal('toggle');
               tableReload(respuesta.data);
               $('div.form-group #empresaID').val('');
@@ -271,6 +272,7 @@
               $('div.form-group #codIngresosBrutos').val('');
               $('div.form-group #rubro').val('');
               $('div.form-group #titular').val('');
+              $("#boton-editar").attr("disabled","true");
     //deberiamos mostrar algun mensaje tanto como de error, como de que todo salio bien. y luego recargar la grilla para que aparezca la nueva empresa en la tabla.
     //alert(resp);
             });
@@ -279,6 +281,8 @@
       $("#boton-editar").click(function(){      
         $("#modalAddEmpresa").modal();
         $("#modal-formulario").validate().resetForm();
+        $("#modal-formulario").find('.has-error').removeClass("has-error"); //limpia las clases has-error que pone los recuadros rojos
+        $("#modal-formulario").find('.has-success').removeClass("has-success");//limpia los recuadros verdes de los datos correctos ingresados       
         //con esto remuevo el seleccionar del dropdown
         $('select#nuevaProvincia :contains(--seleccionar--)').attr("disabled","true").removeAttr("selected");
         $('select#nuevaSituacionIVA :contains(--seleccionar--)').attr("disabled","true").removeAttr("selected");
@@ -315,9 +319,10 @@
             })
             .done(function(respuesta){
               if(respuesta.status = 'OK'){
-                alert("va como piña");
+                   alert(respuesta.msg);
               }else{
-              }
+                alert("ERROR \n Razon:" + respuesta.msg);
+              } 
               $("#modalAddEmpresa").modal('toggle');
               tableReload(respuesta.data);
               $('div.form-group #empresaID').val('');
@@ -331,6 +336,7 @@
               $('div.form-group #codIngresosBrutos').val('');
               $('div.form-group #rubro').val('');
               $('div.form-group #titular').val('');
+              $("#boton-editar").attr("disabled","true");
     //deberiamos mostrar algun mensaje tanto como de error, como de que todo salio bien. y luego recargar la grilla para que aparezca la nueva empresa en la tabla.
             });
           }
@@ -360,6 +366,7 @@
               $('div.form-group #codIngresosBrutos').val('');
               $('div.form-group #rubro').val('');
               $('div.form-group #titular').val('');
+              $("#boton-editar").attr("disabled","true");
             });
           }                 
       });     
@@ -470,6 +477,23 @@
               },
                                    
           },
+          highlight: function(element) {
+              $(element).closest('.form-group').addClass('has-error');
+              //$(element).addClass('has-error fa fa-times');
+          },
+          unhighlight: function(element) {
+              $(element).closest('.form-group').removeClass('has-error');
+              //$(element).('.input-sm').removeClass('glyphicon-remove');
+          },
+          errorElement: 'span',
+          errorClass: 'help-block',
+          errorPlacement: function(error, element) {
+              if(element.parent('.input-group').length) {
+                  error.insertAfter(element.parent());
+              } else {
+                  error.insertAfter(element);
+              }
+          } 
           
       });
       

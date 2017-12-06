@@ -23,7 +23,8 @@
     var loadTable = function() {
       $.ajax({
           type: "GET",
-          url: "/search/ventas",
+          // url: "/search/ventas",
+          url: "/backend/informes/ventas",
           dataType: "json",
         })
         .done(function(respuesta, status) {

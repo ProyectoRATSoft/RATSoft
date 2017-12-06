@@ -65,3 +65,7 @@ backend_iva:
 backend_tiposiibb:
   resource: "@BackendBundle/Resources/config/routing/tiposIibb.yml"
   prefix: /iibb
+
+backend_informes:
+  resource: "@BackendBundle/Resources/config/routing/informes.yml"
+  prefix: /backend/informes

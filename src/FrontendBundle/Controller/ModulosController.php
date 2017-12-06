@@ -43,6 +43,11 @@ class ModulosController extends Controller
     *   @Method({"GET"})
     */
 
+    public function informesAction()
+    {
+        return $this->render('FrontendBundle:Informes:informes-home.html.twig');
+    }
+
     public function ivaAction($id,Request $request)
     {
         
@@ -57,6 +62,26 @@ class ModulosController extends Controller
             array(
                 "empresa" => $jsonResponse,
             ));
+    }
+
+    // public function iibbAction($id,Request $request)
+    // {
+    //     $em = $this->getDoctrine()->getManager();
+    //     $result = $em->getRepository("BackendBundle:TblEmpresas")->findOneBy(
+    //         array(
+    //             'id' => $id,
+    //         ));
+    //     $serializer = SerializerBuilder::create()->build();
+    //     $jsonResponse = $serializer->serialize($result, 'json');
+    //     return $this->render('FrontendBundle:Iibb:iibb-home.html.twig',
+    //         array(
+    //             "empresa" => $jsonResponse,
+    //         ));
+    // }
+
+     public function iibbAction()
+    {
+        return $this->render('FrontendBundle:Iibb:iibb-home.html.twig');
     }
 
     public function userAction()

@@ -221,6 +221,12 @@ class RazonsocialController extends Controller
 
 
 		$em = $this->getDoctrine()->getManager();
+		$isset_empresa = $em->getRepository("BackendBundle:TblProveedores")->findOneBy(
+			array(
+				'cuit' => $respuesta["cuit"]
+			)
+		);
+
 		// Genero el objeto SituacionIva y lo cargo en base al ID recibido
 		$situacionIva = new TblSituacionIva();
 		$situacionIva = $em->getRepository("BackendBundle:TblSituacionIva")->findOneBy(
@@ -242,15 +248,34 @@ class RazonsocialController extends Controller
 				'id' => $id
 			)
 		);
-		$empresa->setNombre($respuesta["nombre"]);
-		$empresa->setCuit($respuesta["cuit"]);
-		$empresa->setActivo("1");
-		// $empresa->setActivo($respuesta["activo"]);
-		$empresa->setIva($situacionIva);
-		$empresa->setJurisdiccion($jurisdiccion);
+		if (empty($isset_empresa)) {
+	  	// Instanciamos un objeto Empresa y seteamos sus datos.
+			$empresa->setNombre($respuesta["nombre"]);
+			$empresa->setCuit($respuesta["cuit"]);
+			$empresa->setActivo("1");
+			// $empresa->setActivo($respuesta["activo"]);
+			$empresa->setIva($situacionIva);
+			$empresa->setJurisdiccion($jurisdiccion);
 
-		$em->persist($empresa);
-		$em->flush();	
+			$em->persist($empresa);
+			$em->flush();
+
+			$hash->setHash($hash->getHash() + 1);
+
+			$em->persist($hash);
+			$em->flush();
+			
+		} else {
+			$data = array(
+				'status' => 'ERROR',
+				'msg' => 'Ya existe una empresa registrada con el cuit ingresado',
+				'draw' => '',
+				'recordsTotal' => '',
+				'recordsFiltered' => '',
+				'data' => '',
+			);
+		}
+			
 
 		$result = $em->getRepository("BackendBundle:TblProveedores")->findBy(array('activo' => 1));
 		$data["data"] = $result;

@@ -4,6 +4,17 @@
    .colHidden{
     display: none;
    }
+
+@media  (max-width: 770px) {
+    .dataTables_filter label{
+   display: inline-flex;
+   text-align: center !important;
+  }   
+
+    div.col-md-5.col-sm-12.col-xs-12.text-right {
+          text-align: center !important;
+    }  
+ }
 </style>
   <!-- ACA EMPIEZO A TRABAJAR LA INTERFAZ Content Wrapper. Contains page content -->
   <div class="content-wrapper">
@@ -15,7 +26,7 @@
       </h2>
       <ol class="breadcrumb">
         <li><a href="/"><i class="fa fa-home"></i> Home</a></li>
-        <li class="active"><i class="fa fa-search" aria-hidden="true"></i>Buscador de Empresas</li>
+        <li class="active" id="bc"><i class="fa fa-search" aria-hidden="true"></i>Buscador de Empresas</li>
       </ol>
     </section>
     <!-- Main content -->
@@ -23,12 +34,12 @@
     <section class="content">
       <!-- Small boxes (Stat box) -->
       <div class="row" style="padding-bottom: 0.5em;">
-          <div class="col-xs-6">
+          <div class="col-md-6 col-xs-12">
             <button class="btn btn-danger btn-block" id="addEmpresa">
               <i class="fa fa-plus-circle" aria-hidden="true"> Agregar Empresa </i>
             </button>
           </div>
-          <div class="col-xs-6">
+          <div class="col-md-6 col-xs-12">
             <div class="form-group">
                           {% block botones %}
                           {% endblock %}
@@ -36,14 +47,14 @@
           </div>
       </div>
       <div class="row">
-        <div class="col-xs-6">
+        <div class="col-md-6 col-xs-12">
           <div class="box">
             <div class="box-header">
               <h3 class="box-title">Busque la empresa deseada..</h3>
             </div>
             <!-- /.box-header -->
             <div class="box-body">
-              <table id="tabla-empresas" class="table table-bordered table-striped table-hover dt-responsive">
+              <table id="tabla-empresas" class="table table-bordered table-striped table-hover dt-responsive" width="99%">
                 <thead>
                   <tr>
                     <th>Razon Social</th>
@@ -66,7 +77,7 @@
             <!-- /.box-body -->
           </div>
         </div>
-        <div class="col-xs-6">
+        <div class="col-md-6 col-xs-12">
           <div class="panel-group" id="accordion">
             <div class="panel panel-default">
               <div class="panel-heading">

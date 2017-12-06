@@ -1,4 +1,21 @@
-prueba_index:
-    path: /ventas
-    defaults: { _controller: "FrontendBundle:Informes:ventas" }
+# Pantalla general de todos los informes.
+informes_index:
+    path: /
+    defaults: { _controller: "FrontendBundle:Modulos:informes" }
     methods: GET
+
+# Informes de ventas - Por fechas
+    prueba_index:
+      path: /ventas
+      defaults: { _controller: "FrontendBundle:Informes:ventas" }
+      methods: GET
+
+# Por periodo (Ventas) -- Ver ejemplo /contable/compras/154 -- dos inputs Desde - Hasta input type="month"
+
+# Ventas por rubro (NO VA!)
+
+# Filtro por jurisdiccion - Tooltip con checks para todas las jurisdicciones
+
+# Ventas por cliente - Tooltip con checks para todas los clientes.
+
+# Ventas por comprobante - Tooltip con checks para todos los comprobantes

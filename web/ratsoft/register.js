@@ -177,7 +177,6 @@ $(document).ready(function() {
       $("#nuevoRole").change(function(){
         role = $(this).find('option:selected').val();
       });
-      debugger
       // Envío al backend los datos del usuario a editar.
       $.ajax({
           type: "POST",
