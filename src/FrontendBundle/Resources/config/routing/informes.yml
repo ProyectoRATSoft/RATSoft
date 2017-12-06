@@ -1,0 +1,4 @@
+prueba_index:
+    path: /ventas
+    defaults: { _controller: "FrontendBundle:Informes:ventas" }
+    methods: GET

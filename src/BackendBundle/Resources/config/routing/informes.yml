@@ -1,0 +1,4 @@
+ventas_by:
+    path: /
+    defaults: { _controller: "BackendBundle:Informes:search" }
+    methods: GET
