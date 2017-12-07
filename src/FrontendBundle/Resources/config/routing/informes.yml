@@ -1,14 +1,18 @@
 # Pantalla general de todos los informes.
 informes_index:
-    path: /
-    defaults: { _controller: "FrontendBundle:Modulos:informes" }
-    methods: GET
+  path: /
+  defaults: { _controller: "FrontendBundle:Modulos:informes" }
+  methods: GET
 
 # Informes de ventas - Por fechas
-    prueba_index:
-      path: /ventas
-      defaults: { _controller: "FrontendBundle:Informes:ventas" }
-      methods: GET
+prueba_index:
+  path: /ventas
+  defaults: { _controller: "FrontendBundle:Informes:ventas" }
+  methods: GET
+
+#### FALTAN POR HACER ####
+
+## IMPORTANTE!!: SIEMPRE VOY A RECIBIR UN ID DENTRO DEL INFORME - VER COMO RECIBIRLO COMO PARAMETRO.
 
 # Por periodo (Ventas) -- Ver ejemplo /contable/compras/154 -- dos inputs Desde - Hasta input type="month"
 
