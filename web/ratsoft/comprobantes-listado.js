@@ -165,6 +165,8 @@
                 $('#comprobanteDetalle').val(item.cod_comp.id);               
                 $('#comprobanteDetalle').trigger('change'); 
                 $('#tipoComprobante').val(item.id); 
+
+              console.log(id);
               
               //llenamos el modal con los datos de la comprobantes
               
@@ -223,7 +225,7 @@
          //limpio los campos
           $('#chkComprobanteDetalle').prop( "checked", false );
           $('#comprobanteDetalle').val('');
-          $('#chkTipoComprobanteModal').prop( "checked", false );
+          $('#comprobanteDetalleModal').val('');
           $('#tipoComprobanteDetalleModal').val('');
           $('#tipoComprobante').val('');
           $('#codigoDetalleModal').val('');
@@ -331,6 +333,8 @@
                   if(respuesta.status = 'OK')
                   {
                     alert(respuesta.msg);
+                    $("#modalAddComprobante").modal('toggle');
+                    tableReload(respuesta.data);
                     ///------------------------------muestro el mensaje correspondiente-------//
                   }
                   else
@@ -400,6 +404,11 @@
         $('button#newComprobante').css("display", "none");
         $('button#editComprobante').css("display", "");
         // $('button#deleteComprobantes').css("display", "");
+
+        $('#tipoComprobante').val('');
+        //var cbovalueselected = $('#comprobanteDetalle').val();
+
+        //$('#comprobanteDetalleModal')
       });
 
       $("#editComprobante").click(function(){
@@ -423,10 +432,10 @@
       //         $('#nuevoId').val('');
       //          $('#chkComprobanteDetalle').prop( "checked", false );
                  //  $('#comprobanteDetalle').val('');
-                 //  $('#chkTipoComprobanteModal').prop( "checked", false );
                  //  $('#tipoComprobanteDetalleModal').val('');
                  //  $('#tipoComprobante').val('');
                  //  $('#codigoDetalleModal').val('');
+                 //$('#comprobanteDetalleModal').val('');
                  //  $('#modalblk_exe').prop( "checked", false );
                  //  $('#modalblk_perciva').prop( "checked", false );
                  //  $('#modalblk_perciibb').prop( "checked", false );
