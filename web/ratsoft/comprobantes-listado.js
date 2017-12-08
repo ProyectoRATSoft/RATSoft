@@ -65,24 +65,16 @@
            $('#comprobanteDetalle').attr("disabled","disabled").val('');
            $('#comprobanteDetalleModal').removeAttr("disabled").val('');
            $('#codigoDetalleModal').removeAttr("disabled").val('');
+           $('#tipoComprobante').attr("disabled","disabled").val('');
          }
          else {
            $('#comprobanteDetalle').removeAttr("disabled").val('');
            $('#comprobanteDetalleModal').attr("disabled","disabled").val('');
            $('#codigoDetalleModal').attr("disabled","disabled").val('');
+           $('#tipoComprobante').removeAttr("disabled").val('');
          }
       });
 
-    $('#chkTipoComprobanteModal').on('change',function() {
-         if(this.checked){
-           $('#tipoComprobante').attr("disabled","disabled").val('');
-           $('#tipoComprobanteDetalleModal').removeAttr("disabled").val('');
-         }
-         else {
-           $('#tipoComprobante').removeAttr("disabled").val('');
-           $('#tipoComprobanteDetalleModal').attr("disabled","disabled").val('');
-         }
-      });
      // Vamos a traer el json para laburar con ajax
      window.arrayrespuesta = new Array();
      var loadTable = function(){
@@ -263,122 +255,139 @@
 
 
        $("#newComprobante").click(function(){
-    //guardo los valores en cada variable                            
+          //guardo los valores en cada variable                            
         // if ($("#modal-formulario").valid()){
-            var detalle; //cod_comp.detalle
-            var codigo; //cod_comp.codigo
-            var tipo_comp; //tipo_comp
-            var blk_exe;//
-            var blk_perciva;//
-            var blk_perciibb;//
-            var blk_ret;//
-            var blk_netos;//
-            var blk_iva;//
-            var blk_nograv;//
-            var blk_total;//
-            var autoiva;//
-            var autoneto;//
-            var autototal;//
-            if ($('#chkComprobanteDetalle').is(':checked'))
-            {  
-              detalle = $('#comprobanteDetalleModal').val().toUpperCase();
-              codigo = $('#codigoDetalleModal').val().toUpperCase();
-            }
-            else
-            {
-              //detalle = 
-              var data = $('#comprobanteDetalle option:selected').text().replace(/\s/g,'');
-              var arr = data.split('--');
-              detalle = arr[0];
-              codigo = arr[1];
-              
-            }
+          
+          var detalle; var codigo;  
+          var tipo_comp = $('#tipoComprobanteDetalleModal').val().toUpperCase();;  
+          var blk_exe;
+          var blk_perciva; var blk_perciibb; var blk_ret;  var blk_netos;
+          var blk_iva; var blk_nograv; var blk_total;  var autoiva;
+          var autoneto;    var autototal;
+          var cod_comp
+          ! $('#modalblk_exe').is(':checked') ? blk_exe =0 : blk_exe =1;
+          ! $('#modalblk_perciva').is(':checked') ?  blk_perciva=0 :  blk_perciva= 1;
+          ! $('#modalblk_perciibb').is(':checked') ?  blk_perciibb=0 : blk_perciibb =1;
+          ! $('#modalblk_ret').is(':checked') ? blk_ret=0 : blk_ret=1;
+          ! $('#modalblk_netos').is(':checked') ? blk_netos=0 : blk_netos=1;
+          ! $('#modalblk_iva').is(':checked') ? blk_iva=0 :  blk_iva=1;
+          ! $('#modalblk_nograv').is(':checked') ?  blk_nograv=0 :  blk_nograv= 1;
+          ! $('#modalblk_total').is(':checked') ?  blk_total=0 :  blk_total=1;
+          ! $('#modalautoiva').is(':checked') ?  autoiva=0 :  autoiva=1;
+          ! $('#modalautoneto').is(':checked') ?  autoneto=0 :  autoneto=1;
+          ! $('#modalautototal').is(':checked') ?  autototal=0 :  autototal=1;
+          //verifico si desea crear un nuevo comprobante o un tipo de comprobante nuevo
+          if ($('#chkComprobanteDetalle').is(':checked'))
+          {  
+            detalle = $('#comprobanteDetalleModal').val().toUpperCase();
+            codigo = $('#codigoDetalleModal').val().toUpperCase();
+            $.ajax({
+              type: "POST",
+              url: "/comprobantes/newcomp",
+              async: false,
+              data: 
+              {                  
+               "detalle" : detalle,
+               "codigo" : codigo,
+              },
+              dataType: "json"
+               //------------------creo el  comprobante------------------//
+           })
+            .done(function(respuesta){
+              console.log(respuesta);
+              if(respuesta.status = 'OK')
+              {
+                respuesta.data.forEach(function(item,index,arr){
+                  if (item.detalle == detalle){
+                      cod_comp = item.id;
+                      console.log(cod_comp);
+                      console.log(item.id);
+                  }
+                });
+                $.ajax({
+                  type: "POST",
+                  url: "/comprobantes/newtipo",
+                  async: false,
+                  data: {                  
+                    "cod_comp" : cod_comp,
+                    "tipo_comp": tipo_comp,
+                    "blk_exe" : blk_exe,
+                    "blk_perciva": blk_perciva,
+                    "blk_perciibb" : blk_perciibb,
+                    "blk_ret" : blk_ret,
+                    "blk_netos" : blk_netos,
+                    "blk_iva" : blk_iva,
+                    "blk_nograv" :blk_nograv,
+                    "blk_total" : blk_total,
+                    "autoiva" : autoiva,
+                    "autoneto" : autoneto,
+                    "autototal" : autototal,
+                  },
+                  dataType: "json"
+                })
+                //------------------creo el tipo de comprobante------------------//
+                .done(function(respuesta)
+                {
+                  if(respuesta.status = 'OK')
+                  {
+                    alert(respuesta.msg);
+                    ///------------------------------muestro el mensaje correspondiente-------//
+                  }
+                  else
+                  {
+                    alert("ERROR \n Razon:" + respuesta.msg);
+                    ///------------------------------muestro el mensaje correspondiente-------//
+                  } 
+                });
+              }
+              else 
+              {
+                alert("ERROR \n Razon:" + respuesta.msg);
+                ///------------------------------muestro el mensaje correspondiente-------//
+              }
 
-            if ($('#chkTipoComprobanteModal').is(':checked'))
-            {
-              tipo_comp = $('#tipoComprobanteDetalleModal').val().toUpperCase();
-            }
-            else
-            {
-              tipo_comp = $('#tipoComprobante option:selected').text();
-            }
-            ! $('#modalblk_exe').is(':checked') ? blk_exe =0 : blk_exe =1;
-            ! $('#modalblk_perciva').is(':checked') ?  blk_perciva=0 :  blk_perciva= 1;
-            ! $('#modalblk_perciibb').is(':checked') ?  blk_perciibb=0 : blk_perciibb =1;
-            ! $('#modalblk_ret').is(':checked') ? blk_ret=0 : blk_ret=1;
-            ! $('#modalblk_netos').is(':checked') ? blk_netos=0 : blk_netos=1;
-            ! $('#modalblk_iva').is(':checked') ? blk_iva=0 :  blk_iva=1;
-            ! $('#modalblk_nograv').is(':checked') ?  blk_nograv=0 :  blk_nograv= 1;
-            ! $('#modalblk_total').is(':checked') ?  blk_total=0 :  blk_total=1;
-            ! $('#modalautoiva').is(':checked') ?  autoiva=0 :  autoiva=1;
-            ! $('#modalautoneto').is(':checked') ?  autoneto=0 :  autoneto=1;
-            ! $('#modalautototal').is(':checked') ?  autototal=0 :  autototal=1;
-            // $('#').is(':checked') ?  = 1 :  = 0;
-           
-    //realizo un post pasando la url correspondiente al backend, los datos previamente capturados y realizo la funcion correspondiente que me devolvera la respuesta.
-            
+            });
+          }
+          else
+          {
+            cod_comp = $('#comprobanteDetalle').val();
+            $.ajax({
+                type: "POST",
+                url: "/comprobantes/newtipo",
+                async: false,
+                data: {                  
+                  "cod_comp" : cod_comp,
+                  "tipo_comp" : tipo_comp,
+                  "blk_exe" : blk_exe,
+                  "blk_perciva": blk_perciva,
+                  "blk_perciibb" : blk_perciibb,
+                  "blk_ret" : blk_ret,
+                  "blk_netos" : blk_netos,
+                  "blk_iva" : blk_iva,
+                  "blk_nograv" :blk_nograv,
+                  "blk_total" : blk_total,
+                  "autoiva" : autoiva,
+                  "autoneto" : autoneto,
+                  "autototal" : autototal,
+                },
+                dataType: "json"
+            })
+              .done(function(respuesta){
+                if(respuesta.status = 'OK')
+                {
+                  alert(respuesta.msg);
+                }
+                else
+                {
+                  alert("ERROR \n Razon:" + respuesta.msg);
+                } 
+              });
+          }
 
-            // $.ajax({
-            //   type: "POST",
-            //   url: "/comprobantes/new",
-            //   async: false,
-            //   data: {                  
-            //  "detalle" : detalle,
-            //  "codigo" : codigo,
-            //  "tipo_comp" : tipo_comp,
-            //  "blk_exe" : blk_exe,
-            //  "blk_perciva" : blk_perciva,
-            //  "blk_perciibb" : blk_perciibb,
-            //  "blk_ret" : blk_ret,
-            //  "blk_netos" : blk_netos,
-            //  "blk_iva" : blk_iva,
-            //  "blk_nograv" : blk_nograv,
-            //  "blk_total" : blk_total,
-            //  "autoiva" : autoiva,
-            //  "autoneto" : autoneto,
-            //  "autototal" : autototal, 
-            //      },
-            //   dataType: "json"
-            // })
-            // .done(function(respuesta){
-            //   if(respuesta.status = 'OK'){
-            //     alert("va como piña");
-            //   }else{
-            //   }
-            //   $("#modalAddComprobante").modal('toggle');
-            //   tableReload(respuesta.data);
-            //   $('#nuevoId').val('');
-            //   $('#chkComprobanteDetalle').prop( "checked", false );
-            //   $('#comprobanteDetalle').val('');
-            //   $('#chkTipoComprobanteModal').prop( "checked", false );
-            //   $('#tipoComprobanteDetalleModal').val('');
-            //   $('#tipoComprobante').val('');
-            //   $('#codigoDetalleModal').val('');
-            //   $('#modalblk_exe').prop( "checked", false );
-            //   $('#modalblk_perciva').prop( "checked", false );
-            //   $('#modalblk_perciibb').prop( "checked", false );
-            //   $('#modalblk_ret').prop( "checked", false );
-            //   $('#modalblk_netos').prop( "checked", false );
-            //   $('#modalblk_iva').prop( "checked", false );
-            //   $('#modalblk_nograv').prop( "checked", false );
-            //   $('#modalblk_total').prop( "checked", false );
-            //   $('#modalautoiva').prop( "checked", false );
-            //   $('#modalautoneto').prop( "checked", false );
-            //   $('#modalautototal').prop( "checked", false );
-            //   $('#blk_exe').prop( "checked", false );
-            //   $('#blk_perciva').prop( "checked", false );
-            //   $('#blk_perciibb').prop( "checked", false );
-            //   $('#blk_ret').prop( "checked", false );
-            //   $('#blk_netos').prop( "checked", false );
-            //   $('#blk_iva').prop( "checked", false );
-            //   $('#blk_nograv').prop( "checked", false );
-            //   $('#blk_total').prop( "checked", false );
-            //   $('#autoiva').prop( "checked", false );
-            //   $('#autoneto').prop( "checked", false );
-            //   $('#autototal').prop( "checked", false );
-            // });
+
         // }
       });
+
       //-----------------------------------/AGREGAR comprobantes----------------------------------//  
       //-----------------------------------EDITAR comprobantes----------------------------------//
       $("#boton-editar").click(function(){
@@ -394,59 +403,7 @@
       });
 
       $("#editComprobante").click(function(){
-    //     if ($("#modal-formulario").valid()){
-    // //guardamos id para pasarlo en la url
-    //     var id =  $('div.modal-body div.form-group #nuevoId').val();
-    //     var comprobantes = $('div.modal-body div.form-group #nuevaProvincia').val();
-    //     var codigo= $('div.modal-body div.form-group #nuevoCodigo').val();        
-    //     $.ajax({
-    //           type: "POST",
-    //           url: "/comprobantes/tipos/"+id+"/edit",
-    //           async: false,
-    //           data: {                  
-    //             "comprobantes" : comprobantes,
-    //             "codigo" : codigo },
-    //           dataType: "json"
-    //         })
-    //         .done(function(respuesta){
-    //           if(respuesta.status = 'OK'){
-    //             alert("va como piña");
-    //           }else{
-    //           }
-    //           $("#modalAddComprobante").modal('toggle');
-    //           tableReload(respuesta.data);
-    //            $('#chkComprobanteDetalle').prop( "checked", false );
-                 //  $('#comprobanteDetalle').val('');
-                 //  $('#chkTipoComprobanteModal').prop( "checked", false );
-                 //  $('#tipoComprobanteDetalleModal').val('');
-                 //  $('#tipoComprobante').val('');
-                 //  $('#codigoDetalleModal').val('');
-                 //  $('#modalblk_exe').prop( "checked", false );
-                 //  $('#modalblk_perciva').prop( "checked", false );
-                 //  $('#modalblk_perciibb').prop( "checked", false );
-                 //  $('#modalblk_ret').prop( "checked", false );
-                 //  $('#modalblk_netos').prop( "checked", false );
-                 //  $('#modalblk_iva').prop( "checked", false );
-                 //  $('#modalblk_nograv').prop( "checked", false );
-                 //  $('#modalblk_total').prop( "checked", false );
-                 //  $('#modalautoiva').prop( "checked", false );
-                 //  $('#modalautoneto').prop( "checked", false );
-                 //  $('#modalautototal').prop( "checked", false );
-                 // //limpio los datos del comprobante
-                 //  $('#blk_exe').prop( "checked", false );
-                 //  $('#blk_perciva').prop( "checked", false );
-                 //  $('#blk_perciibb').prop( "checked", false );
-                 //  $('#blk_ret').prop( "checked", false );
-                 //  $('#blk_netos').prop( "checked", false );
-                 //  $('#blk_iva').prop( "checked", false );
-                 //  $('#blk_nograv').prop( "checked", false );
-                 //  $('#blk_total').prop( "checked", false );
-                 //  $('#autoiva').prop( "checked", false );
-                 //  $('#autoneto').prop( "checked", false );
-                 //  $('#autototal').prop( "checked", false );
-    //            $("#boton-editar").attr("disabled","true");              
-    //         });
-    //       }
+   
       });
       //-----------------------------------/EDITAR comprobantes----------------------------------//
       //-----------------------------------BORRAR comprobantes----------------------------------//

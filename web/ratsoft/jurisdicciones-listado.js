@@ -161,9 +161,10 @@
             })
             .done(function(respuesta){
               if(respuesta.status = 'OK'){
-                alert("va como piña");
+                   alert(respuesta.msg);
               }else{
-              }
+                alert("ERROR \n Razon:" + respuesta.msg);
+              } 
               $("#modalAddJurisdiccion").modal('toggle');
               tableReload(respuesta.data);
               $('#nuevoId').val('');
@@ -203,9 +204,10 @@
             })
             .done(function(respuesta){
               if(respuesta.status = 'OK'){
-                alert("va como piña");
+                   alert(respuesta.msg);
               }else{
-              }
+                alert("ERROR \n Razon:" + respuesta.msg);
+              } 
               $("#modalAddJurisdiccion").modal('toggle');
               tableReload(respuesta.data);
                $('#nuevoId').val('');

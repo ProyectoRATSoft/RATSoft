@@ -54,24 +54,93 @@ class ComprobantesController extends Controller
 		
 	}
 
-	public function newAction(Request $request){
-  //   	$em = $this->getDoctrine()->getManager();
-		// $result = $em->getRepository("BackendBundle:TblTiposComp")->findAll();
-		// $data = array(
-		// 	'draw' => '',
-		// 	'recordsTotal' => '',
-		// 	'recordsFiltered' => '',
-		// 	'data' => $result,
-		// );
-		// $serializer = SerializerBuilder::create()->build();
-		// $jsonResponse = $serializer->serialize($data, 'json');
-		// return new Response($jsonResponse);
+	public function newcompAction(Request $request){
+    	
+    	$respuesta = array (
+			 'detalle' => $request->request->get("detalle"),
+	         'codigo' => $request->request->get("codigo"),
+	     );
 
+    	$data = array(
+				'status' => 'OK',
+				'msg' => 'el comprobante ha sido registrado con exito',
+				'draw' => '',
+				'recordsTotal' => '',
+				'recordsFiltered' => '',
+				'data' => '',
+			);
+
+    	$serializer = SerializerBuilder::create()->build();
+    	if (   !$respuesta["detalle"] || !$respuesta["codigo"]	)
+		{
+			$data = array(
+					'status' => 'ERROR',
+					'msg' => 'Hubo campos mandatorios que se enviaron vacios',
+					'draw' => '',
+					'recordsTotal' => '',
+					'recordsFiltered' => '',
+					'data' => '',
+					);
+				
+				$jsonResponse = $serializer->serialize($data, 'json');
+				return new Response($jsonResponse);
+				exit();
+		}
+		// Busco en la DB si existe una jurisdiccion con el cuit ingresado.
+		$em = $this->getDoctrine()->getManager();
+		$isset_comprobante = $em->getRepository("BackendBundle:TblComprobantes")->findOneBy(
+			array(
+				'detalle' => $respuesta["detalle"]
+			)
+		);
+
+		// $isset_codigo = $em->getRepository("BackendBundle:TblComprobantes")->findOneBy(
+		// 	array(
+		// 		'codigo' => $respuesta["codigo"]
+		// 	)
+		// );
+
+
+		// Si el codigo no existe, se inserta en la DB.
+		if (empty($isset_comprobante)) {
+	  	// Instanciamos un objeto comprobante y seteamos sus datos.
+			$comprobante = new TblComprobantes();
+			$comprobante->setDetalle($respuesta["detalle"]);
+			$comprobante->setCodigo($respuesta["codigo"]);
+			$em->persist($comprobante);
+			$em->flush();
+
+		} 
+		else 
+		{
+			$data = array(
+				'status' => 'ERROR',
+				'msg' => 'Ya existe un comprobante registrado con el detalle ingresado',
+				'draw' => '',
+				'recordsTotal' => '',
+				'recordsFiltered' => '',
+				'data' => '',
+			);
+		}
+		
+		$result = $em->getRepository("BackendBundle:TblComprobantes")->findAll();
+		$data["data"] = $result;
+
+		$jsonResponse = $serializer->serialize($data, 'json');
+		$response = new Response ();
+		$response->setContent($jsonResponse);
+		$response->headers->set('Content-Type', 'application/json');
+		return $response;
+
+		
+	}
+
+	public function newtipoAction(Request $request){
 	 		 
 
 		$respuesta = array (
-			 'detalle' => $request->request->get("detalle"),
-	         'codigo' => $request->request->get("codigo"),
+			 
+	         'cod_comp' => $request->request->get("cod_comp"),
 	         'tipo_comp' => $request->request->get("tipo_comp"),
 	         'blk_exe' => $request->request->get("blk_exe"),
 	         'blk_perciva' => $request->request->get("blk_perciva"),
@@ -87,7 +156,7 @@ class ComprobantesController extends Controller
 		);
 		$data = array(
 				'status' => 'OK',
-				'msg' => 'jurisdiccion ha sido registrada con exito',
+				'msg' => 'El tipo de comprobante ha sido registrado con exito',
 				'draw' => '',
 				'recordsTotal' => '',
 				'recordsFiltered' => '',
@@ -98,8 +167,7 @@ class ComprobantesController extends Controller
 
 		// Me aseguro que no me hayan mandado ningun campo vacío
 
-		if (   !$respuesta["detalle"]
-			|| !$respuesta["codigo"]
+		if (   !$respuesta["cod_comp"]
 			|| !$respuesta["tipo_comp"]
 			|| !is_numeric($respuesta["blk_exe"])
 			|| !is_numeric($respuesta["blk_perciva"])
@@ -127,44 +195,23 @@ class ComprobantesController extends Controller
 				exit();
 		}
 		
-		// Busco en la DB si existe una jurisdiccion con el cuit ingresado.
+		
 		$em = $this->getDoctrine()->getManager();
-		$isset_comprobante = $em->getRepository("BackendBundle:TblComprobantes")->findOneBy(
-			array(
-				'detalle' => $respuesta["detalle"]
-			)
-		);
-
-		$isset_codigo = $em->getRepository("BackendBundle:TblComprobantes")->findOneBy(
-			array(
-				'codigo' => $respuesta["codigo"]
-			)
-		);
-
+		
 		$isset_tipo_comprobante = $em->getRepository("BackendBundle:TblTiposComp")->findOneBy(
 			array(
-				'tipo_comp' => $respuesta["tipo_comp"]
+				'tipoComp' => $respuesta["tipo_comp"]
+			)
+		);   	
+		
+		$comprobante = $em->getRepository("BackendBundle:TblComprobantes")->findOneBy(
+			array(
+				'codComp' => $respuesta["cod_comp"]
 			)
 		);
 
-    	// Si el codigo no existe, se inserta en la DB.
-		if (empty($isset_comprobante) || empty($isset_codigo)) {
-	  	// Instanciamos un objeto comprobante y seteamos sus datos.
-			$comprobante = new TblComprobantes();
-			$comprobante->setDetalle($respuesta["detalle"]);
-			$comprobante->setCodigo($respuesta["codigo"]);
-			// $em->persist($comprobante);
-			// $em->flush();
-
-		} 
-		else 
-		{
-			
-		}
-		
-
 		if (empty($isset_tipo_comprobante)) {
-	  	// Instanciamos un objeto comprobante y seteamos sus datos.
+	  		// Instanciamos un objeto comprobante y seteamos sus datos.
 			$tipo_comprobante = new TblTiposComp();
 			$tipo_comprobante->setTipoComp($respuesta["tipo_comp"]);
 			$tipo_comprobante->setCodComp($comprobante);
@@ -180,20 +227,20 @@ class ComprobantesController extends Controller
 			$tipo_comprobante->setAutoneto($respuesta["autoneto"]);
 			$tipo_comprobante->setAutototal($respuesta["autototal"]);
 
-			// $em->persist($tipo_comprobante);
-			// $em->flush();
+			$em->persist($tipo_comprobante);
+			$em->flush();
 
 		} 
-		// else {
-		// 	$data = array(
-		// 		'status' => 'ERROR',
-		// 		'msg' => 'Ya existe una jurisdiccion registrada con el codigo ingresado',
-		// 		'draw' => '',
-		// 		'recordsTotal' => '',
-		// 		'recordsFiltered' => '',
-		// 		'data' => '',
-		// 	);
-		// }
+		else {
+			$data = array(
+				'status' => 'ERROR',
+				'msg' => 'Ya existe un tipo registrado con el detalle ingresado',
+				'draw' => '',
+				'recordsTotal' => '',
+				'recordsFiltered' => '',
+				'data' => '',
+			);
+		}
 		
 		$result = $em->getRepository("BackendBundle:TblTiposComp")->findAll();
 		$data["data"] = $result;
