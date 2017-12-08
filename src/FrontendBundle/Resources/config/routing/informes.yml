@@ -10,15 +10,34 @@ prueba_index:
   defaults: { _controller: "FrontendBundle:Informes:ventas" }
   methods: GET
 
+# Informes de ventas - Por periodo
+informes_ventas_por_periodo:
+  path: /ventas-por-periodo/{id}
+  defaults: { _controller: "FrontendBundle:Informes:ventasPorPeriodo" }
+  methods: GET
+  # Por periodo (Ventas) -- Ver ejemplo /contable/compras/154 -- dos inputs Desde - Hasta input type="month"
+
+# Informes de ventas - Por jurisdiccion
+informes_ventas_por_jurisdiccion:
+  path: /ventas-por-jurisdiccion/{id}
+  defaults: { _controller: "FrontendBundle:Informes:ventasPorJurisdiccion" }
+  methods: GET
+
+# Informes de ventas - Por cliente
+informes_ventas_por_cliente:
+  path: /ventas-por-cliente/{id}
+  defaults: { _controller: "FrontendBundle:Informes:ventasPorCliente" }
+  methods: GET
+
+# Informes de ventas - Por comprobante
+informes_ventas_por_comprobante:
+  path: /ventas-por-comprobante/{id}
+  defaults: { _controller: "FrontendBundle:Informes:ventasPorComprobante" }
+  methods: GET
+
 #### FALTAN POR HACER ####
 
 ## IMPORTANTE!!: SIEMPRE VOY A RECIBIR UN ID DENTRO DEL INFORME - VER COMO RECIBIRLO COMO PARAMETRO.
-
-# Por periodo (Ventas) -- Ver ejemplo /contable/compras/154 -- dos inputs Desde - Hasta input type="month"
-
-# Ventas por rubro (NO VA!)
-
-# Filtro por jurisdiccion - Tooltip con checks para todas las jurisdicciones
 
 # Ventas por cliente - Tooltip con checks para todas los clientes.
 

@@ -22,10 +22,9 @@
 
     var loadTable = function() {
       $.ajax({
-          type: "GET",
-          // url: "/search/ventas",
-          url: "/backend/informes/ventas",
-          dataType: "json",
+        type: "GET",
+        url: "/backend/informes/ventas",
+        dataType: "json",
         })
         .done(function(respuesta, status) {
           window.ventas = respuesta.ventas;
@@ -167,7 +166,7 @@
           'Últimos 7 días': [moment().subtract(6, 'days'), moment()],
           'Últimos 30 días': [moment().subtract(29, 'days'), moment()],
           'Este mes': [moment().startOf('month'), moment().endOf('month')],
-          'Últimos mes': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')]
+          'Último mes': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')]
         },
         startDate: moment().subtract(29, 'days'),
         endDate: moment()
