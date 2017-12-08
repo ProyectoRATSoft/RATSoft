@@ -11,19 +11,22 @@ fos_user:
 
 fontend_home:
     resource: "@FrontendBundle/Resources/config/routing/home.yml"
-    prefix: /home    
+    prefix: /home
 
 frontend_contable:
     resource: "@FrontendBundle/Resources/config/routing/contable.yml"
-    prefix: /contable    
+    prefix: /contable
 
 frontend_impositivo:
     resource: "@FrontendBundle/Resources/config/routing/impositivo.yml"
-    prefix: /impositivo 
+    prefix: /impositivo
 
 frontend_configuraciones:
     resource: "@FrontendBundle/Resources/config/routing/configuraciones.yml"
     prefix: /configuraciones
+
+
+##  ------ Informes ------ ##
 
 frontend_informes:
     resource: "@FrontendBundle/Resources/config/routing/informes.yml"

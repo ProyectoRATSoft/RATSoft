@@ -1,4 +1,4 @@
-ventas_by:
-    path: /ventas
+ventas_por_periodo:
+    path: /ventas/
     defaults: { _controller: "BackendBundle:Informes:ventas" }
     methods: GET

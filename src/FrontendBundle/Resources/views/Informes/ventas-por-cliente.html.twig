@@ -1,0 +1,201 @@
+{% extends 'FrontendBundle::Default/base.html.twig' %} {% block title %} Ventas{% endblock %} {% block CSs %}
+<link rel="stylesheet" href="{{ asset('public/Buttons-1.4.2/css/buttons.bootstrap.min.css') }}">
+<link rel="stylesheet" href="{{ asset('public/responsive-2.2.0/css/responsive.bootstrap.min.css') }}">
+<style>
+  tbody tr:hover.active td,
+  tbody tr:hover td {
+    background-color: #A9D0F5;
+    cursor: pointer;
+  }
+
+  .table>tbody>tr.active>td {
+    background-color: #A9D0F5;
+    color: #000000;
+    font: bold Georgia 12px/18px;
+  }
+
+  tr.group,
+  tr.group:hover {
+    background-color: #ddd !important;
+  }
+
+  input.ui-autocomplete {
+    z-index: 500;
+  }
+
+  #pos-nombre {
+    display: block;
+    position: relative
+  }
+
+  .ui-autocomplete {
+    position: absolute;
+  }
+
+  .id-venta {
+    display: none;
+  }
+</style>
+{% endblock %} {% block Scripts %}
+<!-- DataTables -->
+<script src="{{ asset('bower_components/datatables.net/js/jquery.dataTables.min.js') }}"></script>
+<script src="{{ asset('bower_components/datatables.net-bs/js/dataTables.bootstrap.min.js') }}"></script>
+<script src="{{ asset('public/responsive-2.2.0/js/dataTables.responsive.min.js') }}"></script>
+<script src="{{ asset('public/responsive-2.2.0/js/responsive.bootstrap.min.js') }}"></script>
+<script src="{{ asset('public/Buttons-1.4.2/js/dataTables.buttons.min.js') }}"></script>
+<script src="{{ asset('public/Buttons-1.4.2/js/buttons.bootstrap.min.js') }}"></script>
+<script src="{{ asset('public/JSZip-2.5.0/jszip.min.js') }}"></script>
+<script src="{{ asset('public/pdfmake-0.1.32/pdfmake.min.js') }}"></script>
+<script src="{{ asset('public/pdfmake-0.1.32/vfs_fonts.js') }}"></script>
+<script src="{{ asset('public/Buttons-1.4.2/js/buttons.html5.min.js') }}"></script>
+<script src="{{ asset('public/Buttons-1.4.2/js/buttons.print.min.js') }}"></script>
+<script src="{{ asset('public/Buttons-1.4.2/js/buttons.colVis.min.js') }}"></script>
+<script src="https://cdn.jsdelivr.net/npm/jquery-validation@1.17.0/dist/jquery.validate.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/js-cookie@2/src/js.cookie.min.js"></script>
+
+<!-- Recibo la data desde el controller según el Id colocado en la URL -->
+<script type="text/javascript">
+  $(document).ready(function() {
+    window.arrayrespuesta = {{ ventas | raw }};
+  });
+</script>
+
+<script src="{{ asset('ratsoft/informes/ventas-por-jurisdiccion.js') }}"></script>
+
+{% endblock %} {% block body %}
+<!-- ACA EMPIEZO A TRABAJAR LA INTERFAZ Content Wrapper. Contains page content -->
+<div class="content-wrapper">
+  <!-- Content Header (Page header) -->
+  <section class="content-header">
+    <h2>
+        Informe de Ventas por Jurisdicción
+        <small>Buscador</small>
+      </h2>
+    <ol class="breadcrumb">
+      <li><a href="/home"><i class="fa fa-home"></i> home</a></li>
+      <li><a href="/contable"><i class="fa fa-calculator"></i> informes</a></li>
+      <li class="active"><i class="fa fa-search"></i>Buscador de ventas</li>
+    </ol>
+  </section>
+  <section class="content">
+    <div class="row">
+      <div class="col-xs-12">
+        <div class="box">
+          <div class="box-header">
+            <h3 class="box-title">Busque la venta deseada..</h3>
+          </div>
+          <!-- box header -->
+          <div class="col-md-12" style="margin-bottom: 10px;">
+            <input id='btnAbrirFiltro' type="button" value="Filtro múltiple"
+            onclick="$('.contenedor').toggle();$('#btnFiltrar').toggle();$('#btnAbrirFiltro').toggle();$('#btnCerrarFiltro').toggle();">
+
+            <input id='btnCerrarFiltro' type="button" value="Cerrar" style="display: none;"
+            onclick="$('.contenedor').toggle();$('#btnFiltrar').toggle();$('#btnAbrirFiltro').toggle();$('#btnCerrarFiltro').toggle();">
+
+            <input id='btnFiltrar' type="button" value="Filtrar" style="display: none;" icon="fa-filter"></input>
+
+            <div class="contenedor" style="display: none; margin: 10px;">
+              <div class="col-md-3">
+                <div style="col-md-3 col-sm-4 font-family: 'Ubuntu', 'Helvetica', sans-serif;">
+                  <input id="Ciudad de Buenos Aires" type="checkbox"/>Ciudad de Buenos Aires<br/>
+                </div>
+                <div style="col-md-3 col-sm-4 font-family: 'Ubuntu', 'Helvetica', sans-serif;">
+                  <input id="Provincia de Buenos Aires" type="checkbox"/>Provincia de Buenos Aires<br/>
+                </div>
+                <div style="col-md-3 col-sm-4 font-family: 'Ubuntu', 'Helvetica', sans-serif;">
+                  <input id="Catamarca" type="checkbox"/>Catamarca<br/>
+                </div>
+                <div style="col-md-3 col-sm-4 font-family: 'Ubuntu', 'Helvetica', sans-serif;">
+                  <input id="Córdoba" type="checkbox"/>Córdoba<br/>
+                </div>
+                <div style="col-md-3 col-sm-4 font-family: 'Ubuntu', 'Helvetica', sans-serif;">
+                  <input id="Corrientes" type="checkbox"/>Corrientes<br/>
+                </div>
+                <div style="col-md-3 col-sm-4 font-family: 'Ubuntu', 'Helvetica', sans-serif;">
+                  <input id="Chaco" type="checkbox"/>Chaco<br/>
+                </div>
+              </div>
+              <div class="col-md-3">
+                <div style="col-md-3 col-sm-4 font-family: 'Ubuntu', 'Helvetica', sans-serif;">
+                  <input id="Chubut" type="checkbox"/>Chubut<br/>
+                </div>
+                <div style="col-md-3 col-sm-4 font-family: 'Ubuntu', 'Helvetica', sans-serif;">
+                  <input id="Entre Ríos" type="checkbox"/>Entre Ríos<br/>
+                </div>
+                <div style="col-md-3 col-sm-4 font-family: 'Ubuntu', 'Helvetica', sans-serif;">
+                  <input id="Formosa" type="checkbox"/>Formosa<br/>
+                </div>
+                <div style="col-md-3 col-sm-4 font-family: 'Ubuntu', 'Helvetica', sans-serif;">
+                  <input id="Jujuy" type="checkbox"/>Jujuy<br/>
+                </div>
+                <div style="col-md-3 col-sm-4 font-family: 'Ubuntu', 'Helvetica', sans-serif;">
+                  <input id="La Pampa" type="checkbox"/>La Pampa<br/>
+                </div>
+                <div style="col-md-3 col-sm-4 font-family: 'Ubuntu', 'Helvetica', sans-serif;">
+                  <input id="La Rioja" type="checkbox"/>La Rioja<br/>
+                </div>
+              </div>
+              <div class="col-md-3">
+                <div style="col-md-3 col-sm-4 font-family: 'Ubuntu', 'Helvetica', sans-serif;">
+                  <input id="Mendoza" type="checkbox"/>Mendoza<br/>
+                </div>
+                <div style="col-md-3 col-sm-4 font-family: 'Ubuntu', 'Helvetica', sans-serif;">
+                  <input id="Misiones" type="checkbox"/>Misiones<br/>
+                </div>
+                <div style="col-md-3 col-sm-4 font-family: 'Ubuntu', 'Helvetica', sans-serif;">
+                  <input id="Neuquén" type="checkbox"/>Neuquén<br/>
+                </div>
+                <div style="col-md-3 col-sm-4 font-family: 'Ubuntu', 'Helvetica', sans-serif;">
+                  <input id="Rí­o Negro" type="checkbox"/>Rí­o Negro<br/>
+                </div>
+                <div style="col-md-3 col-sm-4 font-family: 'Ubuntu', 'Helvetica', sans-serif;">
+                  <input id="Salta" type="checkbox"/>Salta<br/>
+                </div>
+                <div style="col-md-3 col-sm-4 font-family: 'Ubuntu', 'Helvetica', sans-serif;">
+                  <input id="San Juan" type="checkbox"/>San Juan<br/>
+                </div>
+              </div>
+              <div class="col-md-3">
+                <div style="col-md-3 col-sm-4 font-family: 'Ubuntu', 'Helvetica', sans-serif;">
+                  <input id="San Luis" type="checkbox"/>San Luis<br/>
+                </div>
+                <div style="col-md-3 col-sm-4 font-family: 'Ubuntu', 'Helvetica', sans-serif;">
+                  <input id="Santa Cruz" type="checkbox"/>Santa Cruz<br/>
+                </div>
+                <div style="col-md-3 col-sm-4 font-family: 'Ubuntu', 'Helvetica', sans-serif;">
+                  <input id="Santa Fe" type="checkbox"/>Santa Fe<br/>
+                </div>
+                <div style="col-md-3 col-sm-4 font-family: 'Ubuntu', 'Helvetica', sans-serif;">
+                  <input id="Santiago del Estero" type="checkbox"/>Santiago del Estero<br/>
+                </div>
+                <div style="col-md-3 col-sm-4 font-family: 'Ubuntu', 'Helvetica', sans-serif;">
+                  <input id="Tierra del Fuego" type="checkbox"/>Tierra del Fuego<br/>
+                </div>
+                <div style="col-md-3 col-sm-4 font-family: 'Ubuntu', 'Helvetica', sans-serif;">
+                  <input id="Tucumán" type="checkbox"/>Tucumán<br/>
+                </div>
+              </div>
+            </div>
+          </div>
+          <!-- /.end box-header -->
+          <div class="box-body">
+            <table id="tabla-ventas" class="table table-bordered table-striped table-hover dt-responsive" width="98%">
+              <tbody></tbody>
+            </table>
+          </div>
+          <!-- /.box-body -->
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-xs-12">
+          {% block botones %} {% endblock %}
+          <!-- Main content -->
+        </div>
+      </div>
+    </div>
+  </section>
+  <!-- /.content -->
+</div>
+
+<!-- /.content-wrapper -->
+{% endblock%}
