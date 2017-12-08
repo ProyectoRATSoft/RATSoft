@@ -20,6 +20,9 @@ input {
 		$("#buscarPeriodo").on("click",function(){
 			console.log($("#periodo").val());
 			console.log(typeof($("#periodo").val()));
+			$("#saldoFavorIVA").val("");
+			$("#saldoIngresarIVA").val("");
+
 			$.get("/impositivo/iva/" + arrayempresa.id + "/" + $("#periodo").val(),function(resp,estado,jqXHR){
     	    	var arrayIva = JSON.parse(resp);
     	    	window.arrayIva= arrayIva.data;
@@ -410,12 +413,12 @@ input {
 					parseFloat($("#saldoFavorContrib").val());
 
 				if ( parseFloat(calculo) < 0 ){
-					$("#saldoFavorIVA").val(calculo.toFixed(2));
+					$("#saldoFavorIVA").val(Math.abs(calculo).toFixed(2));
 					$("#saldoIngresarIVA").val("0.00");
 				}else{
 					if ( parseFloat(calculo) > 0 ){
 						$("#saldoFavorIVA").val("0.00");
-						$("#saldoIngresarIVA").val(calculo.toFixed(2));
+						$("#saldoIngresarIVA").val(Math.abs(calculo).toFixed(2));
 					}else{
 						$("#saldoFavorIVA").val("0.00");
 						$("#saldoIngresarIVA").val("0.00");
