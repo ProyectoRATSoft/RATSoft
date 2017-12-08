@@ -165,6 +165,11 @@
                 $('#comprobanteDetalle').val(item.cod_comp.id);               
                 $('#comprobanteDetalle').trigger('change'); 
                 $('#tipoComprobante').val(item.id); 
+
+              console.log(item);
+              $('#comprobanteDetalleModal').val(item.cod_comp.detalle);
+              $('#codigoDetalleModal').val(item.cod_comp.codigo);
+              $('#tipoComprobanteDetalleModal').val(item.tipo_comp);
               
               //llenamos el modal con los datos de la comprobantes
               
@@ -223,7 +228,7 @@
          //limpio los campos
           $('#chkComprobanteDetalle').prop( "checked", false );
           $('#comprobanteDetalle').val('');
-          $('#chkTipoComprobanteModal').prop( "checked", false );
+          $('#comprobanteDetalleModal').val('');
           $('#tipoComprobanteDetalleModal').val('');
           $('#tipoComprobante').val('');
           $('#codigoDetalleModal').val('');
@@ -259,7 +264,7 @@
         // if ($("#modal-formulario").valid()){
           
           var detalle; var codigo;  
-          var tipo_comp = $('#tipoComprobanteDetalleModal').val().toUpperCase();;  
+          var tipo_comp = $('#tipoComprobanteDetalleModal').val().toUpperCase();  
           var blk_exe;
           var blk_perciva; var blk_perciibb; var blk_ret;  var blk_netos;
           var blk_iva; var blk_nograv; var blk_total;  var autoiva;
@@ -331,6 +336,8 @@
                   if(respuesta.status = 'OK')
                   {
                     alert(respuesta.msg);
+                    $("#modalAddComprobante").modal('toggle');
+                    tableReload(respuesta.data);
                     ///------------------------------muestro el mensaje correspondiente-------//
                   }
                   else
@@ -400,6 +407,17 @@
         $('button#newComprobante').css("display", "none");
         $('button#editComprobante').css("display", "");
         // $('button#deleteComprobantes').css("display", "");
+
+        $('#tipoComprobante').val('').attr("disabled", "disabled");
+        $('#comprobanteDetalle').val('').attr("disabled", "disabled");
+        $('#chkComprobanteDetalle').prop( "checked", true ).attr("disabled", "disabled");
+        $('#comprobanteDetalleModal').removeAttr('disabled');
+        $('#codigoDetalleModal').removeAttr('disabled');
+
+        
+        //var cbovalueselected = $('#comprobanteDetalle').val();
+
+        //$('#comprobanteDetalleModal')
       });
 
       $("#editComprobante").click(function(){
@@ -423,10 +441,10 @@
       //         $('#nuevoId').val('');
       //          $('#chkComprobanteDetalle').prop( "checked", false );
                  //  $('#comprobanteDetalle').val('');
-                 //  $('#chkTipoComprobanteModal').prop( "checked", false );
                  //  $('#tipoComprobanteDetalleModal').val('');
                  //  $('#tipoComprobante').val('');
                  //  $('#codigoDetalleModal').val('');
+                 //$('#comprobanteDetalleModal').val('');
                  //  $('#modalblk_exe').prop( "checked", false );
                  //  $('#modalblk_perciva').prop( "checked", false );
                  //  $('#modalblk_perciibb').prop( "checked", false );
