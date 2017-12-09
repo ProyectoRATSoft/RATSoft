@@ -18,12 +18,78 @@ input {
   $(document).ready(function(){
     $("#titulo-empresa").text(arrayempresa.nombre);
     $("#buscarPeriodo").on("click",function(){
+      $("#impDet").val("0.00");
+      $("#saldoFavor").val("0.00");
       $.get("/impositivo/iibb/" + arrayempresa.id + "/" + $("#periodo").val(),function(resp,estado,jqXHR){
         var arrayIibb = JSON.parse(resp);
-            window.arrayIibb= arrayIibb.data;
-            console.log(arrayIibb);
+        window.arrayIibb= arrayIibb.data;
+        console.log(arrayIibb);
+        var retenciones = "0";
+        var percepciones = "0";
+        var baseImponible = "0";
+        arrayIibb.data.ventas.forEach(function(item,index,arr){
+          baseImponible =
+            parseFloat(baseImponible) +
+            parseFloat(item.neto21) +
+            parseFloat(item.neto105) +
+            parseFloat(item.neto_exento) +
+            parseFloat(item.nogravado);
+          retenciones = parseFloat(retenciones) + parseFloat(item.retencion);
+          
+        }); // fin forEach Ventas
+
+        arrayIibb.data.compras.forEach(function(item,index,arr){
+          percepciones = parseFloat(percepciones) + parseFloat(item.perc_iibb);
+        }); // fin forEach Compras
+
+        
+        $("#netos-total").val(baseImponible.toFixed(2));
+        $("#retenciones").val(retenciones.toFixed(2));
+        $("#percepciones").val(percepciones.toFixed(2));
+
+        $("form[id^=form-valid]").each(function() {
+            $(this).validate();
+        });
+      
+        $("form").find(".clase-validacion").each(function(){
+          $(this).rules('add', {
+              required: true,
+              number: true,
+              messages: {
+                required: "Required input",
+                number: "Please only enter digits"
+              }
+          });
+        });
       }); // fin del ajax  
     });// fin del on.click
+    $("#boton-calcular").on("click",function(){
+      var validacion = true;
+      $("form[id^=form-valid]").each(function(){
+        if(!$(this).valid()){
+          validacion = false;
+        }
+      });
+      if (validacion){
+        var saldo = "0";
+        var impDet = parseFloat($("#netos-total").val()) * parseFloat($("#alicuotaRegimen").val());
+        $("#impDet").val(impDet.toFixed(2));
+        saldo = 
+          parseFloat($("#impDet").val()) -
+          parseFloat($("#retenciones").val()) -
+          parseFloat($("#percepciones").val()) -
+          parseFloat($("#saldoFavor").val());
+
+        if (saldo >= 0) {
+          $("#saldoIngresar").val(saldo.toFixed(2));
+          $("#saldoFavCont").val("0.00");
+        }else{
+          $("#saldoIngresar").val("0.00");
+          $("#saldoFavCont").val(Math.abs(saldo.toFixed(2)));
+        }
+        $("#saldoFavor").val(parseFloat($("#saldoFavor").val()).toFixed(2));
+      }
+    });
   });// fin del document.ready
 </script> 
 {% endblock %}
@@ -90,7 +156,7 @@ input {
             <div class="form-group">
              <label class="control-label col-md-3" style="padding-left: 0px" for="">Base Imponible : </label>
               <div class="col-md-9">
-              <input type="" class="form-control input-sm" id="">
+              <input type="" class="form-control input-sm" id="netos-total" disabled="true">
               </div>             
             </div>
             <div style="margin: 65px"></div>
@@ -101,9 +167,9 @@ input {
               <div class="col-xs-9  input-sm">
                 <select name="alicuotaRegimen" id="alicuotaRegimen" required="true" class="selectpicker dropdown-toggle form-control input-sm" type="button" data-toggle="dropdown">
                   <option disabled selected value>--Seleccione una opcion--</option>
-                  <option value="0">Ventas 3%</option>
-                  <option value="1">Alquileres 1,5%</option>
-                  <option value="2">Servicios 3%</option>
+                  <option value="0.03">Ventas 3%</option>
+                  <option value="0.015">Alquileres 1,5%</option>
+                  <option value="0.03">Servicios 3%</option>
                 </select>
               </div>
             </div>
@@ -136,44 +202,44 @@ input {
             <div class="form-group">
              <label class="control-label col-md-6" for="">Impuesto Determinado : </label>
               <div class="col-md-6">
-                <input type="" class="form-control input-sm" id="">
+                <input type="" class="form-control input-sm" id="impDet" disabled="true">
               </div>             
             </div>
             <div class="form-group">
               <label class="control-label col-md-6" for="">Retenciones: </label>
               <div class="col-md-6">
-                <input type="" class="form-control input-sm" id="">
+                <input type="" class="form-control input-sm" id="retenciones" disabled="true">
               </div>             
             </div>
             <div class="form-group">
               <label class="control-label col-md-6" for="">Percepciones: </label>
               <div class="col-md-6">
-                <input type="" class="form-control input-sm" id="">
+                <input type="" class="form-control input-sm" id="percepciones" disabled="true">
               </div>             
             </div>
             <div class="form-group">
               <label class="control-label col-md-6" for="">Saldo a favor: </label>
               <div class="col-md-6">
-                <input type="" class="form-control input-sm" id="">
+                <input type="" class="form-control input-sm" id="saldoFavor">
               </div>             
             </div>
             <div class="form-group">                          
               <label class="control-label col-md-6" for="">Saldo a Ingresar: </label>
               <div class="col-md-6">
-                <input type="" class="form-control input-sm" id="">
+                <input type="" class="form-control input-sm" id="saldoIngresar" disabled="true">
               </div>             
             </div>
             <div class="form-group">                          
               <label class="control-label col-md-6" for="">Saldo a favor del contribuyente: </label>
               <div class="col-md-6">
-                <input type="" class="form-control input-sm" id="">
+                <input type="" class="form-control input-sm" id="saldoFavCont" disabled="true">
               </div>             
             </div>
             <br>
             <div class="form-group">
                 <div class="col-md-10"></div>
                 <div class="col-md-2">
-                  <button div="calcular" class="btn btn-primary btn-sm">calcular</button>
+                  <button type=submit div="calcular" class="btn btn-primary btn-sm" onclick="return false" id="boton-calcular">calcular</button>
                 </div>             
             </div>
             <!--  -->
