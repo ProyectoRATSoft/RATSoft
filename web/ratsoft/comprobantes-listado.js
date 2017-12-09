@@ -62,16 +62,16 @@
 
     $('#chkComprobanteDetalle').on('change',function() {
          if(this.checked){
-           $('#comprobanteDetalle').attr("disabled","disabled").val('');
-           $('#comprobanteDetalleModal').removeAttr("disabled").val('');
-           $('#codigoDetalleModal').removeAttr("disabled").val('');
-           $('#tipoComprobante').attr("disabled","disabled").val('');
+           $('#comprobanteDetalle').attr("disabled","disabled").attr("name","comprobante").val('');
+           $('#comprobanteDetalleModal').removeAttr("disabled").removeAttr("name").val('');
+           $('#codigoDetalleModal').removeAttr("disabled").attr("name","comprobante").val('');
+           $('#tipoComprobante').attr("disabled","disabled").removeAttr("name").val('');
          }
          else {
-           $('#comprobanteDetalle').removeAttr("disabled").val('');
-           $('#comprobanteDetalleModal').attr("disabled","disabled").val('');
-           $('#codigoDetalleModal').attr("disabled","disabled").val('');
-           $('#tipoComprobante').removeAttr("disabled").val('');
+           $('#comprobanteDetalle').removeAttr("disabled").val('').attr("name","comprobante");
+           $('#comprobanteDetalleModal').attr("disabled","disabled").removeAttr("name").val('');
+           $('#codigoDetalleModal').attr("disabled","disabled").removeAttr("name").val('');
+           $('#tipoComprobante').removeAttr("disabled").val('').attr("name","tipoComprobante").val('');
          }
       });
 
@@ -165,8 +165,8 @@
                 $('#comprobanteDetalle').val(item.cod_comp.id);               
                 $('#comprobanteDetalle').trigger('change'); 
                 $('#tipoComprobante').val(item.id); 
-
-              console.log(item);
+                 window.id_comp = item.cod_comp.id;
+                 window.id_tipo = item.id;
               $('#comprobanteDetalleModal').val(item.cod_comp.detalle);
               $('#codigoDetalleModal').val(item.cod_comp.codigo);
               $('#tipoComprobanteDetalleModal').val(item.tipo_comp);
@@ -218,6 +218,7 @@
          $("#modal-formulario").find('.has-error').removeClass("has-error"); //limpia las clases has-error que pone los recuadros rojos
          $("#modal-formulario").find('.has-success').removeClass("has-success");//limpia los recuadros verdes de los datos correctos ingresados
          $('#tabla-comprobante tbody tr').removeClass('active');
+         $('#chkComprobanteDetalle').prop('checked', false).trigger('change');
          //cambio el titulo
          $("h4.modal-title").text("Nuevo comprobante");
          //muestro los botones correspondientes
@@ -226,7 +227,7 @@
          $('button#deletecomprobante').css("display", "none");
          $("#boton-editar").attr("disabled","true");
          //limpio los campos
-          $('#chkComprobanteDetalle').prop( "checked", false );
+          $('#chkComprobanteDetalle').prop( "checked", false ).removeAttr('disabled');
           $('#comprobanteDetalle').val('');
           $('#comprobanteDetalleModal').val('');
           $('#tipoComprobanteDetalleModal').val('');
@@ -261,8 +262,8 @@
 
        $("#newComprobante").click(function(){
           //guardo los valores en cada variable                            
-        // if ($("#modal-formulario").valid()){
-          
+        if ($("#modal-formulario").valid()){
+
           var detalle; var codigo;  
           var tipo_comp = $('#tipoComprobanteDetalleModal').val().toUpperCase();  
           var blk_exe;
@@ -392,27 +393,30 @@
           }
 
 
-        // }
+         }
       });
 
       //-----------------------------------/AGREGAR comprobantes----------------------------------//  
       //-----------------------------------EDITAR comprobantes----------------------------------//
       $("#boton-editar").click(function(){
+        $('#tipoComprobante').val('').attr("disabled", "disabled") .removeAttr("name");
+        $('#comprobanteDetalle').val('').attr("disabled", "disabled") .removeAttr("name");
+        $('#chkComprobanteDetalle').prop( "checked", true ).attr("disabled", "disabled");
+        $('#comprobanteDetalleModal').removeAttr('disabled').attr("name","comprobante");
+        $('#codigoDetalleModal').removeAttr('disabled').attr("name","codigoComprobante");
+        $('#tipoComprobanteDetalleModal').attr("name","tipoComprobante");
         $("#modalAddComprobante").modal();
         $("#modal-formulario").validate().resetForm();
         $("#modal-formulario").find('.has-error').removeClass("has-error"); //limpia las clases has-error que pone los recuadros rojos
         $("#modal-formulario").find('.has-success').removeClass("has-success");//limpia los recuadros verdes de los datos correctos ingresados
+
         //limpio los campos
         $("h4.modal-title").text("Editar comprobante");
         $('button#newComprobante').css("display", "none");
         $('button#editComprobante').css("display", "");
         // $('button#deleteComprobantes').css("display", "");
 
-        $('#tipoComprobante').val('').attr("disabled", "disabled");
-        $('#comprobanteDetalle').val('').attr("disabled", "disabled");
-        $('#chkComprobanteDetalle').prop( "checked", true ).attr("disabled", "disabled");
-        $('#comprobanteDetalleModal').removeAttr('disabled');
-        $('#codigoDetalleModal').removeAttr('disabled');
+       // .removeAttr("name").attr("name","tipoComprobante")
 
         
         //var cbovalueselected = $('#comprobanteDetalle').val();
@@ -421,7 +425,166 @@
       });
 
       $("#editComprobante").click(function(){
-   
+         if ($("#modal-formulario").valid()){
+         
+          var detalle; var codigo;  
+          var tipo_comp = $('#tipoComprobanteDetalleModal').val().toUpperCase();  
+          var blk_exe;
+          var blk_perciva; var blk_perciibb; var blk_ret;  var blk_netos;
+          var blk_iva; var blk_nograv; var blk_total;  var autoiva;
+          var autoneto;    var autototal;
+          var cod_comp
+          ! $('#modalblk_exe').is(':checked') ? blk_exe =0 : blk_exe =1;
+          ! $('#modalblk_perciva').is(':checked') ?  blk_perciva=0 :  blk_perciva= 1;
+          ! $('#modalblk_perciibb').is(':checked') ?  blk_perciibb=0 : blk_perciibb =1;
+          ! $('#modalblk_ret').is(':checked') ? blk_ret=0 : blk_ret=1;
+          ! $('#modalblk_netos').is(':checked') ? blk_netos=0 : blk_netos=1;
+          ! $('#modalblk_iva').is(':checked') ? blk_iva=0 :  blk_iva=1;
+          ! $('#modalblk_nograv').is(':checked') ?  blk_nograv=0 :  blk_nograv= 1;
+          ! $('#modalblk_total').is(':checked') ?  blk_total=0 :  blk_total=1;
+          ! $('#modalautoiva').is(':checked') ?  autoiva=0 :  autoiva=1;
+          ! $('#modalautoneto').is(':checked') ?  autoneto=0 :  autoneto=1;
+          ! $('#modalautototal').is(':checked') ?  autototal=0 :  autototal=1;
+          //verifico si desea crear un nuevo comprobante o un tipo de comprobante nuevo
+          if ($('#chkComprobanteDetalle').is(':checked'))
+          {  
+            detalle = $('#comprobanteDetalleModal').val().toUpperCase();
+            codigo = $('#codigoDetalleModal').val().toUpperCase();
+            console.log(detalle);
+            console.log(codigo);
+            console.log(window.id_comp);
+            $.ajax({
+              type: "POST",
+              url: "/comprobantes/"+window.id_comp+"/editcomp",
+              async: false,
+              data: 
+              {                  
+               "detalle" : detalle,
+               "codigo" : codigo,
+              },
+              dataType: "json"
+               //------------------creo el  comprobante------------------//
+           })
+            .done(function(respuesta){
+              console.log(respuesta);
+              if(respuesta.status = 'OK')
+              {
+                respuesta.data.forEach(function(item,index,arr){
+                  if (item.detalle == detalle){
+                      cod_comp = item.id;
+                      console.log(cod_comp);
+                      console.log(item.id);
+                  }
+                });
+                $.ajax({
+                  type: "POST",
+                  url: "/comprobantes/"+window.id_tipo+"/edittipo",
+                  async: false,
+                  data: {                  
+                    "cod_comp" : cod_comp,
+                    "tipo_comp": tipo_comp,
+                    "blk_exe" : blk_exe,
+                    "blk_perciva": blk_perciva,
+                    "blk_perciibb" : blk_perciibb,
+                    "blk_ret" : blk_ret,
+                    "blk_netos" : blk_netos,
+                    "blk_iva" : blk_iva,
+                    "blk_nograv" :blk_nograv,
+                    "blk_total" : blk_total,
+                    "autoiva" : autoiva,
+                    "autoneto" : autoneto,
+                    "autototal" : autototal,
+                  },
+                  dataType: "json"
+                })
+                //------------------creo el tipo de comprobante------------------//
+                .done(function(respuesta)
+                {
+                  if(respuesta.status = 'OK')
+                  {
+                    alert(respuesta.msg);
+                    $("#modalAddComprobante").modal('toggle');
+                     tableReload(respuesta.data);
+                    $('#blk_exe').prop( "checked", false );
+                    $('#blk_perciva').prop( "checked", false );
+                    $('#blk_perciibb').prop( "checked", false );
+                    $('#blk_ret').prop( "checked", false );
+                    $('#blk_netos').prop( "checked", false );
+                    $('#blk_iva').prop( "checked", false );
+                    $('#blk_nograv').prop( "checked", false );
+                    $('#blk_total').prop( "checked", false );
+                    $('#autoiva').prop( "checked", false );
+                    $('#autoneto').prop( "checked", false );
+                    $('#autototal').prop( "checked", false );
+                    $("#boton-editar").attr("disabled","true");
+                    ///------------------------------muestro el mensaje correspondiente-------//
+                  }
+                  else
+                  {
+                    alert("ERROR \n Razon:" + respuesta.msg);
+                    ///------------------------------muestro el mensaje correspondiente-------//
+                  } 
+                });
+              }
+              else 
+              {
+                alert("ERROR \n Razon:" + respuesta.msg);
+                ///------------------------------muestro el mensaje correspondiente-------//
+              }
+
+            });
+          }
+          else
+          {
+            cod_comp = $('#comprobanteDetalle').val();
+            $.ajax({
+                type: "POST",
+                url: "/comprobantes/"+window.id_tipo+"/edittipo",
+                async: false,
+                data: {                  
+                  "cod_comp" : cod_comp,
+                  "tipo_comp" : tipo_comp,
+                  "blk_exe" : blk_exe,
+                  "blk_perciva": blk_perciva,
+                  "blk_perciibb" : blk_perciibb,
+                  "blk_ret" : blk_ret,
+                  "blk_netos" : blk_netos,
+                  "blk_iva" : blk_iva,
+                  "blk_nograv" :blk_nograv,
+                  "blk_total" : blk_total,
+                  "autoiva" : autoiva,
+                  "autoneto" : autoneto,
+                  "autototal" : autototal,
+                },
+                dataType: "json"
+            })
+              .done(function(respuesta){
+                if(respuesta.status = 'OK')
+                {
+                  tableReload(respuesta.data);
+                  $('#blk_exe').prop( "checked", false );
+                  $('#blk_perciva').prop( "checked", false );
+                  $('#blk_perciibb').prop( "checked", false );
+                  $('#blk_ret').prop( "checked", false );
+                  $('#blk_netos').prop( "checked", false );
+                  $('#blk_iva').prop( "checked", false );
+                  $('#blk_nograv').prop( "checked", false );
+                  $('#blk_total').prop( "checked", false );
+                  $('#autoiva').prop( "checked", false );
+                  $('#autoneto').prop( "checked", false );
+                  $('#autototal').prop( "checked", false );
+                  alert(respuesta.msg);
+                  $("#boton-editar").attr("disabled","true");
+                }
+                else
+                {
+                  alert("ERROR \n Razon:" + respuesta.msg);
+                } 
+              });
+          }
+
+
+        }
       });
       //-----------------------------------/EDITAR comprobantes----------------------------------//
       //-----------------------------------BORRAR comprobantes----------------------------------//
@@ -478,24 +641,32 @@
       $("#modal-formulario").validate({
           rules: {
               
-              nuevoCodigo: { 
+              tipoComprobante: { 
                 required: true,
-                minlength: 3
+                //minlength: 3
               },
-              nuevaProvincia: { 
+              comprobante: { 
+                required: true
+                //minlength: 3
+              },
+              codigoComprobante: { 
                 required: true
                 //minlength: 3
               },                                
           },
           messages: {
-              nuevoCodigo: { 
-                required: "Este campo no puede dejarse en vacío",
-                minlength: "Este campo de contener al menos 3 caracteres"
+              tipoComprobante: { 
+                required: "Este campo es requerido",
+                //minlength: "Este campo de contener al menos 3 caracteres"
               },
-              nuevaProvincia: { 
-                required: "Este campo no puede dejarse en vacío",
+              comprobante: { 
+                required: "Este campo es requerido",
                 //minlength: 3
-              },                   
+              },
+              codigoComprobante: { 
+                required: "Este campo es requerido",
+                //minlength: 3
+              },                     
           },
           highlight: function(element) {
               $(element).closest('.form-group').addClass('has-error');
