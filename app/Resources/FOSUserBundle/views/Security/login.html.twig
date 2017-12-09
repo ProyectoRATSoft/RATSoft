@@ -5,7 +5,7 @@
 
 
 <style TYPE="text/css">
-	    @import url(https://fonts.googleapis.com/css?family=Open+Sans);
+	/*    @import url(https://fonts.googleapis.com/css?family=Open+Sans);
 	.btn { display: inline-block; *display: inline; *zoom: 1; padding: 4px 10px 4px; margin-bottom: 0; font-size: 13px; line-height: 18px; color: #333333; text-align: center;text-shadow: 0 1px 1px rgba(255, 255, 255, 0.75); vertical-align: middle; background-color: #f5f5f5; background-image: -moz-linear-gradient(top, #ffffff, #e6e6e6); background-image: -ms-linear-gradient(top, #ffffff, #e6e6e6); background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#ffffff), to(#e6e6e6)); background-image: -webkit-linear-gradient(top, #ffffff, #e6e6e6); background-image: -o-linear-gradient(top, #ffffff, #e6e6e6); background-image: linear-gradient(top, #ffffff, #e6e6e6); background-repeat: repeat-x; filter: progid:dximagetransform.microsoft.gradient(startColorstr=#ffffff, endColorstr=#e6e6e6, GradientType=0); border-color: #e6e6e6 #e6e6e6 #e6e6e6; border-color: rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.25); border: 1px solid #e6e6e6; -webkit-border-radius: 4px; -moz-border-radius: 4px; border-radius: 4px; -webkit-box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.2), 0 1px 2px rgba(0, 0, 0, 0.05); -moz-box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.2), 0 1px 2px rgba(0, 0, 0, 0.05); box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.2), 0 1px 2px rgba(0, 0, 0, 0.05); cursor: pointer; *margin-left: .3em; }
 	.btn:hover, .btn:active, .btn.active, .btn.disabled, .btn[disabled] { background-color: #e6e6e6; }
 	.btn-large { padding: 9px 14px; font-size: 15px; line-height: normal; -webkit-border-radius: 5px; -moz-border-radius: 5px; border-radius: 5px; }
@@ -33,8 +33,8 @@
 	.btn-submit {
 	    margin-top: 10px;
 	}
-
-	body {
+*/
+	/*body {
 	    width: 100%;
 	    height:100%;
 	    font-family: 'Open Sans', sans-serif;
@@ -75,11 +75,11 @@
 	    -ms-transition: box-shadow .5s ease;
 	    transition: box-shadow .5s ease;
 	}
-	input:focus { box-shadow: inset 0 -5px 45px rgba(100,100,100,0.4), 0 1px 1px rgba(255,255,255,0.2); }
+	input:focus { box-shadow: inset 0 -5px 45px rgba(100,100,100,0.4), 0 1px 1px rgba(255,255,255,0.2); }*/
 </style>
 
-    <div class="login">
-	    <h1>RATSoft</h1>
+    <!-- <div class="login">
+	    <h1><b>RATS</b>oft</h1>
 	    <form action="{{ path("fos_user_security_check") }}" method="post">
 		    {% if csrf_token %}
 		        <input type="hidden" name="_csrf_token" value="{{ csrf_token }}" />
@@ -99,5 +99,57 @@
 	    {% if error %}
 	        <div class="label">{{ error.messageKey|trans(error.messageData, 'security') }}</div>
 	    {% endif %}
-		</div>
+	</div> -->
+
+	 <div class="login-box">
+      <div class="login-logo">
+        <a href="login-ratsoft"><b>RATS</b>oft</a>
+      </div>
+      <!-- /.login-logo -->
+      <div class="login-box-body">
+        <p class="login-box-msg">Ingresa tus datos para iniciar sesión</p>
+         <form action="{{ path("fos_user_security_check") }}" method="post">
+         	{% if csrf_token %}
+		        <input type="hidden" name="_csrf_token" value="{{ csrf_token }}" />
+		    {% endif %}
+          <div class="form-group has-feedback">
+          	<label for="username" class="control-label">Usuario</label>
+            <input type="text" id="username" name="_username" value="{{ last_username }}" required="required" class="form-control" placeholder="Usuario">
+            <span class="glyphicon glyphicon-envelope form-control-feedback"></span>
+          </div>
+          <div class="form-group has-feedback">
+          	<label for="password" class="control-label">Contraseña</label>
+		    <input type="password" id="password" name="_password" required="required" placeholder="Password"  class="form-control" />
+            <span class="glyphicon glyphicon-lock form-control-feedback"></span>
+          </div>
+           {% if error %}
+	        <div class="label-control">{{ error.messageKey|trans(error.messageData, 'security') }}</div>
+	        <br>
+	    	{% endif %}
+          <div class="row">
+            <div class="col-xs-7">
+              <div class="checkbox icheck">
+                <label for="remember_me" class="control-label" style="color: black">
+                  <input type="checkbox" id="remember_me" name="_remember_me" value="on" class="check" /> Recordar contraseña
+                </label>
+                 <!-- <input type="checkbox" id="remember_me" name="_remember_me" value="on" class="check" /> -->
+		    <!-- <label for="remember_me" class="label">Recordar contraseña</label> -->
+              </div>
+            </div>
+            <!-- /.col -->
+            <div class="col-xs-5">
+              <!-- <button type="submit" class="btn btn-primary btn-block btn-flat">Iniciar sesión</button> -->
+               <input type="submit" id="_submit" name="_submit" value="Iniciar sesión " class="btn btn-primary btn-block btn-flat btn-submit"/>
+            </div>
+            <!-- /.col -->
+          </div>
+        </form>
+        
+       <!--  <a href="#">I forgot my password</a><br>
+        <a href="register" class="text-center">Register a new membership</a> -->
+
+
+      </div>
+      <!-- /.login-box-body -->
+    </div>
 {% endblock fos_user_content %}

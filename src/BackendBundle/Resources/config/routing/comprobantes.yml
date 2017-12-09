@@ -17,3 +17,13 @@ comprobantes_newcomp:
     path: /newcomp
     defaults: { _controller: BackendBundle:Comprobantes:newcomp }
     methods: POST
+
+comprobantes_editcomp:
+    path: /{id}/editcomp
+    defaults: { _controller: BackendBundle:Comprobantes:editcomp }
+    methods: POST
+
+comprobantes_edittipo:
+    path: /{id}/edittipo
+    defaults: { _controller: BackendBundle:Comprobantes:edittipo }
+    methods: POST

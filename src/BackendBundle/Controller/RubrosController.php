@@ -53,7 +53,7 @@ class RubrosController extends Controller
 		// Me aseguro que no me hayan mandado ningun campo vacío
 
 		if ( empty($respuesta["nombre"])
-			|| empty($respuesta["servicio"])
+			|| is_numeric($respuesta["servicio"])
 			) {
 				$data = array(
 					'status' => 'ERROR',
