@@ -89,6 +89,7 @@
     window.arrayrespuesta = {{ respuesta|raw }};
     console.log(arrayrespuesta);
     window.idEmpresa = {{ empresa|raw }};
+    console.log(idEmpresa);
       //cargamos los valores para el Combo Comprobantes que esta en el modal
     comboFill("/comprobantes","id","detalle","#comprobante");
     $.get("/comprobantes/tipos",function(resp,estado,jqXHR){
@@ -208,7 +209,7 @@
         $('#tipoComprobante').empty();
         $('#tipoComprobante').prepend('<option disabled selected value>--Seleccionar--</option>');
          $('#rubro').empty();
-        var opciones = "<option value='"+arrayrespuesta.data["0"].empresa.rubro.id+"'>"+arrayrespuesta.data["0"].empresa.rubro.nombre+"</option>";
+        var opciones = "<option value='"+arrayrespuesta.empresa.rubro.id+"'>"+arrayrespuesta.empresa.rubro.nombre+"</option>";
         $('#rubro').prepend(opciones);
         $('#exento').val('0');
         $('#nogravado').val('0');

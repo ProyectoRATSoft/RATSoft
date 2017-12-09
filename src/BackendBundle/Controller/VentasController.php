@@ -30,6 +30,7 @@ class VentasController extends Controller
 			'recordsTotal' => '',
 			'recordsFiltered' => '',
 			'data' => '',
+			'empresa' => '',
 		);
 
 		$result = $em->getRepository("BackendBundle:TblVentas")->findBy(
@@ -38,14 +39,23 @@ class VentasController extends Controller
 				'activo' => "1"
 			));
 		$ventas["data"] = $result;
+
+		$empresa = $em->getRepository("BackendBundle:TblEmpresas")->findOneBy(
+			array(
+				'id' => $id,
+				'activo' => "1"
+			));
+		$ventas["empresa"] = $empresa;
+
 		$serializer = SerializerBuilder::create()->build();
-		$jsonResponse = $serializer->serialize($ventas, 'json');
+		$jsonResponseVentas = $serializer->serialize($ventas, 'json');
+		//$jsonResponseEmpresa = $serializer->serialize($empresa, 'json');
 		
 		
 		return $this->render(
 			'FrontendBundle:Ventas:ventas-home.html.twig', 
         	array(
-        		"respuesta" => $jsonResponse,
+        		"respuesta" => $jsonResponseVentas,
         		"empresa" => $id,
         ));
         // return new Response($ventas);		
