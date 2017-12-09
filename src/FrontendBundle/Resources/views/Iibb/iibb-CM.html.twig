@@ -1,0 +1,297 @@
+{% extends 'FrontendBundle::Default/base.html.twig' %}
+{% block title %}Reporte de IIBB{% endblock %}
+{% block CSs %}
+<style>
+input { 
+    text-align: right; 
+}
+</style>
+{% endblock %}
+{% block Scripts %}
+<script src="https://cdn.jsdelivr.net/npm/jquery-validation@1.17.0/dist/jquery.validate.min.js"></script>
+<script>
+  window.arrayempresa = {{ empresa|raw }};
+  console.log(arrayempresa);
+  function goBack() {
+              window.history.back();
+          } 
+  $(document).ready(function(){
+    $("#titulo-empresa").text(arrayempresa.nombre);
+    window.arrayJurisd = new Array();
+    $("#buscarPeriodo").on("click",function(){
+    	$("#impDet").val("0.00");
+    	$("#saldoFavor").val("0.00");
+      	$.get("/impositivo/iibb/" + arrayempresa.id + "/" + $("#periodo").val(),function(resp,estado,jqXHR){
+        	var arrayIibb = JSON.parse(resp);
+            window.arrayIibb= arrayIibb.data;
+            console.log(arrayIibb);
+            var retenciones = "0";
+            var percepciones = "0";
+            var baseImponible = "0";
+            arrayJurisd = [];
+            arrayIibb.data.ventas.forEach(function(item,index,arr){
+            	baseImponible =
+            		parseFloat(baseImponible) +
+            		parseFloat(item.neto21) +
+            		parseFloat(item.neto105) +
+            		parseFloat(item.neto_exento) +
+            		parseFloat(item.nogravado);
+            	retenciones = parseFloat(retenciones) + parseFloat(item.retencion);
+            	var issetJurisd = false;
+            	arrayJurisd.forEach(function(item2,index2,arr2){
+            		if ( index2 == item.cliente.jurisdiccion.codigo){
+            			issetJurisd = true;
+            		}
+            	});
+
+            	if ( !issetJurisd ){
+            		arrayJurisd[item.cliente.jurisdiccion.codigo] = parseFloat("0");
+            		//console.log("entre");
+            	}
+            	arrayJurisd[item.cliente.jurisdiccion.codigo] =
+            		parseFloat(arrayJurisd[item.cliente.jurisdiccion.codigo]) +
+            		parseFloat(item.neto21) +
+            		parseFloat(item.neto105) +
+            		parseFloat(item.neto_exento) +
+            		parseFloat(item.nogravado);
+
+            }); // fin forEach Ventas
+
+            arrayIibb.data.compras.forEach(function(item,index,arr){
+            	percepciones = parseFloat(percepciones) + parseFloat(item.perc_iibb);
+            }); // fin forEach Compras
+
+            var htmlJurisd = 
+            	"<div class='form-group'>" +                          
+          		"<label class='control-label col-md-6' for=''>Jurisdiccion </label>" +
+          		"<label class='control-label col-md-3' for=''>Neto </label>" + 
+          		"<label class='control-label col-md-3' for=''>Alicuota </label>" +       
+          		"</div>";
+            arrayJurisd.forEach(function(item,index,arr){
+            	//console.log(item);
+            	htmlJurisd = htmlJurisd  + 
+            	"<div class='form-group'>" +                          
+          		"<label class='control-label col-md-6' for=''>" + index + "</label>" +
+          		"<div class='col-md-3'>" +
+            	"<input type='text' class='form-control input-sm' disabled='true' id='neto-jurisd" + index + "' value='" + item.toFixed(2) + "''></input>" +
+          		"</div>" +
+          		"<div class='col-md-3'>" +
+          		"<form id='form-valid" + index + "'>" +
+            	"<input type='text' class='form-control input-sm clase-validacion' id='alicuota" + index + "'></input>" +
+            	"</form>" +
+          		"</div>" +
+          		"</div>"
+          	});
+            //console.log(htmlJurisd);
+            $("#netosPorJurisd").html(htmlJurisd);
+            $("#netos-total").text(baseImponible.toFixed(2));
+            $("#retenciones").val(retenciones.toFixed(2));
+            $("#percepciones").val(percepciones.toFixed(2));
+
+            $("form[id^=form-valid]").each(function() {
+		    	$(this).validate();
+			});
+		   	
+		   	$("form").find(".clase-validacion").each(function(){
+		   		$(this).rules('add', {
+			        required: true,
+			        number: true,
+			        messages: {
+			        	required: "Required input",
+			        	number: "Please only enter digits"
+			        }
+			    });
+		   	});
+
+
+      }); // fin del ajax  
+    });// fin del on.click
+
+    $("#boton-calcular").on("click",function(){
+    	var validacion = true;
+    	$("form[id^=form-valid]").each(function(){
+    		if(!$(this).valid()){
+    			validacion = false;
+    		}
+    	});
+    	if (validacion){
+	    	var impDet = "0";
+	    	var saldo = "0";
+	    	arrayJurisd.forEach(function(item,index,arr){
+	    		var valor = parseFloat($("#neto-jurisd" + index).val()) * parseFloat($("#alicuota" + index).val());
+	    		impDet = parseFloat(impDet) + parseFloat(valor); 
+	    	});
+	    	$("#impDet").val(impDet.toFixed(2));
+	    	saldo = 
+	    		parseFloat($("#impDet").val()) -
+	    		parseFloat($("#retenciones").val()) -
+	    		parseFloat($("#percepciones").val()) -
+	    		parseFloat($("#saldoFavor").val());
+
+	    	if (saldo >= 0) {
+	    		$("#saldoIngresar").val(saldo.toFixed(2));
+	    		$("#saldoFavCont").val("0.00");
+	    	}else{
+	    		$("#saldoIngresar").val("0.00");
+	    		$("#saldoFavCont").val(Math.abs(saldo.toFixed(2)));
+	    	}
+	    	$("#saldoFavor").val(parseFloat($("#saldoFavor").val()).toFixed(2));
+	    }
+    });
+
+    
+
+  });// fin del document.ready
+</script> 
+{% endblock %}
+
+{% block body %}
+<div class="content-wrapper">
+<!-- Content Header (Page header) -->
+    <section class="content-header">
+    <h2 id="titulo-empresa"></h2>
+    <div class="col-xs-12">
+    <div class="form-group">
+            {% block botones %}
+				<div class="text-center">
+					<div class="col-md-8 col-sm-4 col-xs-12">
+						<div class="form-group">                          
+			            	<label class="control-label col-md-3 col-sm-4 col-xs-12" for="">Periodo: </label>
+			            	<div class="col-md-6 col-sm-4 col-xs-12">
+			              		<input type="month" style="text-align:left;" class="form-control input-sm" id="periodo" placeholder="Ingrese periodo">
+			            	</div>
+			            	<div class="col-md-3 col-sm-4 col-xs-12">
+			              		<button class="btn btn-primary btn-block" id="buscarPeriodo"><i class="fa fa-search" aria-hidden="true">Buscar</i></button>
+			            	</div>
+						</div>
+					</div>
+					<div class="col-md-2 col-sm-4 col-xs-12">
+						<button class="btn btn-primary btn-block" id="editCompra"><i class="fa fa-print" aria-hidden="true"> Exportar</i></button>
+					</div>
+					<div class="col-md-2 col-sm-4 col-xs-12">
+						<button class="btn btn-default btn-block" onclick="goBack()"> Volver</button>
+					</div>
+				</div>   
+			{% endblock %}
+    </div>
+    </div>
+    <ol class="breadcrumb">
+    <li><a href="/"><i class="fa fa-home"></i> Home</a></li>
+    <li><a href="/impositivo"><i class="fa fa-search"></i> Impositivo</a></li>
+    <li class="active"><i class="fa fa-plus" aria-hidden="true"></i> IIBB</li>
+  </ol>
+    </section>
+    <section class="content">
+    
+    <h2>
+      IIBB
+      <small>Convenio Multilateral</small>
+    </h2> 
+          
+  <div class="row"> 
+    <div class="col-md-6">
+    
+    <div class="panel-group">
+      <div class="panel panel-default">
+      <div class="panel-heading">
+        <!-- header netos-->
+        <h4 class="panel-title">
+        <a data-toggle="collapse" href="#netosventas" class="form-inline">
+          <div class="col-md-6 text-left">
+          <label>Base Imponible</label>
+          </div>
+          <div class="text-right">
+          <label>total:</label>
+          <Label id="netos-total"></label>
+          </div>
+        </a>
+        </h4>
+        <!-- /header netos -->
+      </div>
+      <div id="netosventas" class="panel-collapse collapse in">
+          <!-- body de netos-->
+        <div class="panel-body" id="netosPorJurisd">
+         
+        </div>
+          <!--/body de netos -->
+        </div>
+      </div>
+    </div>
+    <!--/panel netos  -->
+    </div>
+    <!-- /ventas -->
+    <div class="col-md-6">
+      <div class="panel-group">
+      <div class="panel panel-default">
+        <div class="panel-heading" style="height: 35px;">
+        <!-- header netos-->
+        <h4 class="panel-title">
+          <a data-toggle="collapse"  class="form-inline">
+          <div class="col-md-12 text-left">
+            <label>Posiciones</label>
+          </div>
+          </a>
+        </h4>
+        <!-- /header netos -->
+        </div>
+        <div id="-" class="panel-collapse collapse in">
+        <!-- body de netos-->
+        <div class="panel-body">
+        <div class="form-group">
+         <label class="control-label col-md-6" for="">Impuesto Determinado : </label>
+          <div class="col-md-6">
+          <input type="" class="form-control input-sm" disabled="true" id="impDet">
+          </div>             
+        </div>
+        <div class="form-group">
+          <label class="control-label col-md-6" for="">Retenciones: </label>
+          <div class="col-md-6">
+          <input type="" class="form-control input-sm" disabled="true" id="retenciones">
+          </div>             
+        </div>
+        <div class="form-group">
+          <label class="control-label col-md-6" for="">Percepciones: </label>
+          <div class="col-md-6">
+          <input type="" class="form-control input-sm" disabled="true" id="percepciones">
+          </div>             
+        </div>
+        <div class="form-group">
+          <label class="control-label col-md-6" for="">Saldo a favor: </label>
+          <div class="col-md-6">
+          <form id="form-valid-saldoFavor">	
+          <input type="" class="form-control input-sm clase-validacion" id="saldoFavor">
+      	  </form>
+          </div>             
+        </div>
+        <div class="form-group">                          
+          <label class="control-label col-md-6" for="">Saldo a Ingresar: </label>
+          <div class="col-md-6">
+          <input type="" class="form-control input-sm" disabled="true" id="saldoIngresar">
+          </div>             
+        </div>
+        <div class="form-group">                          
+          <label class="control-label col-md-6" for="">Saldo a favor del contribuyente: </label>
+          <div class="col-md-6">
+          <input type="" class="form-control input-sm" disabled="true" id="saldoFavCont">
+          </div>             
+        </div>
+        <div class="form-group">
+          <div class="col-md-10"></div>
+          <div class="col-md-2">
+            <button type="submit" onclick="return false" div="calcular" class="btn btn-primary btn-sm" id="boton-calcular">calcular</button>
+          </div>             
+        </div>
+        </div>
+        <!-- </div> -->
+      </div>
+      </div>
+      </div>  
+    </div>
+  </div>  
+    
+	
+  </section>
+
+    <!-- Main content -->
+</div>
+{% endblock %}

@@ -2,3 +2,18 @@ iibb_impositivo_all:
     path: /
     defaults: { _controller: BackendBundle:IIBB:all }
     methods: GET
+
+iibb_index_rg:
+    path: /rg/{id}/
+    defaults: { _controller: "FrontendBundle:Modulos:iibbRg" } 
+    methods: GET
+
+iibb_index_cm:
+    path: /cm/{id}/
+    defaults: { _controller: "FrontendBundle:Modulos:iibbCm" } 
+    methods: GET
+
+iibb_impositivo:
+    path: /{id}/{periodo}
+    defaults: { _controller: BackendBundle:Impositivo:iibb }
+    methods: GET

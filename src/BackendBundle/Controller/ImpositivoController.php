@@ -16,7 +16,7 @@ use BackendBundle\Entity\TblVentas;
 class ImpositivoController extends Controller
 {
 	/**
-	*	@Route("/impositivo/iva/{id}/{periodo}",name="iva_all")
+	*	@Route("/impositivo/iva/{id}/{periodo}",name="iva_impositivo")
 	*	@Method({"GET"})
 	*/
 
@@ -57,8 +57,49 @@ class ImpositivoController extends Controller
 		return new Response($jsonResponse);
     	
 	}
-	
 
+	/**
+	*	@Route("/impositivo/iibb/{id}/{periodo}",name="iibb_impositivo")
+	*	@Method({"GET"})
+	*/
+
+	public function iibbAction($id,$periodo,Request $request){
+
+		$em = $this->getDoctrine()->getManager();
+		$explodePeriodo = explode("-",$periodo);
+		$mes = $explodePeriodo[1];
+		$ano = $explodePeriodo[0];
+    	$iibb = array(
+			'draw' => '',
+			'recordsTotal' => '',
+			'recordsFiltered' => '',
+			'status'=> '',
+			'msg' => '',
+			'data' => '',
+		);
+		$compras = $em->getRepository("BackendBundle:TblCompras")->findBy(
+			array(
+				'empresa' => $id,
+				'periodoAno' => $ano,
+				'periodoMes' => $mes,
+				'activo' => "1",
+			));
+		$ventas = $em->getRepository("BackendBundle:TblVentas")->findBy(
+			array(
+				'empresa' => $id,
+				'periodoAno' => $ano,
+				'periodoMes' => $mes,
+				'activo' => "1",
+			));
+		$iibb["data"]["compras"] = $compras;
+		$iibb["data"]["ventas"] = $ventas;
+
+		$serializer = SerializerBuilder::create()->build();
+		$jsonResponse = $serializer->serialize($iibb, 'json');
+
+		return new Response($jsonResponse);
+    	
+	}
 	
 }
 ?>

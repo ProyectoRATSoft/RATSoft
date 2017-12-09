@@ -38,16 +38,15 @@ class ModulosController extends Controller
         return $this->render('FrontendBundle:Comprobantes:comprobantes-home.html.twig');
     }
 
-    /**
-    *   @Route("/impositivo/iva/{id}",name="iva_byId")
-    *   @Method({"GET"})
-    */
-
     public function informesAction()
     {
         return $this->render('FrontendBundle:Informes:informes-home.html.twig');
     }
 
+    /**
+    *   @Route("/impositivo/iva/{id}",name="iva_index")
+    *   @Method({"GET"})
+    */
     public function ivaAction($id,Request $request)
     {
         
@@ -64,24 +63,43 @@ class ModulosController extends Controller
             ));
     }
 
-    // public function iibbAction($id,Request $request)
-    // {
-    //     $em = $this->getDoctrine()->getManager();
-    //     $result = $em->getRepository("BackendBundle:TblEmpresas")->findOneBy(
-    //         array(
-    //             'id' => $id,
-    //         ));
-    //     $serializer = SerializerBuilder::create()->build();
-    //     $jsonResponse = $serializer->serialize($result, 'json');
-    //     return $this->render('FrontendBundle:Iibb:iibb-home.html.twig',
-    //         array(
-    //             "empresa" => $jsonResponse,
-    //         ));
-    // }
-
-     public function iibbAction()
+    
+    /**
+    *   @Route("/impositivo/iibb/rg/{id}",name="iibb_index_rg")
+    *   @Method({"GET"})
+    */
+    public function iibbRgAction($id,Request $request)
     {
-        return $this->render('FrontendBundle:Iibb:iibb-home.html.twig');
+        $em = $this->getDoctrine()->getManager();
+        $result = $em->getRepository("BackendBundle:TblEmpresas")->findOneBy(
+            array(
+                'id' => $id,
+            ));
+        $serializer = SerializerBuilder::create()->build();
+        $jsonResponse = $serializer->serialize($result, 'json');
+        return $this->render('FrontendBundle:Iibb:iibb-RG.html.twig',
+            array(
+                "empresa" => $jsonResponse,
+            ));
+    }
+
+    /**
+    *   @Route("/impositivo/iibb/cm/{id}",name="iibb_index_cm")
+    *   @Method({"GET"})
+    */
+    public function iibbCmAction($id,Request $request)
+    {
+        $em = $this->getDoctrine()->getManager();
+        $result = $em->getRepository("BackendBundle:TblEmpresas")->findOneBy(
+            array(
+                'id' => $id,
+            ));
+        $serializer = SerializerBuilder::create()->build();
+        $jsonResponse = $serializer->serialize($result, 'json');
+        return $this->render('FrontendBundle:Iibb:iibb-CM.html.twig',
+            array(
+                "empresa" => $jsonResponse,
+            ));
     }
 
     public function userAction()

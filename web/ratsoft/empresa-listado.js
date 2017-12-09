@@ -140,8 +140,7 @@
         $("#boton-ventas").attr("enabled","true");
         $("#boton-iva").removeAttr("disabled");
         $("#boton-iva").attr("enabled","true");
-        $("#boton-iibb").removeAttr("disabled");
-        $("#boton-iibb").attr("enabled","true");
+
     // metemos en una variable lo que hay en e campo cuit de la empresa seleccionada
         var cuit = window.table.$("tr.active").find(".cuit").text();
         window.arrayrespuesta.forEach(function(item,index,arr){
@@ -178,6 +177,21 @@
           $('div.modal-body div.form-group #nuevoCodIngresosBrutos').val(item.iibb_cod.id);
           $('div.modal-body div.form-group #nuevoRubro').val(item.rubro.id);
           $('div.modal-body div.form-group #nuevoTitular').val(item.titular);
+          if (item.iibb_cod.id == 1 || item.iibb_cod.id == 3){
+            $("#boton-iibb").removeAttr("disabled");
+            $("#boton-iibb").attr("enabled","true");
+              if (item.iibb_cod.id == 1){
+                $('#link-iibb').removeAttr('href');
+                $('#link-iibb').attr('href',"/impositivo/iibb/rg/"+item.id);
+              }
+              if (item.iibb_cod.id == 3){
+                $('#link-iibb').removeAttr('href');
+                $('#link-iibb').attr('href',"/impositivo/iibb/cm/"+item.id);
+              }
+            }else{
+              $("#boton-iibb").removeAttr("disabled");
+              $("#boton-iibb").attr("disabled","true");
+            }
           }
         });
       }
