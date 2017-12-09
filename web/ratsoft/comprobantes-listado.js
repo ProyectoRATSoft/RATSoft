@@ -214,7 +214,7 @@
       $("#boton-add").click(function(){        
          $("#modalAddComprobante").modal();
          //reseteo las validaciones
-         // $("#modal-formulario").validate().resetForm();
+         $("#modal-formulario").validate().resetForm();
          $("#modal-formulario").find('.has-error').removeClass("has-error"); //limpia las clases has-error que pone los recuadros rojos
          $("#modal-formulario").find('.has-success').removeClass("has-success");//limpia los recuadros verdes de los datos correctos ingresados
          $('#tabla-comprobante tbody tr').removeClass('active');
@@ -414,14 +414,7 @@
         $("h4.modal-title").text("Editar comprobante");
         $('button#newComprobante').css("display", "none");
         $('button#editComprobante').css("display", "");
-        // $('button#deleteComprobantes').css("display", "");
 
-       // .removeAttr("name").attr("name","tipoComprobante")
-
-        
-        //var cbovalueselected = $('#comprobanteDetalle').val();
-
-        //$('#comprobanteDetalleModal')
       });
 
       $("#editComprobante").click(function(){
