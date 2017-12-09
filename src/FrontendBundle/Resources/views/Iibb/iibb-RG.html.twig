@@ -47,22 +47,26 @@ input {
         $("#retenciones").val(retenciones.toFixed(2));
         $("#percepciones").val(percepciones.toFixed(2));
 
-        $("form[id^=form-valid]").each(function() {
-            $(this).validate();
-        });
-      
-        $("form").find(".clase-validacion").each(function(){
-          $(this).rules('add', {
-              required: true,
-              number: true,
-              messages: {
-                required: "Required input",
-                number: "Please only enter digits"
-              }
-          });
-        });
+        
       }); // fin del ajax  
     });// fin del on.click
+
+    $("form[id^=form-valid]").each(function() {
+        $(this).validate();
+    });
+  
+    $("form").find(".clase-validacion").each(function(){
+      $(this).rules('add', {
+          required: true,
+          number: true,
+          messages: {
+            required: "Campo requerido",
+            number: "Sólo números"
+          }
+      });
+    });
+
+
     $("#boton-calcular").on("click",function(){
       var validacion = true;
       $("form[id^=form-valid]").each(function(){
@@ -165,12 +169,14 @@ input {
                    <label for="alicuotaRegimen">Alicuota: </label>
               </div>
               <div class="col-xs-9  input-sm">
-                <select name="alicuotaRegimen" id="alicuotaRegimen" required="true" class="selectpicker dropdown-toggle form-control input-sm" type="button" data-toggle="dropdown">
-                  <option disabled selected value>--Seleccione una opcion--</option>
-                  <option value="0.03">Ventas 3%</option>
-                  <option value="0.015">Alquileres 1,5%</option>
-                  <option value="0.03">Servicios 3%</option>
-                </select>
+                <form id="form-valid-alicuota">
+                  <select name="alicuotaRegimen" id="alicuotaRegimen" required="true" class="selectpicker dropdown-toggle form-control input-sm clase-validacion" type="button" data-toggle="dropdown">
+                    <option disabled selected value>--Seleccione una opcion--</option>
+                    <option value="0.03">Ventas 3%</option>
+                    <option value="0.015">Alquileres 1,5%</option>
+                    <option value="0.03">Servicios 3%</option>
+                  </select>
+                </form>
               </div>
             </div>
             <div style="margin: 65px"></div>
@@ -220,7 +226,9 @@ input {
             <div class="form-group">
               <label class="control-label col-md-6" for="">Saldo a favor: </label>
               <div class="col-md-6">
-                <input type="" class="form-control input-sm" id="saldoFavor">
+                <form id="form-valid-saldoFavor">
+                  <input type="" class="form-control input-sm clase-validacion" id="saldoFavor">
+                </form>
               </div>             
             </div>
             <div class="form-group">                          
