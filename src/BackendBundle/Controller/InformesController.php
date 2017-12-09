@@ -15,10 +15,11 @@ class InformesController extends Controller
 {
 
   // Devuelve todas las compras. La lógica de búsqueda la controla Front.
-  public function ventasAction(Request $request) {
+  public function ventasAction($id, Request $request) {
     $em = $this->getDoctrine()->getManager();
     $result = $em->getRepository("BackendBundle:TblVentas")->findBy(
       array(
+        'empresa' => $id,
         'activo' => "1"
       ));
 
