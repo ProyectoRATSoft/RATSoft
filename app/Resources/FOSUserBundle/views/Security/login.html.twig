@@ -122,6 +122,10 @@
 		    <input type="password" id="password" name="_password" required="required" placeholder="Password"  class="form-control" />
             <span class="glyphicon glyphicon-lock form-control-feedback"></span>
           </div>
+           {% if error %}
+	        <div class="label-control">{{ error.messageKey|trans(error.messageData, 'security') }}</div>
+	        <br>
+	    	{% endif %}
           <div class="row">
             <div class="col-xs-7">
               <div class="checkbox icheck">
@@ -140,9 +144,7 @@
             <!-- /.col -->
           </div>
         </form>
-         {% if error %}
-	        <div class="label">{{ error.messageKey|trans(error.messageData, 'security') }}</div>
-	    {% endif %}
+        
        <!--  <a href="#">I forgot my password</a><br>
         <a href="register" class="text-center">Register a new membership</a> -->
 
