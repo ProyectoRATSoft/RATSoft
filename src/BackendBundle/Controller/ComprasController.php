@@ -62,6 +62,102 @@ class ComprasController extends Controller
 
 	public function newAction($id,Request $request){
 
+		// $respuesta = array (
+		// 	'fecha_ingreso' => new \DateTime("now"),
+		// 	'periodo_mes' => $request->request->get("periodo_mes"),
+		// 	'periodo_ano' => $request->request->get("periodo_ano"),
+		// 	'fecha' => new \DateTime($request->request->get("fecha")),
+		// 	'nro_comprobante' => $request->request->get("nro_comprobante"),
+		// 	'cai' => $request->request->get("cai"),
+		// 	'neto_105' => $request->request->get("neto_105"),
+		// 	'neto_21' => $request->request->get("neto_21"),
+		// 	'neto_27' => $request->request->get("neto_27"),
+		// 	'iva_105' => $request->request->get("iva_105"),
+		// 	'iva_21' => $request->request->get("iva_21"),
+		// 	'iva_27' => $request->request->get("iva_27"),
+		// 	'nogravado' => $request->request->get("nogravado"),
+		// 	'exento' => $request->request->get("exento"),
+		// 	'perc_iva' => $request->request->get("perc_iva"),
+		// 	'perc_iibb' => $request->request->get("perc_iibb"),
+		// 	'ret_ganancia' => $request->request->get("ret_ganancia"),
+		// 	'total' => $request->request->get("total"),
+		// 	'cod_comprobante' => $request->request->get("cod_comprobante"),
+		// 	'empresa' => $id,
+		// 	'imputacion' => $request->request->get("imputacion"),
+		// 	'proveedor' => $request->request->get("proveedor"),
+		// 	'tipo_comprobante' => $request->request->get("tipo_comprobante"),
+		// 	//'usuario' => $request->request->get("usuario"),
+		// 	'usuario' => '1',
+		// );
+
+		// Me aseguro que no me hayan mandado ningun campo vacío
+
+		// if ( 
+		// 		    !$respuesta["periodo_mes"]
+		// 		|| 	!$respuesta["periodo_ano"]
+		// 		||  !$respuesta["fecha"]
+		// 		||  !$respuesta["cai"]
+		// 		||  !$respuesta["cod_comprobante"]
+		// 		||  !$respuesta["tipo_comprobante"]
+		// 		||  !$respuesta["nro_comprobante"]
+		// 		||  !$respuesta["proveedor"]
+		// 		||	!$respuesta["imputacion"]
+		// 		||  !is_numeric($respuesta["neto_105"])	
+		// 		||  !is_numeric($respuesta["neto_21"])
+		// 		||  !is_numeric($respuesta["neto_27"])	
+		// 		||  !is_numeric($respuesta["exento"])
+		// 		||  !is_numeric($respuesta["nogravado"])
+		// 		||  !is_numeric($respuesta["iva_105"])
+		// 		||  !is_numeric($respuesta["iva_21"])
+		// 		||  !is_numeric($respuesta["iva_27"]) 	
+		// 		||  !is_numeric($respuesta["ret_ganancia"])
+		// 		||  !is_numeric($respuesta["perc_iva"])
+		// 		||  !is_numeric($respuesta["perc_iibb"])	
+		// 		||  !is_numeric($respuesta["total"])
+		// 	) {
+
+			if ( 
+				    !$request->request->get("periodo_mes")
+				|| 	!$request->request->get("periodo_ano")
+				//||  !$request->request->get("cai")
+				||  !$request->request->get("cod_comprobante")
+				||  !$request->request->get("tipo_comprobante")
+				||  !$request->request->get("nro_comprobante")
+				||  !$request->request->get("proveedor")
+				||	!$request->request->get("imputacion")
+				||  !is_numeric($request->request->get("neto_105"))	
+				||  !is_numeric($request->request->get("neto_21"))
+				||  !is_numeric($request->request->get("neto_27"))	
+				||  !is_numeric($request->request->get("exento"))
+				||  !is_numeric($request->request->get("nogravado"))
+				||  !is_numeric($request->request->get("iva_105"))
+				||  !is_numeric($request->request->get("iva_21"))
+				||  !is_numeric($request->request->get("iva_27")) 	
+				||  !is_numeric($request->request->get("ret_ganancia"))
+				||  !is_numeric($request->request->get("perc_iva"))
+				||  !is_numeric($request->request->get("perc_iibb"))	
+				||  !is_numeric($request->request->get("total"))
+			) {
+				$em = $this->getDoctrine()->getManager();
+				$result = $em->getRepository("BackendBundle:TblCompras")->findBy(
+					array(
+						'empresa' => $id,
+						'activo' => "1"
+					));
+				$data = array(
+					'status' => 'ERROR',
+					'msg' => 'Hubo campos mandatorios que se enviaron vacios',
+					'draw' => '',
+					'recordsTotal' => '',
+					'recordsFiltered' => '',
+					'data' =>  $result,				
+			);
+				$serializer = SerializerBuilder::create()->build();	
+				$jsonResponse = $serializer->serialize($data, 'json');
+				return new Response($jsonResponse);
+				exit();
+		}
+
 		$respuesta = array (
 			'fecha_ingreso' => new \DateTime("now"),
 			'periodo_mes' => $request->request->get("periodo_mes"),
@@ -89,50 +185,6 @@ class ComprasController extends Controller
 			//'usuario' => $request->request->get("usuario"),
 			'usuario' => '1',
 		);
-
-		// Me aseguro que no me hayan mandado ningun campo vacío
-
-		if ( 
-				    !$respuesta["periodo_mes"]
-				|| 	!$respuesta["periodo_ano"]
-				||  !$respuesta["fecha"]
-				||  !$respuesta["cai"]
-				||  !$respuesta["cod_comprobante"]
-				||  !$respuesta["tipo_comprobante"]
-				||  !$respuesta["nro_comprobante"]
-				||  !$respuesta["proveedor"]
-				||	!$respuesta["imputacion"]
-				||  !is_numeric($respuesta["neto_105"])	
-				||  !is_numeric($respuesta["neto_21"])
-				||  !is_numeric($respuesta["neto_27"])	
-				||  !is_numeric($respuesta["exento"])
-				||  !is_numeric($respuesta["nogravado"])
-				||  !is_numeric($respuesta["iva_105"])
-				||  !is_numeric($respuesta["iva_21"])
-				||  !is_numeric($respuesta["iva_27"]) 	
-				||  !is_numeric($respuesta["ret_ganancia"])
-				||  !is_numeric($respuesta["perc_iva"])
-				||  !is_numeric($respuesta["perc_iibb"])	
-				||  !is_numeric($respuesta["total"])
-			) {
-				$result = $em->getRepository("BackendBundle:TblCompras")->findBy(
-					array(
-						'empresa' => $id,
-						'activo' => "1"
-					));
-				$data = array(
-					'status' => 'ERROR',
-					'msg' => 'Hubo campos mandatorios que se enviaron vacios',
-					'draw' => '',
-					'recordsTotal' => '',
-					'recordsFiltered' => '',
-					'data' =>  $result,				
-			);
-					
-				$jsonResponse = $serializer->serialize($data, 'json');
-				return new Response($jsonResponse);
-				exit();
-		}
 
 		$em = $this->getDoctrine()->getManager();
 
@@ -316,7 +368,7 @@ class ComprasController extends Controller
 				|| 	!$respuesta["periodo_ano"]
 				|| 	!$respuesta["id"]
 				||  !$respuesta["fecha"]
-				||  !$respuesta["cai"]
+				//||  !$respuesta["cai"]
 				||  !$respuesta["cod_comprobante"]
 				||  !$respuesta["tipo_comprobante"]
 				||  !$respuesta["nro_comprobante"]
@@ -335,6 +387,8 @@ class ComprasController extends Controller
 				||  !is_numeric($respuesta["perc_iibb"])	
 				||  !is_numeric($respuesta["total"])
 			) {
+			
+			$em = $this->getDoctrine()->getManager();
 			$result = $em->getRepository("BackendBundle:TblCompras")->findBy(
 				array(
 					'empresa' => $id,
@@ -346,9 +400,9 @@ class ComprasController extends Controller
 				'draw' => '',
 				'recordsTotal' => '',
 				'recordsFiltered' => '',
-				'data' =>  $data,				
+				'data' =>  $result,				
 				);
-				
+			$serializer = SerializerBuilder::create()->build();	
 			$jsonResponse = $serializer->serialize($data, 'json');
 			return new Response($jsonResponse);
 			exit();
