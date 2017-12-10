@@ -100,6 +100,7 @@ class VentasController extends Controller
 				'recordsTotal' => '',
 				'recordsFiltered' => '',
 				'data' => '',
+				'empresa' => '',
 			);
 
 		$serializer = SerializerBuilder::create()->build();
@@ -136,7 +137,8 @@ class VentasController extends Controller
 					'draw' => '',
 					'recordsTotal' => '',
 					'recordsFiltered' => '',
-					'data' =>  $result,				
+					'data' =>  $result,
+					'empresa' => '',			
 			);
 				
 				$jsonResponse = $serializer->serialize($ventas, 'json');
@@ -175,7 +177,8 @@ class VentasController extends Controller
 					'draw' => '',
 					'recordsTotal' => '',
 					'recordsFiltered' => '',
-					'data' =>  $result,				
+					'data' =>  $result,
+					'empresa' => '',				
 			);
 			$serializer = SerializerBuilder::create()->build();
 			$jsonResponse = $serializer->serialize($data, 'json');
@@ -261,10 +264,18 @@ class VentasController extends Controller
 			'recordsTotal' => '',
 			'recordsFiltered' => '',
 			'data' => '',
+			'empresa' => '',
 		);
 
 		$result = $em->getRepository("BackendBundle:TblVentas")->findBy(array('empresa' => $id));
 		$ventas["data"] = $result;
+
+		$empresa = $em->getRepository("BackendBundle:TblEmpresas")->findOneBy(
+			array(
+				'id' => $id,
+				'activo' => "1"
+			));
+		$ventas["empresa"] = $empresa;
 
 		$jsonResponse = $serializer->serialize($ventas, 'json');
 		return new Response($jsonResponse);		
@@ -340,7 +351,8 @@ class VentasController extends Controller
 					'draw' => '',
 					'recordsTotal' => '',
 					'recordsFiltered' => '',
-					'data' =>  $result,				
+					'data' =>  $result,
+					'empresa' => '',				
 			);
 				
 				$jsonResponse = $serializer->serialize($ventas, 'json');
@@ -380,7 +392,8 @@ class VentasController extends Controller
 					'draw' => '',
 					'recordsTotal' => '',
 					'recordsFiltered' => '',
-					'data' =>  $result,				
+					'data' =>  $result,
+					'empresa' => '',				
 			);
 			$serializer = SerializerBuilder::create()->build();
 			$jsonResponse = $serializer->serialize($data, 'json');
@@ -470,10 +483,18 @@ class VentasController extends Controller
 			'recordsTotal' => '',
 			'recordsFiltered' => '',
 			'data' => '',
+			'empresa' => '',
 		);
 
 		$result = $em->getRepository("BackendBundle:TblVentas")->findBy(array('empresa' => $id));
 		$ventas["data"] = $result;
+
+		$empresa = $em->getRepository("BackendBundle:TblEmpresas")->findOneBy(
+			array(
+				'id' => $id,
+				'activo' => "1"
+			));
+		$ventas["empresa"] = $empresa;
 		
 		$jsonResponse = $serializer->serialize($ventas, 'json');
 		return new Response($jsonResponse);		
@@ -510,6 +531,7 @@ class VentasController extends Controller
 				'recordsTotal' => '',
 				'recordsFiltered' => '',
 				'data' => '',
+				'empresa' => '',
 			);
 		$em = $this->getDoctrine()->getManager();
 		$result = $em->getRepository("BackendBundle:TblVentas")->findBy(
@@ -518,6 +540,13 @@ class VentasController extends Controller
 				'activo' => "1"
 			));
 		$ventas["data"] = $result;
+
+		$empresa = $em->getRepository("BackendBundle:TblEmpresas")->findOneBy(
+			array(
+				'id' => $id,
+				'activo' => "1"
+			));
+		$ventas["empresa"] = $empresa;
 
 
 		$serializer = SerializerBuilder::create()->build();

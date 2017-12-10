@@ -824,8 +824,10 @@
           //con esto vaciamos el campo y en la siguiente linea cargado nuevamente el seleccionar disabled
           $('#tipoComprobante').empty();
           $('#tipoComprobante').prepend('<option disabled selected value>--Seleccionar--</option>');
-          $('#rubro').empty();
-          $('#rubro').prepend('<option disabled selected value>--Seleccionar--</option>');
+          //$('#rubro').empty();
+          //$('#rubro').prepend('<option disabled selected value>--Seleccionar--</option>');
+          var opciones = "<option value='"+item.empresa.rubro.id+"'selected='selected'>"+item.empresa.rubro.nombre+"</option>";
+          $('#rubro').prepend(opciones);
           $('#exento').val('0');
           $('#nogravado').val('0');
           $('#neto105').val('0');
