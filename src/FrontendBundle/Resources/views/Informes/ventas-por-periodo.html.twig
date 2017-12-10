@@ -55,9 +55,9 @@
 
 <!-- Recibo la data desde el controller según el Id colocado en la URL -->
 <script type="text/javascript">
-$(document).ready(function() {
-  window.arrayrespuesta = {{ ventas | raw }};
-});
+  $(document).ready(function() {
+    window.arrayrespuesta = {{ ventas | raw }};
+  });
 </script>
 
 <script src="{{ asset('ratsoft/informes/ventas-por-periodo.js') }}"></script>
@@ -85,15 +85,20 @@ $(document).ready(function() {
             <h3 class="box-title">Busque la venta deseada..</h3>
           </div>
           <!-- box header -->
-          <div class="col-md-10" style="margin-bottom: 10px;">
-            <div class="form-group">
-              <div class="col-md-6 col-sm-4">
+          <div class="col-md-12" style="margin-bottom: 10px;">
+            <div class="form-group" id="filtros-periodos">
+              <div class="col-md-5 col-sm-4">
                 <label for="periodo">Período desde: </label>
-                <input type="month" class="form-control input-sm" id="periodo" name="periodo" />
+                <input type="month" class="form-control input-sm" id="periodoDesde" name="periodoDesde" />
               </div>
-              <div class="col-md-6 col-sm-4">
+              <div class="col-md-5 col-sm-4">
                 <label for="periodo">Período hasta: </label>
-                <input type="month" class="form-control input-sm" id="periodo" name="periodo" />
+                <input type="month" class="form-control input-sm" id="periodoHasta" name="periodoHasta" />
+              </div>
+              <div class="col-md-2" style="padding-top: 20px;">
+                <button class="btn btn-primary" id="btnAplicarPeriodo">
+  				        <i class="fa fa-filter" aria-hidden="true"> Aplicar período</i>
+  			        </button>
               </div>
             </div>
           </div>

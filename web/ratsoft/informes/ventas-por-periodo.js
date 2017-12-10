@@ -122,6 +122,37 @@
       ]
     });
 
+    $('#btnAplicarPeriodo').click(function() {
+      window.periodoDesde = $('#periodoDesde').val();
+      window.periodoHasta = $('#periodoHasta').val();
+
+      window.periodoDesde = window.periodoDesde.replace(/-/g, '');
+      window.periodoHasta = window.periodoHasta.replace(/-/g, '');
+
+      var ventasFiltradas = window.ventas.filter(filtroVentas);
+      tableReload(ventasFiltradas);
+    });
+
+    var filtroVentas = function(venta) {
+      var anoVenta = venta.periodo_ano.toString();
+      var mesVenta = venta.periodo_mes.toString();
+
+      if (mesVenta.length === 1) {
+        mesFormat = '0' + mesVenta;
+      } else {
+        mesFormat = mesVenta;
+      }
+
+      var periodoVenta = anoVenta + mesFormat;
+      return window.periodoDesde <= periodoVenta && window.periodoHasta >= periodoVenta;
+    };
+
+    // Metodo para refrescar la tabla.
+    var tableReload = function(datosnuevos) {
+      $('#tabla-ventas').DataTable().clear().draw();
+      $('#tabla-ventas').DataTable().rows.add(datosnuevos).draw();
+    };
+
     $('#tabla-ventas tbody').on('click', 'tr', function() {
       if ($(this).hasClass('active')) {
         $(this).removeClass('active');
@@ -130,4 +161,38 @@
         $(this).addClass('active');
       }
     });
+
+    // $("#filtros-periodos").validate({
+    //   rules: {
+    //     periodoDesde: {
+    //       required: true
+    //     },
+    //     periodoHasta: {
+    //       required: true
+    //     }
+    //   },
+    //   messages: {
+    //     periodoDesde: {
+    //       required: "Este campo es requerido"
+    //     },
+    //     periodoHasta: {
+    //       required: "Este campo es requerido"
+    //     }
+    //   },
+    //   highlight: function(element) {
+    //             $(element).closest('.form-group').addClass('has-error');
+    //   },
+    //   unhighlight: function(element) {
+    //       $(element).closest('.form-group').removeClass('has-error');
+    //   },
+    //   errorElement: 'input',
+    //   errorClass: 'help-block',
+    //   errorPlacement: function(error, element) {
+    //     if(element.parent('.input-group').length) {
+    //       error.insertAfter(element.parent());
+    //     } else {
+    //       error.insertAfter(element);
+    //     }
+    //   }
+    // });
   });

@@ -15,7 +15,6 @@ informes_ventas_por_periodo:
   path: /ventas-por-periodo/{id}
   defaults: { _controller: "FrontendBundle:Informes:ventasPorPeriodo" }
   methods: GET
-  # Por periodo (Ventas) -- Ver ejemplo /contable/compras/154 -- dos inputs Desde - Hasta input type="month"
 
 # Informes de ventas - Por jurisdiccion
 informes_ventas_por_jurisdiccion:
