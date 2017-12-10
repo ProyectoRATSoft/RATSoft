@@ -122,20 +122,61 @@
       ]
     });
 
+    // Obtiene todos los checkbox que estén seleccionados.
     var obtenerSeleccionados = function() {
       var seleccionados = [];
       $('.contenedor input:checked').each(function() {
         seleccionados.push($(this).attr('id'));
       });
-      debugger
-      alert(seleccionados);
+      window.checkSeleccionados = seleccionados;
     }
 
-    // $('#btnFiltrar').on('click', function() {
-    $('#btnFiltrar').click(function() {
-      obtenerSeleccionados();
+    // Por default selecciono todos los checkbox.
+    window.stateChecks = true;
+    $('input:checkbox').prop('checked', true);
+
+    // Selecciona y des-selecciona todos los checkbox.
+    $("#btnCheckAll").click(function () {
+      if (window.stateChecks === true) {
+        $('input:checkbox').prop('checked', false);
+        window.stateChecks = false;
+      } else {
+        $('input:checkbox').prop('checked', true)
+        window.stateChecks = true;
+      }
     });
 
+    // Se ejecuta cuando hago click en "Filtrar".
+    $('#btnFiltrar').click(function() {
+      obtenerSeleccionados();
+
+      if (window.checkSeleccionados.length > 0 && window.stateChecks === false) {
+        // Aplico filtro de fechas al total de las ventas.
+        var ventasFiltradas = window.ventas.filter(filtroVentas);
+        // Recargo la grilla con las ventas que aplican al filtro.
+        tableReload(ventasFiltradas);
+      } else {
+        tableReload(window.ventas);
+      }
+    });
+
+    // Filtro que quita del array los elementos que no coincidan con las jurisdicciones seleccionadas.
+    var filtroVentas = function(venta) {
+      var ok = false;
+      var jurisdiccionVenta = venta.cliente.jurisdiccion.nombre.trim(); // El método trim(); le quita los espacios adelante.
+      $.each(window.checkSeleccionados, function(key, value) {
+	       if (jurisdiccionVenta === value) ok = true;
+      });
+      return ok;
+    };
+
+    // Metodo para refrescar la tabla.
+    var tableReload = function(datosnuevos) {
+      $('#tabla-ventas').DataTable().clear().draw();
+      $('#tabla-ventas').DataTable().rows.add(datosnuevos).draw();
+    };
+
+    // Pinta la fila seleccionada.
     $('#tabla-ventas tbody').on('click', 'tr', function() {
       if ($(this).hasClass('active')) {
         $(this).removeClass('active');

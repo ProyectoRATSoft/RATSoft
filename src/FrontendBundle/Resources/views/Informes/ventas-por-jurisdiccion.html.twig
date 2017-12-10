@@ -87,12 +87,14 @@
           <!-- box header -->
           <div class="col-md-12" style="margin-bottom: 10px;">
             <input id='btnAbrirFiltro' type="button" value="Filtro múltiple"
-            onclick="$('.contenedor').toggle();$('#btnFiltrar').toggle();$('#btnAbrirFiltro').toggle();$('#btnCerrarFiltro').toggle();">
+            onclick="$('.contenedor').toggle(); $('#btnFiltrar').toggle(); $('#btnCheckAll').toggle(); $('#btnAbrirFiltro').toggle(); $('#btnCerrarFiltro').toggle();">
 
             <input id='btnCerrarFiltro' type="button" value="Cerrar" style="display: none;"
-            onclick="$('.contenedor').toggle();$('#btnFiltrar').toggle();$('#btnAbrirFiltro').toggle();$('#btnCerrarFiltro').toggle();">
+            onclick="$('.contenedor').toggle(); $('#btnFiltrar').toggle(); $('#btnCheckAll').toggle(); $('#btnAbrirFiltro').toggle(); $('#btnCerrarFiltro').toggle();">
 
             <input id='btnFiltrar' type="button" value="Filtrar" style="display: none;" icon="fa-filter"></input>
+
+            <input id='btnCheckAll' type="button" value="Seleccionar todos" style="display: none;" icon="fa-filter"></input>
 
             <div class="contenedor" style="display: none; margin: 10px;">
               <div class="col-md-3">
@@ -100,7 +102,7 @@
                   <input id="Ciudad de Buenos Aires" type="checkbox"/>Ciudad de Buenos Aires<br/>
                 </div>
                 <div style="col-md-3 col-sm-4 font-family: 'Ubuntu', 'Helvetica', sans-serif;">
-                  <input id="Provincia de Buenos Aires" type="checkbox"/>Provincia de Buenos Aires<br/>
+                  <input id=" Provincia de Buenos Aires" type="checkbox"/>Provincia de Buenos Aires<br/>
                 </div>
                 <div style="col-md-3 col-sm-4 font-family: 'Ubuntu', 'Helvetica', sans-serif;">
                   <input id="Catamarca" type="checkbox"/>Catamarca<br/>
