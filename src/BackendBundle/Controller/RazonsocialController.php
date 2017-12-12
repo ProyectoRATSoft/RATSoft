@@ -177,7 +177,7 @@ class RazonsocialController extends Controller
 
 	}
 
-	public function editAction($id,Request $request) {
+	public function editAction($id, Request $request) {
 
 		$respuesta = array (
 			'nombre' => $request->request->get("nombre"),
@@ -219,11 +219,61 @@ class RazonsocialController extends Controller
 				exit();
 		}
 
-
+			//------------------------------------------------------------------------------------------------
 		$em = $this->getDoctrine()->getManager();
-		$isset_empresa = $em->getRepository("BackendBundle:TblProveedores")->findOneBy(
+		$qb = $em->createQueryBuilder();
+	    $qb->select('v')
+	       ->from('BackendBundle:TblProveedores', 'v')
+	       ->where('v.cuit = :cuit AND v.nombre = :nombre  AND v.id <> :id')
+	       ->setParameters(
+	       		array(
+	       			//'empresa' => $id, 
+	       			'cuit' => $respuesta["cuit"], 
+	       			'nombre' => $respuesta["nombre"],
+	       			'id' => $id
+	       		)
+	       	);
+	    
+	    $query = $qb->getQuery();
+		$validacion = new TblProveedores();	    
+	    $validacion = $query->getResult();
+		
+	    
+	    if (!empty($validacion)) {
+      		$result = $em->getRepository("BackendBundle:TblProveedores")->findBy(
+			array(
+				'id' => $id,
+			));
+
+      		$data = array(
+					'status' => 'ERROR',
+					'msg' => 'El Cliente/proveedor ya esta registrado con el cuit ingresado',
+					'draw' => '',
+					'recordsTotal' => '',
+					'recordsFiltered' => '',
+					'data' =>  $result,				
+			);
+			$serializer = SerializerBuilder::create()->build();
+			$jsonResponse = $serializer->serialize($data, 'json');
+			return new Response($jsonResponse);
+			
+			exit();
+		}
+
+		//------------------------------------------------------------------------------------------------
+
+		
+		// Busco en la DB si existe una empresa con el cuit ingresado.
+		// $em = $this->getDoctrine()->getManager();
+		$empresa = $em->getRepository("BackendBundle:TblProveedores")->findOneBy(
 			array(
 				'cuit' => $respuesta["cuit"]
+			)
+		);
+
+		$hash = $em->getRepository("BackendBundle:TblHashes")->findOneBy(
+			array(
+				"id" => "1"
 			)
 		);
 
@@ -241,49 +291,32 @@ class RazonsocialController extends Controller
 				'id' => $respuesta["jurisdiccion"]
 			)
 		);
-		// Instanciamos un objeto Empresa y seteamos sus datos.
 		
-		$empresa = $em->getRepository("BackendBundle:TblProveedores")->findOneBy(
-			array(
-				'id' => $id
-			)
-		);
-		if (empty($isset_empresa)) {
-	  	// Instanciamos un objeto Empresa y seteamos sus datos.
-			$empresa->setNombre($respuesta["nombre"]);
-			$empresa->setCuit($respuesta["cuit"]);
-			$empresa->setActivo("1");
-			// $empresa->setActivo($respuesta["activo"]);
-			$empresa->setIva($situacionIva);
-			$empresa->setJurisdiccion($jurisdiccion);
+		$empresa->setNombre($respuesta["nombre"]);
+		$empresa->setCuit($respuesta["cuit"]);
+		$empresa->setActivo("1");
+		$empresa->setIva($situacionIva);
+		$empresa->setJurisdiccion($jurisdiccion);
 
-			$em->persist($empresa);
-			$em->flush();
+		$em->persist($empresa);
+		$em->flush();
 
-			$hash->setHash($hash->getHash() + 1);
+		$hash->setHash($hash->getHash() + 1);
 
-			$em->persist($hash);
-			$em->flush();
-			
-		} else {
-			$data = array(
-				'status' => 'ERROR',
-				'msg' => 'Ya existe una empresa registrada con el cuit ingresado',
-				'draw' => '',
-				'recordsTotal' => '',
-				'recordsFiltered' => '',
-				'data' => '',
-			);
-		}
-			
+		$em->persist($hash);
+		$em->flush();
+
 
 		$result = $em->getRepository("BackendBundle:TblProveedores")->findBy(array('activo' => 1));
 		$data["data"] = $result;
-		
+
 
 		$jsonResponse = $serializer->serialize($data, 'json');
-		return new Response($jsonResponse);
-
+		$response = new Response ();
+		$response->setContent($jsonResponse);
+		$response->headers->set('Content-Type', 'application/json');
+		return $response;
+		
 	}
 
 }

@@ -1,5 +1,32 @@
 {% extends 'FrontendBundle::Default/base.html.twig' %}
         {% block body %}
+        <script>
+            $(document).ready(function(){
+
+               $(document).ajaxStop(function() {
+                $.unblockUI();
+              });
+             Morris.Donut({
+                      element: 'ventas-chart',
+                      data: [
+                        {label: "Ciudad de Buenos Aires", value: 200},
+                        {label: "Provincia de Buenos Aires", value: 150},
+                        {label: "Santa Fe", value: 45},
+                        {label: "Neuquen", value: 51}
+                      ]
+                    });
+                Morris.Donut({
+                      element: 'compras-chart',
+                      data: [
+                        {label: "Ciudad de Buenos Aires", value: 159},
+                        {label: "Provincia de Buenos Aires", value: 100},
+                        {label: "Santa Fe", value: 45},
+                        {label: "Salta", value: 159}
+                      ]
+                    });
+            });
+              
+          </script>
             <!-- Content Wrapper. Contains page content -->
             <div class="content-wrapper">
                     <!-- Content Header (Page header) -->
@@ -15,7 +42,20 @@
                 <section class="content">
                   <!-- Small boxes (Stat box) -->
                   <div class="row">
-
+                     <div class="col-md-6">
+                      <h3 class="col-sm-6 col-sm-offset-3 text-center">Ventas por Jurisdiccion</h3>
+                       <div class="col-sm-6 col-sm-offset-3 text-center">
+                          <div id="ventas-chart">                            
+                          </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                      <h3 class="col-sm-6 col-sm-offset-3 text-center">Compras por Jurisdiccion</h3>
+                      <div class="col-sm-6 col-sm-offset-3 text-center">
+                          <div id="compras-chart">                            
+                          </div>
+                        </div>
+                    </div>
                   </div>
                   <!-- /.row (main row) -->
                 </section>

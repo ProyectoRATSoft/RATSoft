@@ -20,6 +20,25 @@
       $.unblockUI();
     });
 
+     Morris.Donut({
+            element: 'ventas-chart',
+            data: [
+              {label: "Ciudad de Buenos Aires", value: 200},
+              {label: "Provincia de Buenos Aires", value: 150},
+              {label: "Santa Fe", value: 45},
+              {label: "Neuquen", value: 51}
+            ]
+          });
+      Morris.Donut({
+            element: 'compras-chart',
+            data: [
+              {label: "Ciudad de Buenos Aires", value: 159},
+              {label: "Provincia de Buenos Aires", value: 100},
+              {label: "Santa Fe", value: 45},
+              {label: "Salta", value: 159}
+            ]
+          });
+
     // Hacemos que la interfaz arranque con el boton de edición dehabilitado, porque no hay ninguna jurisdiccion seleccionada aún.
     $("#boton-editar").attr("disabled","true");
      // Vamos a traer el json para laburar con ajax

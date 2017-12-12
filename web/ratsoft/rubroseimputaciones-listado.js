@@ -433,7 +433,6 @@
 
             var nombre = $('div.modal-body div.form-group #nuevoNombreRubro').val();
             var servicio = $('div.modal-body div.form-group #nuevoServicio').val();
-
             console.log(nombre);
             console.log(servicio);
     //realizo un post pasando la url correspondiente al backend, los datos previamente capturados y realizo la funcion correspondiente que me devolvera la respuesta.
