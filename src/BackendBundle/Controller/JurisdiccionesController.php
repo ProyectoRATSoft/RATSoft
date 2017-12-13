@@ -150,12 +150,14 @@ class JurisdiccionesController extends Controller
 		$qb = $em->createQueryBuilder();
 	    $qb->select('v')
 	       ->from('BackendBundle:TblJurisdicciones', 'v')
-	       ->where('v.codigo = :codigo AND v.id <> :id')
+	       ->where('v.id != :id')
+           ->andWhere('v.codigo = :codigo OR v.nombre = :jurisdiccion')
+	       // ->where('v.codigo = :codigo AND v.id <> :id')
 	       ->setParameters(
 	       		array(
 	       			//'empresa' => $id, 
 	       			'codigo' => $respuesta["codigo"], 
-	       			// 'nombre' => $respuesta["jurisdiccion"],
+	       			'jurisdiccion' => $respuesta["jurisdiccion"],
 	       			'id' => $id
 	       		)
 	       	);

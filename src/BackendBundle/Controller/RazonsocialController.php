@@ -224,7 +224,8 @@ class RazonsocialController extends Controller
 		$qb = $em->createQueryBuilder();
 	    $qb->select('v')
 	       ->from('BackendBundle:TblProveedores', 'v')
-	       ->where('v.cuit = :cuit AND v.nombre = :nombre  AND v.id <> :id')
+	       ->where('v.id != :id')
+           ->andWhere('v.cuit = :cuit OR v.nombre = :nombre')
 	       ->setParameters(
 	       		array(
 	       			//'empresa' => $id, 
@@ -247,7 +248,7 @@ class RazonsocialController extends Controller
 
       		$data = array(
 					'status' => 'ERROR',
-					'msg' => 'El Cliente/proveedor ya esta registrado con el cuit ingresado',
+					'msg' => 'El Cliente/proveedor ya esta registrado con el cuit o nombre editado',
 					'draw' => '',
 					'recordsTotal' => '',
 					'recordsFiltered' => '',
@@ -267,7 +268,7 @@ class RazonsocialController extends Controller
 		// $em = $this->getDoctrine()->getManager();
 		$empresa = $em->getRepository("BackendBundle:TblProveedores")->findOneBy(
 			array(
-				'cuit' => $respuesta["cuit"]
+				'id' => $id
 			)
 		);
 
@@ -291,12 +292,17 @@ class RazonsocialController extends Controller
 				'id' => $respuesta["jurisdiccion"]
 			)
 		);
+
+		// var_dump($empresa);
+		// die();
 		
 		$empresa->setNombre($respuesta["nombre"]);
 		$empresa->setCuit($respuesta["cuit"]);
 		$empresa->setActivo("1");
 		$empresa->setIva($situacionIva);
 		$empresa->setJurisdiccion($jurisdiccion);
+
+
 
 		$em->persist($empresa);
 		$em->flush();

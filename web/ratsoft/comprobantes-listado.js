@@ -301,7 +301,7 @@
            })
             .done(function(respuesta){
               console.log(respuesta);
-              if(respuesta.status = 'OK')
+              if(respuesta.status == 'OK')
               {
                 respuesta.data.forEach(function(item,index,arr){
                   if (item.detalle == detalle){
@@ -334,7 +334,7 @@
                 //------------------creo el tipo de comprobante------------------//
                 .done(function(respuesta)
                 {
-                  if(respuesta.status = 'OK')
+                  if(respuesta.status == 'OK')
                   {
                     alert(respuesta.msg);
                     $("#modalAddComprobante").modal('toggle');
@@ -381,7 +381,7 @@
                 dataType: "json"
             })
               .done(function(respuesta){
-                if(respuesta.status = 'OK')
+                if(respuesta.status == 'OK')
                 {
                   alert(respuesta.msg);
                 }
@@ -426,7 +426,7 @@
           var blk_perciva; var blk_perciibb; var blk_ret;  var blk_netos;
           var blk_iva; var blk_nograv; var blk_total;  var autoiva;
           var autoneto;    var autototal;
-          var cod_comp
+          var cod_comp;
           ! $('#modalblk_exe').is(':checked') ? blk_exe =0 : blk_exe =1;
           ! $('#modalblk_perciva').is(':checked') ?  blk_perciva=0 :  blk_perciva= 1;
           ! $('#modalblk_perciibb').is(':checked') ?  blk_perciibb=0 : blk_perciibb =1;
@@ -460,14 +460,21 @@
            })
             .done(function(respuesta){
               console.log(respuesta);
-              if(respuesta.status = 'OK')
+              if(respuesta.status == 'OK')
               {
+                console.log(respuesta.data);
                 respuesta.data.forEach(function(item,index,arr){
-                  if (item.detalle == detalle){
+                  console.log(item.id);
+                  console.log(item.detalle);
+                  console.log(detalle);
+                  if(item.detalle.toUpperCase() == detalle.toUpperCase())
+                  {
                       cod_comp = item.id;
                       console.log(cod_comp);
                       console.log(item.id);
                   }
+                  // console.log(cod_comp);
+                  //     console.log(item.id);
                 });
                 $.ajax({
                   type: "POST",
@@ -493,7 +500,21 @@
                 //------------------creo el tipo de comprobante------------------//
                 .done(function(respuesta)
                 {
-                  if(respuesta.status = 'OK')
+                  console.log(respuesta);
+                  console.log(cod_comp);
+                  console.log(tipo_comp);   
+                  console.log(blk_exe);
+                  console.log(blk_perciva);   
+                  console.log(blk_perciibb);
+                  console.log(blk_ret);
+                  console.log(blk_netos);
+                  console.log(blk_iva);
+                  console.log(blk_nograv);
+                  console.log(blk_total); 
+                  console.log(autoiva); 
+                  console.log(autoneto);
+                  console.log(autototal);
+                  if(respuesta.status == 'OK')
                   {
                     alert(respuesta.msg);
                     $("#modalAddComprobante").modal('toggle');

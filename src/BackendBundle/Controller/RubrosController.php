@@ -152,11 +152,13 @@ class RubrosController extends Controller
 		$qb = $em->createQueryBuilder();
 	    $qb->select('v')
 	       ->from('BackendBundle:TblRubros', 'v')
-	       ->where('v.nombre = :nombre AND v.servicio = :servicio AND v.id <> :id')
+	        ->where('v.id != :id')
+           ->andWhere('v.nombre = :nombre')
+	       // ->where('v.nombre = :nombre AND v.servicio = :servicio AND v.id <> :id')
 	       ->setParameters(
 	       		array(
 	       			//'empresa' => $id, 
-	       			'servicio' => $respuesta["servicio"], 
+	       			//'servicio' => $respuesta["servicio"], 
 	       			'nombre' => $respuesta["nombre"],
 	       			'id' => $id
 	       		)
@@ -172,6 +174,8 @@ class RubrosController extends Controller
 			array(
 				'id' => $id,
 			));
+
+      		$result = $em->getRepository("BackendBundle:TblRubros")->findAll();
 
       		$data = array(
 					'status' => 'ERROR',
