@@ -31,6 +31,45 @@ $(document).ready(function() {
       .done(function(respuesta, status) {
         window.arrayrespuesta = respuesta.users;
         window.table = $('#tabla-empresas').DataTable({
+          "responsive": true,
+                 dom: "<'row'<'col-md-7 col-sm-7 col-xs-12 text-left'B><'col-md-5 col-sm-12 col-xs-12 text-right'f>>" +"<'row'<'col-md-12 col-sm-12 col-sm-12't>>" +"<'row'<'col-md-5 col-sm-12 col-xs-12 text-left'i><'col-md-7 col-sm-12 col-xs-12 text-right'p>>",
+                "language": {
+                    "sProcessing":     "Procesando...",
+                    "sLengthMenu":     "Mostrar _MENU_ registros",
+                    "sZeroRecords":    "No se encontraron resultados",
+                    "sEmptyTable":     "Ningún dato disponible en esta tabla",
+                    "sInfo":           "Mostrando registros del _START_ al _END_ de un total de _TOTAL_ registros",
+                    "sInfoEmpty":      "Mostrando registros del 0 al 0 de un total de 0 registros",
+                    "sInfoFiltered":   "(filtrado de un total de _MAX_ registros)",
+                    "sInfoPostFix":    "",
+                    "sSearch":         "Buscar: ",
+                    "sUrl":            "",
+                    "sInfoThousands":  ",",
+                    "sLoadingRecords": "Cargando...",
+                    "oPaginate": {
+                      "sFirst":    "Primero",
+                      "sLast":     "Último",
+                      "sNext":     "Siguiente",
+                      "sPrevious": "Anterior"
+                    },
+                    "oAria": {
+                      "sSortAscending":  ": Activar para ordenar la columna de manera ascendente",
+                      "sSortDescending": ": Activar para ordenar la columna de manera descendente"
+                    }
+                },
+                lengthMenu: [
+                    [ 10, 25, 50, -1 ],
+                    [ '10 Filas', '25 Filas', '50 Filas', 'Todos' ]
+                ],
+                  //elegis los formatos para exportar los datos de la tabla, colvis (va a servir para seleccionar que columnas queres q se vean o no), pagelenth para seleccionar la cantidad  datos mostrados 
+                buttons: [
+                  {
+                    extend: 'collection',
+                    text: 'Exportar',
+                    //elegis los formatos para exportar los datos de la tabla, colvis (va a seleccionar que mnas queres q se vean o no), pagelenth pla cantidad  datos mostrados             
+                    buttons: [ 'copy', 'excel', 'pdf', 'csv', 'print']         
+                     }, 'pageLength'    
+                ],
           data: respuesta.users,
           "columns": [{
               "data": "username",
