@@ -215,45 +215,6 @@ class JurisdiccionesController extends Controller
 		$response->setContent($jsonResponse);
 		$response->headers->set('Content-Type', 'application/json');
 		return $response;
-
-		// $em = $this->getDoctrine()->getManager();
-		// $isset_jurisdiccion = $em->getRepository("BackendBundle:TblJurisdicciones")->findOneBy(
-		// 	array(
-		// 		'codigo' => $respuesta["codigo"]
-		// 	)
-		// );
-
-  //   	// Si el codigo no existe, se inserta en la DB.
-		// if (empty($isset_jurisdiccion)) {
-	 //  	// Instanciamos un objeto jurisdiccion y seteamos sus datos.
-		// 	$jurisdiccion = $em->getRepository("BackendBundle:TblJurisdicciones")->findOneBy( array( 'id' => $id ) );
-
-		// 	$jurisdiccion->setNombre($respuesta["jurisdiccion"]);
-		// 	$jurisdiccion->setCodigo($respuesta["codigo"]);
-
-		// 	$em->persist($jurisdiccion);
-		// 	$em->flush();
-
-		// } else {
-		// 	$data = array(
-		// 		'status' => 'ERROR',
-		// 		'msg' => 'Ya existe una jurisdiccion registrada con el codigo ingresado',
-		// 		'draw' => '',
-		// 		'recordsTotal' => '',
-		// 		'recordsFiltered' => '',
-		// 		'data' => '',
-		// 	);
-		// }
-		
-		// $result = $em->getRepository("BackendBundle:TblJurisdicciones")->findAll();
-		// $data["data"] = $result;
-
-		// $jsonResponse = $serializer->serialize($data, 'json');
-		// $response = new Response ();
-		// $response->setContent($jsonResponse);
-		// $response->headers->set('Content-Type', 'application/json');
-		// return $response;
-		
 	}
 
 	// public function delAction($id, Request $request){
@@ -283,5 +244,6 @@ class JurisdiccionesController extends Controller
 	// 	return new Response($jsonResponse);
 
 	// }
+	
 }
 ?>

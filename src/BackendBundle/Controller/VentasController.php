@@ -13,6 +13,7 @@ use BackendBundle\Entity\TblEmpresas;
 use BackendBundle\Entity\TblRubros;
 use BackendBundle\Entity\TblProveedores;
 use BackendBundle\Entity\TblTiposComp;
+use BackendBundle\Entity\TblJurisdicciones;
 use BackendBundle\Entity\User;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
@@ -556,5 +557,7 @@ class VentasController extends Controller
 
 	}
 
+
+	
 
 }

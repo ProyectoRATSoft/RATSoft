@@ -266,20 +266,21 @@
               
               nuevoCodigo: { 
                 required: true,
-                minlength: 3
+                number: true,
               },
               nuevaProvincia: { 
-                required: true
-                //minlength: 3
+                required: true,
+                minlength: 3
               },                                
           },
           messages: {
               nuevoCodigo: { 
-                required: "Este campo no puede dejarse en vacío",
-                minlength: "Este campo de contener al menos 3 caracteres"
+                required: "Este campo es requerido y solo admite numeros",
+                
               },
               nuevaProvincia: { 
-                required: "Este campo no puede dejarse en vacío",
+                required: "Este campo no puede dejarse en vacío ",
+                minlength: "Este campo de contener al menos 3 caracteres",
                 //minlength: 3
               },                   
           },

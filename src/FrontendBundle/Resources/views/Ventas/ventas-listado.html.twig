@@ -63,6 +63,28 @@
 <script src="https://cdn.jsdelivr.net/npm/jquery-validation@1.17.0/dist/jquery.validate.min.js"></script>
 <script src="{{ asset('ratsoft/ratsoft.js') }}"></script>
 <script src="https://cdn.jsdelivr.net/npm/js-cookie@2/src/js.cookie.min.js"></script>
+<script>
+  
+  jQuery.extend(jQuery.validator.messages, {
+    required: "Este campo es requerido.",
+    remote: "Please fix this field.",
+    email: "Por favor ingrese una cuenta de email valida.",
+    url: "Por favor ingrese una URL valida.",
+    date: "Por favor ingrese una fecha valida.",
+    dateISO: "Por favor ingrese una fecha valida(ISO).",
+    number: "Solo se admiten numeros.",
+    digits: "Por favor ingrese digitos.",
+    creditcard: "Please enter a valid credit card number.",
+    equalTo: "Please enter the same value again.",
+    accept: "Please enter a value with a valid extension.",
+    maxlength: jQuery.validator.format("Please enter no more than {0} characters."),
+    minlength: jQuery.validator.format("Please enter at least {0} characters."),
+    rangelength: jQuery.validator.format("Please enter a value between {0} and {1} characters long."),
+    range: jQuery.validator.format("Please enter a value between {0} and {1}."),
+    max: jQuery.validator.format("Please enter a value less than or equal to {0}."),
+    min: jQuery.validator.format("Please enter a value greater than or equal to {0}.")
+});
+</script>
 <!-- <script src="{{ asset('') }}"></script>  --> 
 <script>
   //con esto bloqueamos la pantalla cuando inicia alguna accion ajax..
@@ -797,7 +819,15 @@
           $('#retIva ').val('0');
           $('#retIibb').val('0');
           $('#comprobante').val('');
-          
+          $('#exento').val('0');
+          $('#nogravado').val('0');
+          $('#neto105').val('0');
+          $('#neto21').val('0');
+          $('#iva105').val('0');
+          $('#iva21').val('0');
+          //$('#ret_ganancia').val('0');
+          $('#total').val('0');
+          $('#percepcion').val('0');
 
           //preparamos el próximo número de comprobante
           /*
@@ -828,15 +858,7 @@
           //$('#rubro').prepend('<option disabled selected value>--Seleccionar--</option>');
           var opciones = "<option value='"+item.empresa.rubro.id+"'selected='selected'>"+item.empresa.rubro.nombre+"</option>";
           $('#rubro').prepend(opciones);
-          $('#exento').val('0');
-          $('#nogravado').val('0');
-          $('#neto105').val('0');
-          $('#neto21').val('0');
-          $('#iva105').val('0');
-          $('#iva21').val('0');
-          //$('#ret_ganancia').val('0');
-          $('#total').val('0');
-          $('#percepcion').val('0');
+          
         //deberiamos mostrar algun mensaje tanto como de error, como de que todo salio bien. y luego recargar la grilla para que aparezca la nueva empresa en la tabla.
         //alert(resp);
         });
@@ -879,38 +901,47 @@
               },
               exento: { 
                 required: true,
+                number: true,
                 //minlength: 3
               },
               nogravado: { 
                 required: true,
+                number: true,
                 //minlength: 3
               },
               neto105: { 
                 required: true,
+                number: true,
                 //minlength: 3
               },
               neto21: { 
                 required: true,
+                number: true,
                 //minlength: 3
               },
               iva105: { 
-                required: true
+                required: true,
+                number: true,
                 //minlength: 3
               },
               iva21: { 
-                required: true
+                required: true,
+                number: true,
                 //minlength: 3
               },
               retGanancias: { 
-                required: true
+                required: true,
+                number: true,
                 //minlength: 3
               },
               total: { 
                 required: true,
+                number: true,
                 //minlength: 3
               },
               percepcion: { 
                 required: true,
+                number: true,
                 //minlength: 3
               },             
           },
@@ -948,39 +979,39 @@
                 //minlength: 3
               },
               exento: { 
-                 required: "Este campo es requerido",
+                 required: "Este campo es requerido y solo admite numeros",
                 //minlength: 3
               },
               nogravado: { 
-                 required: "Este campo es requerido",
+                 required: "Este campo es requerido y solo admite numeros",
                 //minlength: 3
               },
               neto105: { 
-                 required: "Este campo es requerido",
+                 required: "Este campo es requerido y solo admite numeros",
                 //minlength: 3
               },
               neto21: { 
-                 required: "Este campo es requerido",
+                 required: "Este campo es requerido y solo admite numeros",
                 //minlength: 3
               },
               iva105: { 
-                 required: "Este campo es requerido",                
+                 required: "Este campo es requerido y solo admite numeros",              
                 //minlength: 3
               },
               iva21: { 
-                 required: "Este campo es requerido",               
+                 required: "Este campo es requerido y solo admite numeros",             
                 //minlength: 3
               },
               retGanancias: { 
-                 required: "Este campo es requerido",               
+                 required: "Este campo es requerido y solo admite numeros",              
                 //minlength: 3
               },
               total: { 
-                required: "Este campo es requerido",
+                required: "Este campo es requerido y solo admite numeros",
                 //minlength: 3
               },
               percepcion: { 
-                required: "Este campo es requerido",
+                required: "Este campo es requerido y solo admite numeros",
                 //minlength: 3
               },             
           },
@@ -1031,7 +1062,7 @@
             parseFloat($('#retGanancias').val());
           $('#total').val(comprasTotal);
         }else{
-          console.log("no entre en el fuckin IF");
+          console.log("no entre en el IF");
         }
       });
 
@@ -1054,7 +1085,7 @@
           $("#neto21").val(neto21calc.toFixed(2));
           $("#iva21").val(iva21calc.toFixed(2));
         }else{
-          console.log("no entre en el fuckin IF");
+          console.log("no entre en el IF");
         }
       });
 

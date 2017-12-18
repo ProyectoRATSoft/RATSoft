@@ -17,3 +17,4 @@ ventas_del:
     path: /{id}/del
     defaults: { _controller: BackendBundle:Ventas:del }
     methods: POST
+

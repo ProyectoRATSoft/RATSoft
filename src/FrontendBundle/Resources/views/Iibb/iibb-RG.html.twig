@@ -18,6 +18,12 @@ input {
   $(document).ready(function(){
     $("#titulo-empresa").text(arrayempresa.nombre);
     $("#buscarPeriodo").on("click",function(){
+      $("#form-valid-saldoFavor").validate().resetForm();
+      $("#form-valid-saldoFavor").find('.has-error').removeClass("has-error"); //limpia las clases has-error que pone los recuadros rojos
+      $("#form-valid-saldoFavor").find('.has-success').removeClass("has-success");//limpia los recuadros verdes de los datos correctos 
+      $("#form-valid-alicuota").validate().resetForm();
+      $("#form-valid-alicuota").find('.has-error').removeClass("has-error"); //limpia las clases has-error que pone los recuadros rojos
+      $("#form-valid-alicuota").find('.has-success').removeClass("has-success");//limpia los recuadros verdes de los datos correctos 
       $("#impDet").val("0.00");
       $("#saldoFavor").val("0.00");
       $.get("/impositivo/iibb/" + arrayempresa.id + "/" + $("#periodo").val(),function(resp,estado,jqXHR){
@@ -52,7 +58,27 @@ input {
     });// fin del on.click
 
     $("form[id^=form-valid]").each(function() {
-        $(this).validate();
+        $(this).validate({
+
+           highlight: function(element) {
+              $(element).closest('.form-group').addClass('has-error');
+              //$(element).addClass('has-error fa fa-times');
+            },
+            unhighlight: function(element) {
+                $(element).closest('.form-group').removeClass('has-error');
+                //$(element).('.input-sm').removeClass('glyphicon-remove');
+            },
+            errorElement: 'span',
+            errorClass: 'help-block',
+            errorPlacement: function(error, element) {
+                if(element.parent('.input-group').length) {
+                    error.insertAfter(element.parent());
+                } else {
+                    error.insertAfter(element);
+                }
+              } 
+
+        });
     });
   
     $("form").find(".clase-validacion").each(function(){
@@ -95,6 +121,27 @@ input {
       }
     });
   });// fin del document.ready
+</script>
+<script>
+  jQuery.extend(jQuery.validator.messages, {
+    required: "Este campo es requerido.",
+    remote: "Please fix this field.",
+    email: "Por favor ingrese una cuenta de email valida.",
+    url: "Por favor ingrese una URL valida.",
+    date: "Por favor ingrese una fecha valida.",
+    dateISO: "Por favor ingrese una fecha valida(ISO).",
+    number: "Solo se admiten numeros.",
+    digits: "Por favor ingrese digitos.",
+    creditcard: "Please enter a valid credit card number.",
+    equalTo: "Please enter the same value again.",
+    accept: "Please enter a value with a valid extension.",
+    maxlength: jQuery.validator.format("Please enter no more than {0} characters."),
+    minlength: jQuery.validator.format("Please enter at least {0} characters."),
+    rangelength: jQuery.validator.format("Please enter a value between {0} and {1} characters long."),
+    range: jQuery.validator.format("Please enter a value between {0} and {1}."),
+    max: jQuery.validator.format("Please enter a value less than or equal to {0}."),
+    min: jQuery.validator.format("Please enter a value greater than or equal to {0}.")
+});
 </script> 
 {% endblock %}
 {% block body %}
@@ -154,7 +201,7 @@ input {
           </h4>
           <!-- /header netos -->
           </div>
-          <div id="-" class="panel-collapse collapse in">
+          <div id="-" class="panel-collapse collapse in" style="margin-bottom: 15px;">
           <!-- body de netos-->
           <div class="panel-body">
             <div class="form-group">

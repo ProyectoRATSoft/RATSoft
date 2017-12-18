@@ -32,4 +32,7 @@ class InformesController extends Controller
     $jsonResponse = $serializer->serialize($ventas, 'json');
     return new Response($jsonResponse);
   }
+
+
+
 }

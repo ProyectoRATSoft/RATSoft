@@ -61,6 +61,28 @@
 <script src="{{ asset('ratsoft/ratsoft.js') }}"></script>
 <script src="https://cdn.jsdelivr.net/npm/jquery-validation@1.17.0/dist/jquery.validate.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/js-cookie@2/src/js.cookie.min.js"></script>
+<script>
+  
+  jQuery.extend(jQuery.validator.messages, {
+    required: "Este campo es requerido.",
+    remote: "Please fix this field.",
+    email: "Por favor ingrese una cuenta de email valida.",
+    url: "Por favor ingrese una URL valida.",
+    date: "Por favor ingrese una fecha valida.",
+    dateISO: "Por favor ingrese una fecha valida(ISO).",
+    number: "Solo se admiten numeros.",
+    digits: "Por favor ingrese digitos.",
+    creditcard: "Please enter a valid credit card number.",
+    equalTo: "Please enter the same value again.",
+    accept: "Please enter a value with a valid extension.",
+    maxlength: jQuery.validator.format("Please enter no more than {0} characters."),
+    minlength: jQuery.validator.format("Please enter at least {0} characters."),
+    rangelength: jQuery.validator.format("Please enter a value between {0} and {1} characters long."),
+    range: jQuery.validator.format("Please enter a value between {0} and {1}."),
+    max: jQuery.validator.format("Please enter a value less than or equal to {0}."),
+    min: jQuery.validator.format("Please enter a value greater than or equal to {0}.")
+});
+</script>
 
 <!-- <script src="{{ asset('') }}"></script>  --> 
 <script>
@@ -674,50 +696,62 @@
               },
               exento: { 
                 required: true,
+                number: true
                 //minlength: 3
               },
               neto105: { 
                 required: true,
+                number: true
                 //minlength: 3
               },
               neto21: { 
                 required: true,
+                number: true
                 //minlength: 3
               },
               neto27: { 
                 required: true,
+                number: true
                 //minlength: 3
               },
               iva105: { 
-                required: true
+                required: true,
+                number: true
                 //minlength: 3
               },
               iva21: { 
-                required: true
+                required: true,
+                number: true
                 //minlength: 3
               },
               iva27: { 
                 required: true,
+                number: true
                 //cuit: true
               },
               nogravado: { 
-                required: true
+                required: true,
+                number: true
                 //minlength: 3
               },
               perc_iva: { 
-                required: true
+                required: true,
+                number: true
                 //minlength: 3
               },
               perc_iibb: { 
                 required: true,
+                number: true
                 //minlength: 3
               },
               ret_ganancia: { 
-                required: true
+                required: true,
+                number: true
                 //minlength: 3
               },
               total: { 
                 required: true,
+                number: true
                 //minlength: 3
               },             
           },
@@ -755,51 +789,51 @@
                 //minlength: 3
               },
               exento: { 
-                required: "Este campo es requerido",
+                required: "Este campo es requerido y solo admite numeros",
                 //minlength: 3
               },
               neto105: { 
-                required: "Este campo es requerido",
+                required: "Este campo es requerido y solo admite numeros",
                 //minlength: 3
               },
               neto21: { 
-                required: "Este campo es requerido",
+                required: "Este campo es requerido y solo admite numeros",
                 //minlength: 3
               },
               neto27: { 
-                required: "Este campo es requerido",
+                required: "Este campo es requerido y solo admite numeros",
                 //minlength: 3
               },
               iva105: { 
-                required: "Este campo es requerido",               
+                required: "Este campo es requerido y solo admite numeros",              
                 //minlength: 3
               },
               iva21: { 
-                required: "Este campo es requerido",               
+                required: "Este campo es requerido y solo admite numeros",              
                 //minlength: 3
               },
               iva27: { 
-                required: "Este campo es requerido",
+                required: "Este campo es requerido y solo admite numeros",
                 //cuit: true
               },
               nogravado: { 
-                required: "Este campo es requerido",               
+                required: "Este campo es requerido y solo admite numeros",            
                 //minlength: 3
               },
               perc_iva: { 
-                required: "Este campo es requerido",               
+                required: "Este campo es requerido y solo admite numeros",            
                 //minlength: 3
               },
               perc_iibb: { 
-                required: "Este campo es requerido",
+                required: "Este campo es requerido y solo admite numeros",
                 //minlength: 3
               },
               ret_ganancia: { 
-                required: "Este campo es requerido",            
+                required: "Este campo es requerido y solo admite numeros",        
                 //minlength: 3
               },
               total: { 
-                required: "Este campo es requerido",
+                required: "Este campo es requerido y solo admite numeros",
                 //minlength: 3
               },             
           },

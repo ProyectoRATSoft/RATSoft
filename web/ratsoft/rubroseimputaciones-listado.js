@@ -258,7 +258,8 @@
                 minlength: 3
               },
               nuevoCodigo: { 
-                required: true
+                required: true,
+                number: true
                 //minlength: 3
               },                                
           },
@@ -268,7 +269,7 @@
                 minlength: "Este campo de contener al menos 3 caracteres"
               },
               nuevoCodigo: { 
-                required: "Este campo no puede dejarse en vacío",
+                required: "Este campo no puede dejarse en vacío y solo se permite numeros",
                 //minlength: 3
               },                   
           },
