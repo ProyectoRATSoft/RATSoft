@@ -2,3 +2,13 @@ ventas_por_periodo:
     path: /ventas/
     defaults: { _controller: "BackendBundle:Informes:ventas" }
     methods: GET
+
+ventas_chart_jurisdicciones:
+    path: /chartJurisdiccionesVentas/
+    defaults: { _controller: "BackendBundle:Informes:chartVentasJurisdiccion" }
+    methods: GET
+
+compras_chart_jurisdicciones:
+    path: /chartJurisdiccionesCompras/
+    defaults: { _controller: "BackendBundle:Informes:chartComprasJurisdiccion" }
+    methods: GET

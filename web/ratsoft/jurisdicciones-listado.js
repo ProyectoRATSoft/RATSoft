@@ -20,24 +20,45 @@
       $.unblockUI();
     });
 
-     Morris.Donut({
-            element: 'ventas-chart',
-            data: [
-              {label: "Ciudad de Buenos Aires", value: 200},
-              {label: "Provincia de Buenos Aires", value: 150},
-              {label: "Santa Fe", value: 45},
-              {label: "Neuquen", value: 51}
-            ]
-          });
-      Morris.Donut({
-            element: 'compras-chart',
-            data: [
-              {label: "Ciudad de Buenos Aires", value: 159},
-              {label: "Provincia de Buenos Aires", value: 100},
-              {label: "Santa Fe", value: 45},
-              {label: "Salta", value: 159}
-            ]
-          });
+     window.arrayrVentas = new Array();  
+      window.arrayCompras = new Array();     
+      $.ajax({
+        type: "GET",
+        url: "/backend/informes/chartJurisdiccionesVentas/",
+        dataType: "json",
+      })
+      .done(function(respuesta){
+        // console.log(respuesta.data);
+        window.arrayrVentas = respuesta.data;
+        chartVentas.setData(window.arrayrVentas);
+        chartVentas.redraw();
+      });
+      
+       $.ajax({
+        type: "GET",
+        url: "/backend/informes/chartJurisdiccionesCompras/",
+        dataType: "json",
+      })
+      .done(function(respuesta){
+        // console.log(respuesta.data);
+        window.arrayCompras = respuesta.data;
+        chartCompras.setData(window.arrayCompras);
+        chartCompras.redraw();
+      });
+
+            //--------//
+         var chartVentas =  Morris.Donut({
+                      element: 'ventas-chart',
+                      data: [
+                      {label: "", value: ""}]
+                    });
+        
+          var chartCompras =  Morris.Donut({
+                      element: 'compras-chart',
+                      data: [
+                        {label: "", value: ""}
+                      ]
+                    });
 
     // Hacemos que la interfaz arranque con el boton de edición dehabilitado, porque no hay ninguna jurisdiccion seleccionada aún.
     $("#boton-editar").attr("disabled","true");
