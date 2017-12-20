@@ -640,10 +640,6 @@
                         },
                         "title": "Período"
                       },
-                      { 
-                        "data": "cliente.nombre",
-                        "title": "Cliente"
-                      },
                        { 
                         "data": "fecha",
                         "title": "Fecha",
@@ -651,6 +647,14 @@
                             if (value === null) return "";
                             return moment(value).format('DD/MM/YYYY');
                            }
+                      },
+                      { 
+                        "data": "cliente.nombre",
+                        "title": "Cliente"
+                      },
+                      { 
+                        "data": "cliente.cuit",
+                        "title": "C.U.I.T."
                       },
                       { 
                         "mData": null,
@@ -670,11 +674,6 @@
                       { 
                         "data": "nro_comprobante",
                         "title": "Número de Comprobante"
-                      },
-                      
-                      { 
-                        "data": "cliente.cuit",
-                        "title": "C.U.I.T."
                       },                   
                       { 
                         "data": "cliente.jurisdiccion.nombre",

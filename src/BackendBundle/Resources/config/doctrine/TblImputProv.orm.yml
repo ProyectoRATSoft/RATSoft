@@ -5,6 +5,9 @@ BackendBundle\Entity\TblImputProv:
         FK_IMPUT_idx:
             columns:
                 - id_imp
+        FK_PROV_IMPU_idx:
+            columns:
+                - id_prov
     id:
         id:
             type: integer
@@ -14,13 +17,6 @@ BackendBundle\Entity\TblImputProv:
             id: true
             generator:
                 strategy: IDENTITY
-    fields:
-        idProv:
-            type: integer
-            nullable: false
-            options:
-                unsigned: false
-            column: id_prov
     manyToOne:
         idImp:
             targetEntity: TblImputaciones
@@ -30,6 +26,16 @@ BackendBundle\Entity\TblImputProv:
             inversedBy: null
             joinColumns:
                 id_imp:
+                    referencedColumnName: id
+            orphanRemoval: false
+        idProv:
+            targetEntity: TblProveedores
+            cascade: {  }
+            fetch: LAZY
+            mappedBy: null
+            inversedBy: null
+            joinColumns:
+                id_prov:
                     referencedColumnName: id
             orphanRemoval: false
     lifecycleCallbacks: {  }

@@ -383,18 +383,6 @@
                         "title": "ID",
                         //"visible": false, // hago esta columna invisible porque no la neecsito ver pero la voy a usar para poder apuntarle a la compra cuando arme el modal de edición.
                         "className": "id-compra"
-                      },                           
-                      { 
-                        "data": "proveedor.nombre",
-                        "title": "Razon Social"
-                      },
-                      { 
-                        "data": "proveedor.cuit",
-                        "title": "C.U.I.T"
-                      },
-                      { 
-                        "data": "proveedor.iva.detalle",
-                        "title": "Situación de IVA"
                       },
                       { 
                         //Concateno periodo mes y año para armar el periodo.
@@ -411,6 +399,18 @@
                             if (value === null) return "";
                             return moment(value).format('DD/MM/YYYY');
                            }
+                      },                           
+                      { 
+                        "data": "proveedor.nombre",
+                        "title": "Razon Social"
+                      },
+                      { 
+                        "data": "proveedor.cuit",
+                        "title": "C.U.I.T"
+                      },
+                      { 
+                        "data": "proveedor.iva.detalle",
+                        "title": "Situación de IVA"
                       },
                       { 
                         "mData": null,
