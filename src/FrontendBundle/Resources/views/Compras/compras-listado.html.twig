@@ -116,6 +116,7 @@
     $.get("/imputaciones/prov",function(resp,estado,jqXHR){
         var arrayResp = JSON.parse(resp);
         window.arrayImputProv = arrayResp.data;
+        console.log(window.arrayImputProv);
     });
     $("#addCompra").click(function(){
       $("#tablaDeProveedores").modal();

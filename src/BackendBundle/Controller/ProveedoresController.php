@@ -21,7 +21,7 @@ class ProveedoresController extends Controller
 
 	public function allAction(Request $request){
     	$em = $this->getDoctrine()->getManager();
-		$result = $em->getRepository("BackendBundle:TblProveedores")->findAll();
+		$result = $em->getRepository("BackendBundle:TblProveedores")->findby(array("activo" => "1"));
 		$hash = $em->getRepository("BackendBundle:TblHashes")->findOneBy(
 			array(
 				"id" => "1"
