@@ -109,12 +109,17 @@
               dataType: "json"
             })
             .done(function(respuesta){
-              if(respuesta.status = 'OK'){
-                alert("va como piña");
+              if(respuesta.status == 'OK'){
+                alert(respuesta.msg);
                 console.log(respuesta.data);
               }else{
-                alert('no va como piña');
+                alert("ERROR \n Razon:" + respuesta.msg);
               }
+              $.get("/imputaciones/prov",function(resp,estado,jqXHR){
+                  var arrayResp = JSON.parse(resp);
+                  window.arrayImputProv = arrayResp.data;
+                  console.log(window.arrayImputProv);
+              });
               $("#modalAddEmpresa").modal('toggle');
               //$("#modalAddCompra").modal('show'); // cambiar para venta
               $.get("/proveedores/hash",function(resp,estado,jqXHR){
@@ -124,6 +129,7 @@
                 console.log(parseInt(Cookies.get("hashProv"),10));
               })
               window.arrayproveedores = respuesta.data;
+              console.log(window.arrayproveedores);
               window.source  = [ ];
               window.mapping = { };
               window.mappingCuit = { };
@@ -195,16 +201,7 @@
             <label for="nuevoCuit">Cuit: </label>
             <input type="number" required="true" class="form-control input-sm" id="nuevoCuit" name="nuevoCuit" placeholder="Cuit"/>
           </div>
-           <div class="form-group">
-              <div class="col-xs-3" style="padding-left: 0px">
-                  <label for="nuevaImputacion">Imputacion: </label>
-              </div>
-              <div class="col-xs-9  input-sm" style="margin-bottom: 20px;">
-                <select name="nuevaImputacion" id="nuevaImputacion" required="true" class="selectpicker dropdown-toggle form-control input-sm" type="button" data-toggle="dropdown">
-                  <option disabled selected value>--Seleccione una opcion--</option>
-                </select>
-              </div>
-          </div>
+           
         </div>
         <div class="modal-footer">
           <div class="col-xs-6 " id="colDelete">

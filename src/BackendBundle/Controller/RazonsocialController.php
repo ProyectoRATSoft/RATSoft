@@ -11,8 +11,8 @@ use Symfony\Component\Validator\Constraints as Assert;
 use BackendBundle\Entity\TblProveedores;
 use BackendBundle\Entity\TblSituacionIva;
 use BackendBundle\Entity\TblJurisdicciones;
-use BackendBundle\Entity\tblImputaciones;
-use BackendBundle\Entity\tblImputProv;
+use BackendBundle\Entity\TblImputaciones;
+use BackendBundle\Entity\TblImputProv;
 use BackendBundle\Entity\TblHashes;
 
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
@@ -107,8 +107,10 @@ class RazonsocialController extends Controller
 				'id' => $respuesta["jurisdiccion"]
 			)
 		);
-		// $imputprov = new tblImputProv();
-		// $imputprov = $em->getRepository("BackendBundle:tblImputProv")->findOneBy(
+
+		//$imputprov = new tblImputProv();
+		//$imputprov->setIdProv()
+		//$imputprov = $em->getRepository("BackendBundle:tblImputProv")->findOneBy(
 		// 	array(
 		// 		'id' => $respuesta["imputacion"],
 		// 		'id_prov' => $respuesta["id"],
@@ -134,8 +136,6 @@ class RazonsocialController extends Controller
 			$em->persist($hash);
 			$em->flush();
 
-
-			
 		} else {
 			$data = array(
 				'status' => 'ERROR',
@@ -147,6 +147,14 @@ class RazonsocialController extends Controller
 			);
 		}
 
+		$nuevoProv = $em->getRepository("BackendBundle:TblProveedores")->findOneBy(array('cuit' => $respuesta["cuit"]));
+		$imputacion = $em->getRepository("BackendBundle:TblImputaciones")->findOneBy(array('id' => '3'));
+		$imputprov = new TblImputProv();
+		$imputprov->setIdProv($nuevoProv);
+		$imputprov->setIdImp($imputacion);
+
+		$em->persist($imputprov);
+		$em->flush();
 
 		
 		$result = $em->getRepository("BackendBundle:TblProveedores")->findBy(array('activo' => 1));
