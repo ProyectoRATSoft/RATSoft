@@ -28,6 +28,7 @@
             })
             .done(function(respuesta){
               window.arrayrespuesta = respuesta.data;
+              console.log(arrayrespuesta);  
               window.table = $('#tabla-empresas').DataTable({
                 "responsive": true,
                  dom: "<'row'<'col-sm-7 text-left'B><'col-sm-5 text-right'f>>" +"<'row'<'col-sm-12't>>" +"<'row'<'col-sm-5 text-left'i><'col-sm-7 text-right'p>>",
@@ -86,17 +87,27 @@
               });
             })};
     loadTable();
-        $('#tabla-empresas tbody').on( 'click', 'tr', function () {
+    $('#tabla-empresas tbody').on( 'click', 'tr', function () {
       if ( $(this).hasClass('active') ) {
         $(this).removeClass('active');
       }
       else {
         window.table.$('tr.active').removeClass('active');
         $(this).addClass('active');
+
     // metemos en una variable lo que hay en e campo cuit de la empresa seleccionada
         var cuit = window.table.$("tr.active").find(".cuit").text();
+        console.log(cuit);
         window.arrayrespuesta.forEach(function(item,index,arr){
           if (item.cuit == cuit){
+            $('#vpj').removeAttr('href');
+            $('#vpj').attr('href',"/informes/ventas-por-jurisdiccion/"+item.id);
+            $('#vpcli').removeAttr('href');
+            $('#vpcli').attr('href',"/informes/ventas-por-cliente/"+item.id);
+            $('#vpp').removeAttr('href');
+            $('#vpp').attr('href',"/informes/ventas-por-periodo/"+item.id);
+            $('#vpco').removeAttr('href');
+            $('#vpco').attr('href',"/informes/ventas-por-comprobante/"+item.id);
           }
         });
       }
