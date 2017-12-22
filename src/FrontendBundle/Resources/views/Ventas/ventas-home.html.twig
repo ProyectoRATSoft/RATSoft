@@ -8,10 +8,12 @@
 			<button class="btn btn-primary btn-block" id="addVenta"><i class="fa fa-plus-circle" aria-hidden="true"> Agregar</i></button>
 		</div>
 		</div>
+		{% if is_granted('ROLE_ADMIN') %}
 		<div class="col-md-4 col-sm-12 col-xs-12">
 			<button class="btn btn-primary btn-block" id="editVenta">
 				<i class="fa fa-pencil" aria-hidden="true"> Editar</i>
 			</button>
 		</div>
+		{% endif %}
 	</div>
 {% endblock %}
