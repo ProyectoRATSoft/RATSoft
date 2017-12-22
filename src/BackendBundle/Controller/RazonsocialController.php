@@ -11,6 +11,8 @@ use Symfony\Component\Validator\Constraints as Assert;
 use BackendBundle\Entity\TblProveedores;
 use BackendBundle\Entity\TblSituacionIva;
 use BackendBundle\Entity\TblJurisdicciones;
+use BackendBundle\Entity\tblImputaciones;
+use BackendBundle\Entity\tblImputProv;
 use BackendBundle\Entity\TblHashes;
 
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
@@ -41,6 +43,7 @@ class RazonsocialController extends Controller
 			'activo' => $request->request->get("activo"),
 			'iva' => (int)$request->request->get("iva"),
 			'jurisdiccion' => $request->request->get("jurisdiccion"),
+			//'imputacion' => $request->request->get("imputacion"),
 		);
 		$data = array(
 				'status' => 'OK',
@@ -60,6 +63,7 @@ class RazonsocialController extends Controller
 		 	|| empty($respuesta["cuit"])
 			|| empty($respuesta["iva"])
 			|| empty($respuesta["jurisdiccion"])
+			//|| empty($respuesta["imputacion"])
 			) {
 				$data = array(
 					'status' => 'ERROR',
@@ -103,6 +107,13 @@ class RazonsocialController extends Controller
 				'id' => $respuesta["jurisdiccion"]
 			)
 		);
+		// $imputprov = new tblImputProv();
+		// $imputprov = $em->getRepository("BackendBundle:tblImputProv")->findOneBy(
+		// 	array(
+		// 		'id' => $respuesta["imputacion"],
+		// 		'id_prov' => $respuesta["id"],
+		// 	)
+		// );
 		
     	// Si el cuit no existe, se inserta en la DB.
 		if (empty($isset_empresa)) {

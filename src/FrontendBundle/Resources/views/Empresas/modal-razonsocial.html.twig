@@ -2,6 +2,7 @@
   $(document).ready(function(){  
     comboFill("/jurisdicciones","id","nombre","#nuevaProvincia");
     comboFill("/iva","id","codigo","#nuevaSituacionIVA");
+    //comboFill("/imputaciones","id","nombre","#nuevaImputacion");
    
     $.get("/iva",function(resp,estado,jqXHR){
       var arrayResp = JSON.parse(resp);
@@ -35,6 +36,10 @@
                 required: true
                 //minlength: 3
               },
+              // nuevaImputacion: { 
+              //   required: true
+              //   //minlength: 3
+              // },
           },
           messages: {
               nuevoNombre: { 
@@ -68,6 +73,7 @@
         $('select#nuevaSituacionIVA').val('');
         $('input#nuevoIva').val('');
         $('input#nuevoCuit').val('');
+        //$('select#nuevaImputacion').val('');
        //establecemos que botones corresponde poder verse  en este caso, como agregamos no hace falta editar ni borrar
         $('button#newEmpresa').css("display", "");
         $('button#editDatesEmpresa').css("display", "none");
@@ -85,6 +91,8 @@
             var jurisdiccion = $('div.modal-body div.form-group #nuevaProvincia').val();
             var iva = $('div.modal-body div.form-group #nuevaSituacionIVA').val();
             var cuit = $('div.modal-body div.form-group #nuevoCuit').val();
+            //var imputacion = $('div.modal-body div.form-group #nuevaImputacion').val();
+
     //realizo un post pasando la url correspondiente al backend, los datos previamente capturados y realizo la funcion correspondiente que me devolvera la respuesta.
             
             $.ajax({
@@ -96,6 +104,7 @@
                 "jurisdiccion" : jurisdiccion,
                 "iva" : iva, 
                 "cuit" : cuit,
+                //"imputacion": imputacion
                 },
               dataType: "json"
             })
@@ -186,6 +195,16 @@
             <label for="nuevoCuit">Cuit: </label>
             <input type="number" required="true" class="form-control input-sm" id="nuevoCuit" name="nuevoCuit" placeholder="Cuit"/>
           </div>
+           <!-- <div class="form-group">
+              <div class="col-xs-3" style="padding-left: 0px">
+                  <label for="nuevaImputacion">Imputacion: </label>
+              </div>
+              <div class="col-xs-9  input-sm" style="margin-bottom: 20px;">
+                <select name="nuevaImputacion" id="nuevaImputacion" required="true" class="selectpicker dropdown-toggle form-control input-sm" type="button" data-toggle="dropdown">
+                  <option disabled selected value>--Seleccione una opcion--</option>
+                </select>
+              </div>
+          </div> -->
         </div>
         <div class="modal-footer">
           <div class="col-xs-6 " id="colDelete">
