@@ -13,6 +13,10 @@
 
     div.col-md-5.col-sm-12.col-xs-12.text-right {
           text-align: center !important;
+    }
+
+    div#renglon{
+      margin: 80px !important;
     }  
  }
 </style>
@@ -184,7 +188,7 @@
                 </select>
               </div>
           </div>
-          <div style="margin: 65px"></div>
+          <div  style="margin: 65px"></div>
           <div class="form-group">
               <div class="col-xs-3" style="padding-left: 0px">
                   <label for="nuevaSituacionIVA">Situacion IVA: </label>
@@ -197,7 +201,7 @@
               <input type="text"  class="form-control input-sm" id="nuevoIva" name="situacionIVACompleto"
               disabled="true" placeholder="Situacion IVA descripcion completa" />
           </div>
-          <div class="form-group">
+          <div class="form-group" id="fgc">
             <label for="nuevoCuit">Cuit: </label>
             <input type="number" required="true" class="form-control input-sm" id="nuevoCuit" name="nuevoCuit" placeholder="Cuit"/>
           </div>
@@ -211,7 +215,7 @@
                 </select>
               </div>
           </div>
-
+          <div id="renglon" style="margin: 65px"></div>
           <div class="form-group">
             <label for="nuevoIngresosBrutos">Ingresos Brutos: </label>
             <input type="text" class="form-control input-sm" id="nuevoIngresosBrutos" name="nuevoIngresosBrutos" placeholder="Ingresos Brutos"/>
@@ -233,10 +237,10 @@
           </div>
         </div>
         <div class="modal-footer">
-          <div class="col-xs-6 " id="colDelete">
+          <div class="col-md-6 col-xs-12" id="colDelete">
             <button type="submit" onclick="return false" class="btn btn-danger pull-left" id="deleteEmpresa" style="display: none">Borrar</button>
           </div>
-          <div class="col-xs-6 ">
+          <div class="col-md-6 col-xs-12">
             <button type="submit" onclick="return false" class="btn btn-success" id="editDatesEmpresa" style="display: none">Guardar</button>
             <button type="submit" onclick="return false" class="btn btn-success" id="newEmpresa" style="display: none" >Guardar</button>
             <button type="submit" onclick="return false" class="btn btn-default" data-dismiss="modal">Cerrar</button>

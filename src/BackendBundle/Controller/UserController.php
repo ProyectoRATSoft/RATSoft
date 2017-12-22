@@ -21,7 +21,7 @@ class UserController extends Controller
 
     // Busco en la DB los usuarios existentes.
     $em = $this->getDoctrine()->getManager();
-    $users = $em->getRepository("BackendBundle:User")->findAll();
+    $users = $em->getRepository("BackendBundle:User")->findBy(array('enabled' => 1));//findAll();//
 
     $data = array(
       'status' => 'OK',

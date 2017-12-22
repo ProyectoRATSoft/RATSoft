@@ -26,6 +26,8 @@
     $('li#bc.active').text('').append( '<i class="fa fa-search" aria-hidden="true"></i> Buscador de Clientes' );
     //con esto cambio el detalle del boton "agregar"
     $('#addEmpresa').text('').append( '<i class="fa fa-plus-circle" aria-hidden="true"> Agregar Cliente </i>' );
+    //agrego el combo imputaciones dps del campo cuit
+    // $('#fgc').append('<br><div class="col-xs-3" style="padding-left: 0px"><label for="nuevaImputacion">Imputacion: </label></div><div class="col-xs-9  input-sm" style="margin-bottom: 20px;"><select name="nuevaImputacion" id="nuevaImputacion" required="true" class="selectpicker dropdown-toggle form-control input-sm" type="button" data-toggle="dropdown"><option disabled selected value>--Seleccione una opcion--</option></select></div>');
     //con esto ocultamos los campos que no se utilizan para los proveedores/clientes aplicando el style colhidden
     $('div.form-group #domicilio').addClass('colHidden');
     //con esto capturamos el label con el for correspondiente al campo que previamente ocultamos y ocultamos para terminar de ocultar todo
@@ -57,6 +59,8 @@
     //llenamos el combo pasando 1. url 2. valor 3. descripcion 4. id del campo
     comboFill("/jurisdicciones","id","nombre","#nuevaProvincia")
     comboFill("/iva","id","codigo","#nuevaSituacionIVA")
+    //cargo el combo de imputaciones 
+    // comboFill("/imputaciones","id","nombre","#nuevaImputacion")
     // Hacemos que la interfaz arranque con el boton de edición dehabilitado, porque no hay ninguna empresa seleccionada aún.
     $("#boton-editar").attr("disabled","true");
     //$("#boton-compras").attr("disabled","true");

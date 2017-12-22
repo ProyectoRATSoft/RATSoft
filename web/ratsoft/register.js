@@ -21,6 +21,7 @@ $(document).ready(function() {
   });
 
   // Traigo todos los usuarios existentes
+  $("#boton-editar").attr("disabled","true");
   window.arrayrespuesta = new Array();
   var loadTable = function() {
     $.ajax({
@@ -100,6 +101,8 @@ $(document).ready(function() {
     } else {
       window.table.$('tr.active').removeClass('active');
       $(this).addClass('active');
+      $("#boton-editar").removeAttr("disabled");
+      $("#boton-editar").attr("enabled","true");
       // Busco el dato de la fila seleccionada.
       var username = window.table.$("tr.active").find(".username").text();
       // Busco los datos del usuario seleccionado.
@@ -187,7 +190,7 @@ $(document).ready(function() {
     }
   });
 
-  $("#editEmpresa").click(function() {
+  $("#boton-editar").click(function() {
     $("#modalAddEmpresa").modal();
     $("#modal-formulario").validate().resetForm();
     $("#modal-formulario").find('.has-error').removeClass("has-error"); //limpia las clases has-error que pone los recuadros rojos
@@ -200,7 +203,7 @@ $(document).ready(function() {
 
     // Cuando editamos un usuario, ocultamos su contraseña.
     $('input#nuevoPassword').css("display", "none");
-    $('label#nuevoPassword').css("display", "none");
+    $("label[for='nuevoPassword']").css("display", "none");
   });
 
   // Se ejecuta al seleccionar "Guardar", del modal editar empresa.
@@ -266,6 +269,17 @@ $(document).ready(function() {
       .done(function(respuesta){
         $("#modalAddEmpresa").modal('toggle');
           tableReload(respuesta.users);
+          $('div.modal-body div.form-group #nuevoId').val('');
+          $('div.modal-body div.form-group #nuevoEmail').val('');
+          $('div.modal-body div.form-group #nuevoUsername').val('');
+          $('div.modal-body div.form-group #nuevoPassword').val('');
+          $('div.modal-body div.form-group #nuevoRole').val('');
+          // Completo los datos de grilla de edición lateral derecha.
+          $('div.form-group #userId').val('');
+          $('div.form-group #username').val('');
+          $('div.form-group #email').val('');
+          $('div.form-group #role').val('');
+          $("#boton-editar").attr("disabled","true");
       });
     }
   });
