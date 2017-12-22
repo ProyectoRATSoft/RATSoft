@@ -205,8 +205,11 @@
           });
           var option = window.idProv;
           var opciones = "<option value='' selected='selected'>--seleccionar--</option>";
+          console.log("el id es " + option + " y todavía no entré" )
           window.arrayImputProv.forEach(function(item,index,arr){
-            if(option == item.id_prov){
+            console.log(item.id_prov.id);
+            if(option == item.id_prov.id){
+              console.log("el id es " + option + " y acabo de entrar" );
               opciones = opciones + "<option value='"+item.id_imp.id+"'>"+item.id_imp.nombre+"</option>";
             }
           });

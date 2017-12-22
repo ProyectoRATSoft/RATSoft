@@ -1,0 +1,4 @@
+pdf_base:
+    path: /
+    defaults: { _controller: BackendBundle:Pdf:all }
+    methods: POST
