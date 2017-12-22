@@ -19,11 +19,13 @@
     $(document).ajaxStop(function() {
       $.unblockUI();
     });
-
+    var url = document.URL;
+    var idurl = url.substring(url.lastIndexOf('/') + 1);
+    //alert(id);
     var loadTable = function() {
       $.ajax({
         type: "GET",
-        url: "/backend/informes/ventas",
+        url: "/backend/informes/ventas/"+idurl ,
         dataType: "json",
         })
         .done(function(respuesta, status) {
@@ -31,8 +33,71 @@
           // window.ventasShow = respuesta.ventas;
 
           window.table = $('#tabla-ventas').DataTable({
+            dom: "<'row'<'col-sm-8 text-left'B><'col-sm-4 text-right'f>>" +"<'row'<'col-sm-12't>>" +"<'row'<'col-sm-5 text-left'i><'col-sm-7 text-right'p>>",
+                    //configuramos la cantidad de datos que queremos que nos muestre el menu <lf<t>ip>
+                    // "<'row'<'col-sm-6'l><'col-sm-6'f>>" +
+                    // "<'row'<'col-sm-12'tr>>" +
+                    // "<'row'<'col-sm-5'i><'col-sm-7'p>>",
+                    "language": {
+                        "sProcessing":     "Procesando...",
+                        "sLengthMenu":     "Mostrar _MENU_ registros",
+                        "sZeroRecords":    "No se encontraron resultados",
+                        "sEmptyTable":     "Ningún dato disponible en esta tabla",
+                        "sInfo":           "Mostrando registros del _START_ al _END_ de un total de _TOTAL_ registros",
+                        "sInfoEmpty":      "Mostrando registros del 0 al 0 de un total de 0 registros",
+                        "sInfoFiltered":   "(filtrado de un total de _MAX_ registros)",
+                        "sInfoPostFix":    "",
+                        "sSearch":         "Buscar:",
+                        "sUrl":            "",
+                        "sInfoThousands":  ",",
+                        "sLoadingRecords": "Cargando...",
+                        "oPaginate": {
+                            "sFirst":    "Primero",
+                            "sLast":     "Último",
+                            "sNext":     "Siguiente",
+                            "sPrevious": "Anterior"
+                        },
+                        "oAria": {
+                            "sSortAscending":  ": Activar para ordenar la columna de manera ascendente",
+                            "sSortDescending": ": Activar para ordenar la columna de manera descendente"
+                        }
+                    },
+                    lengthMenu: [
+                        [ 10, 25, 50, -1 ],
+                        [ '10 Filas', '25 Filas', '50 Filas', 'Todos' ]
+                    ],
+                    buttons: [
+                                {
+                                    extend: 'collection',
+                                    text: 'Exportar',
+                                    //elegis los formatos para exportar los datos de la tabla, colvis (va a servir para seleccionar que columnas queres q se vean o no), pagelenth para seleccionar la cantidad  datos mostrados 
+                                    buttons: [ 'copy', 'excel', 'pdf', 'csv', 'print'] 
+                                }, 'colvis', 'pageLength'
+                              ],
+                                    
+                    "columnDefs": [ 
+                                  //con esto podes setear que columnas queres aparezca o no
+                                  //{ "visible": false, "targets": 3 },
+                                  // { responsivePriority: 1, targets: 0 },
+                                  // { responsivePriority: 2, targets: 0 },
+                                  { targets: [0, 1, 2, 3, 4, 5, 6, 7, 8], visible: true},
+
+                                  //{ targets: '_all', visible: false }
+                                
+                    ],
+                    "responsive": true,   
+                    retrieve: true,
+                    fixedHeader: true,
             data: window.ventas,
-            "columns": [{
+            "columns": [
+              {
+                "class":          "details-control",
+                "orderable":      false,
+                "data":           null,
+                "defaultContent": "",
+                "width" : "2%"
+              },
+              {
                 "data": "id",
                 "className": "id"
               },
@@ -127,6 +192,7 @@
               }
             ]
           });
+          table.buttons().container().appendTo( '#tabla-ventas .col-sm-6:eq(0)' ); 
         })
         .fail(function(jqXHR, textStatus) {});
     };

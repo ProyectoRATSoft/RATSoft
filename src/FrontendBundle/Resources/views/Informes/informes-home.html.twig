@@ -18,6 +18,22 @@
               tr.group:hover {
                 background-color: #ddd !important;
               }
+@media  (max-width: 770px) {
+    .dataTables_filter label{
+   display: inline-flex;
+   text-align: center !important;
+  }   
+
+    div.col-md-5.col-sm-12.col-xs-12.text-right {
+          text-align: center !important;
+    }
+    .renglon{
+      margin: 0px !important;
+    }
+    .form-group{
+      margin: 0px !important;
+    }
+ }
 </style> 
 {% endblock %}
 {% block Scripts %}
@@ -49,74 +65,95 @@
       </div>
     </div> 
     <br> 
-  <div style="margin: 25px"></div>
+  <div class="renglon" style="margin: 25px"></div>
   <div class="form-group">
-    <div class="col-md-6">
+    <!-- <div class="col-md-6">
       <a id="cpp"><button class="btn btn-primary btn-block" id="ComprasPorPerido">Compras Por Periodo</button></a>
     </div>
     <div class="col-md-6">
       <a id="vpp"><button class="btn btn-primary btn-block" id="VentasPorPeriodo">Ventas Por Periodo</button></a>
+    </div> -->
+    <div class="col-md-12">
+      <a id="vpp"><button class="btn btn-primary btn-block" id="VentasPorPeriodo">Ventas Por Periodo</button></a>
     </div>
   </div>
   <br> 
-  <div style="margin: 25px"></div>
-  <div class="form-group">
+  <div class="renglon" style="margin: 25px"></div>
+  <!-- <div class="form-group">
     <div class="col-md-6">
       <a id="cpi"><button class="btn btn-primary btn-block" id="ComprasPorImputacion">Compras Por Imputacion</button></a>
     </div>
     <div class="col-md-6">
       <a id="va"><button class="btn btn-primary btn-block" id="VentasAnuales">Ventas Anuales</button></a>
     </div>
+    <div class="col-md-12">
+      <a id="va"><button class="btn btn-primary btn-block" id="VentasAnuales">Ventas Anuales</button></a>
+    </div>
   </div>
   <br> 
-  <div style="margin: 25px"></div>
+  <div class="renglon" style="margin: 25px"></div> -->
   <div class="form-group">
-    <div class="col-md-6">
+    <!-- <div class="col-md-6">
       <a id="cpj"><button class="btn btn-primary btn-block" id="ComprasPorJurisdiccion">Compras Por Jurisdiccion</button></a>
     </div>
     <div class="col-md-6">
       <a id="vpj"><button class="btn btn-primary btn-block" id="VentasPorJurisdiccion">Ventas Por Jurisdiccion</button></a>
-    </div>
+    </div> -->
+    <div class="col-md-12">
+      <a id="vpj"><button class="btn btn-primary btn-block" id="VentasPorJurisdiccion">Ventas Por Jurisdiccion</button></a>
+    </div> 
   </div>
   <br>   
-  <div style="margin: 25px"></div>
-  <div class="form-group">
+  <!-- <div class="renglon" style="margin: 25px"></div> -->
+  <!-- <div class="form-group">
     <div class="col-md-6">
       <a id="cpprov"><button class="btn btn-primary btn-block" id="ComprasPorProveedor">Compras Por Proveedor</button></a>
     </div>
     <div class="col-md-6">
       <a id="vpcli"><button class="btn btn-primary btn-block" id="VentasPorCliente">Ventas Por Cliente</button></a>
     </div>
+    <div class="col-md-12">
+      <a id="vpcli"><button class="btn btn-primary btn-block" id="VentasPorCliente">Ventas Por Cliente</button></a>
+    </div>
   </div>
-  <br> 
-  <div style="margin: 25px"></div>
-  <div class="form-group">
+  <br>  -->
+  <!-- <div class="renglon" style="margin: 25px"></div> -->
+  <!-- <div class="form-group">
     <div class="col-md-6">
       <a id="cpco"><button class="btn btn-primary btn-block" id="ComprasPorComprobante">Compras Por Comprobante</button></a>
     </div>
     <div class="col-md-6">
       <a id="vpco"><button class="btn btn-primary btn-block" id="VentasPorComprobante">Ventas Por Comprobante</button></a>
     </div>
+    <div class="col-md-12">
+      <a id="vpco"><button class="btn btn-primary btn-block" id="VentasPorComprobante">Ventas Por Comprobante</button></a>
+    </div> 
   </div>
-  <br> 
-  <div style="margin: 25px"></div>
+  <br> -->
+  <div class="renglon" style="margin: 25px"></div> 
   <div class="form-group">
-    <div class="col-md-6">
+   <!--  <div class="col-md-6">
       <a id="cpf"><button class="btn btn-primary btn-block" id="ComprasPorFecha">Compras Por Fecha</button></a>
     </div>
     <div class="col-md-6">
       <a id="vpf"><button class="btn btn-primary btn-block" id="VentasPorFecha">Ventas Por Fecha</button></a>
+     </div> -->
+     <div class="col-md-12">
+      <a id="vpf"><button class="btn btn-primary btn-block" id="VentasPorFecha">Ventas Por Fecha</button></a>
      </div>
   </div>
   <br> 
-  <div style="margin: 25px"></div>
-  <div class="form-group">
+  <div class="renglon" style="margin: 25px"></div>
+  <!-- <div class="form-group">
     <div class="col-md-6">
       <a id="cpers"><button class="btn btn-primary btn-block" id="ComprasPersonalizado">Compras Personalizado</button></a>
     </div>
     <div class="col-md-6">
       <a id="vpers"><button class="btn btn-primary btn-block" id="VentasPersonalizado">Ventas Personalizado</button></a>
     </div>
-  </div>        
+    <div class="col-md-12">
+      <a id="vpers"><button class="btn btn-primary btn-block" id="VentasPersonalizado">Ventas Personalizado</button></a>
+    </div>
+  </div>  -->       
 </div>
 {% endblock %}

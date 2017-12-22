@@ -108,6 +108,8 @@
             $('#vpp').attr('href',"/informes/ventas-por-periodo/"+item.id);
             $('#vpco').removeAttr('href');
             $('#vpco').attr('href',"/informes/ventas-por-comprobante/"+item.id);
+            $('#vpf').removeAttr('href');
+            $('#vpf').attr('href',"/informes/ventas-por-fecha/"+item.id);
           }
         });
       }

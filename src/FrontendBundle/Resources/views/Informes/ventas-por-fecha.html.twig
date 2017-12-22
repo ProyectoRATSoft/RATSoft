@@ -19,22 +19,20 @@
     background-color: #ddd !important;
   }
 
-  input.ui-autocomplete {
-    z-index: 500;
-  }
-
-  #pos-nombre {
-    display: block;
-    position: relative
-  }
-
-  .ui-autocomplete {
-    position: absolute;
-  }
-
-  .id-venta {
+  .id{
     display: none;
   }
+
+  @media  (max-width: 770px) {
+    .dataTables_filter label{
+   display: inline-flex;
+   text-align: center !important;
+  }   
+
+    div.col-md-5.col-sm-12.col-xs-12.text-right {
+          text-align: center !important;
+    }  
+ }
 </style>
 {% endblock %} {% block Scripts %}
 <!-- DataTables -->
@@ -54,7 +52,7 @@
 <script src="https://cdn.jsdelivr.net/npm/js-cookie@2/src/js.cookie.min.js"></script>
 
 <script src="{{ asset('ratsoft/ratsoft.js') }}"></script>
-<script src="{{ asset('ratsoft/informes/ventas.js') }}"></script>
+<script src="{{ asset('ratsoft/informes/ventas-por-fecha.js') }}"></script>
 
 {% endblock %} {% block body %}
 <!-- ACA EMPIEZO A TRABAJAR LA INTERFAZ Content Wrapper. Contains page content -->
@@ -81,7 +79,7 @@
           <!-- box header -->
           <div class="col-md-10">
             <div class="form-group">
-              <label>Date range:</label>
+              <label>Rango de fecha:</label>
 
               <div class="input-group">
                 <div class="input-group-addon">

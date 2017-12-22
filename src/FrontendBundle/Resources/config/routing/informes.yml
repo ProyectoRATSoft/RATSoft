@@ -5,9 +5,9 @@ informes_index:
   methods: GET
 
 # Informes de ventas - Por fechas
-prueba_index:
-  path: /ventas
-  defaults: { _controller: "FrontendBundle:Informes:ventas" }
+informes_ventas_por_fecha:
+  path: /ventas-por-fecha/{id}
+  defaults: { _controller: "FrontendBundle:Informes:ventasPorFecha" }
   methods: GET
 
 # Informes de ventas - Por periodo

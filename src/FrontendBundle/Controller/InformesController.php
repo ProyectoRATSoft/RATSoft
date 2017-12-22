@@ -13,9 +13,16 @@ use BackendBundle\Entity\TblVentas;
 
 class InformesController extends Controller
 {
-	public function ventasAction()
+	public function ventasPorFechaAction($id, Request $Request)
+
 	{
-		return $this->render('FrontendBundle:Informes:ventas.html.twig');
+		$jsonResponse = $this->consultaDB($id);
+		return $this->render(
+			'FrontendBundle:Informes:ventas-por-fecha.html.twig',
+					array(
+						"ventas" => $jsonResponse
+					));
+		// return $this->render('FrontendBundle:Informes:ventas-por-fecha.html.twig');
 	}
 
 	public function ventasPorPeriodoAction($id, Request $Request)

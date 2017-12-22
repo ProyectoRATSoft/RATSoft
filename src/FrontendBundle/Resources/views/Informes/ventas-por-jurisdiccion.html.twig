@@ -32,7 +32,7 @@
     position: absolute;
   }
 
-  .id-venta {
+  .id {
     display: none;
   }
 </style>
@@ -86,94 +86,94 @@
           </div>
           <!-- box header -->
           <div class="col-md-12" style="margin-bottom: 10px;">
-            <input id='btnAbrirFiltro' type="button" value="Filtro múltiple"
+            <input id='btnAbrirFiltro' type="button" value="Filtro múltiple" class="btn btn-default" 
             onclick="$('.contenedor').toggle(); $('#btnFiltrar').toggle(); $('#btnCheckAll').toggle(); $('#btnAbrirFiltro').toggle(); $('#btnCerrarFiltro').toggle();">
 
-            <input id='btnCerrarFiltro' type="button" value="Cerrar" style="display: none;"
+            <input id='btnCerrarFiltro' type="button" value="Cerrar" class="btn btn-default" style="display: none;"
             onclick="$('.contenedor').toggle(); $('#btnFiltrar').toggle(); $('#btnCheckAll').toggle(); $('#btnAbrirFiltro').toggle(); $('#btnCerrarFiltro').toggle();">
 
-            <input id='btnFiltrar' type="button" value="Filtrar" style="display: none;" icon="fa-filter"></input>
+            <input id='btnFiltrar' type="button" value="Filtrar" class="btn btn-default" style="display: none;" icon="fa-filter"></input>
 
-            <input id='btnCheckAll' type="button" value="Seleccionar todos" style="display: none;" icon="fa-filter"></input>
+            <input id='btnCheckAll' type="button" value="Seleccionar todos" class="btn btn-default" style="display: none;" icon="fa-filter"></input>
 
             <div class="contenedor" style="display: none; margin: 10px;">
               <div class="col-md-3">
-                <div style="col-md-3 col-sm-4 font-family: 'Ubuntu', 'Helvetica', sans-serif;">
+                <div style="font-family: 'Ubuntu', 'Helvetica', sans-serif;">
                   <input id="Ciudad de Buenos Aires" type="checkbox"/>Ciudad de Buenos Aires<br/>
                 </div>
-                <div style="col-md-3 col-sm-4 font-family: 'Ubuntu', 'Helvetica', sans-serif;">
+                <div style="font-family: 'Ubuntu', 'Helvetica', sans-serif;">
                   <input id=" Provincia de Buenos Aires" type="checkbox"/>Provincia de Buenos Aires<br/>
                 </div>
-                <div style="col-md-3 col-sm-4 font-family: 'Ubuntu', 'Helvetica', sans-serif;">
+                <div style="font-family: 'Ubuntu', 'Helvetica', sans-serif;">
                   <input id="Catamarca" type="checkbox"/>Catamarca<br/>
                 </div>
-                <div style="col-md-3 col-sm-4 font-family: 'Ubuntu', 'Helvetica', sans-serif;">
+                <div style="font-family: 'Ubuntu', 'Helvetica', sans-serif;">
                   <input id="Córdoba" type="checkbox"/>Córdoba<br/>
                 </div>
-                <div style="col-md-3 col-sm-4 font-family: 'Ubuntu', 'Helvetica', sans-serif;">
+                <div style="font-family: 'Ubuntu', 'Helvetica', sans-serif;">
                   <input id="Corrientes" type="checkbox"/>Corrientes<br/>
                 </div>
-                <div style="col-md-3 col-sm-4 font-family: 'Ubuntu', 'Helvetica', sans-serif;">
+                <div style="font-family: 'Ubuntu', 'Helvetica', sans-serif;">
                   <input id="Chaco" type="checkbox"/>Chaco<br/>
                 </div>
               </div>
               <div class="col-md-3">
-                <div style="col-md-3 col-sm-4 font-family: 'Ubuntu', 'Helvetica', sans-serif;">
+                <div style="font-family: 'Ubuntu', 'Helvetica', sans-serif;">
                   <input id="Chubut" type="checkbox"/>Chubut<br/>
                 </div>
-                <div style="col-md-3 col-sm-4 font-family: 'Ubuntu', 'Helvetica', sans-serif;">
+                <div style="font-family: 'Ubuntu', 'Helvetica', sans-serif;">
                   <input id="Entre Ríos" type="checkbox"/>Entre Ríos<br/>
                 </div>
-                <div style="col-md-3 col-sm-4 font-family: 'Ubuntu', 'Helvetica', sans-serif;">
+                <div style="font-family: 'Ubuntu', 'Helvetica', sans-serif;">
                   <input id="Formosa" type="checkbox"/>Formosa<br/>
                 </div>
-                <div style="col-md-3 col-sm-4 font-family: 'Ubuntu', 'Helvetica', sans-serif;">
+                <div style="font-family: 'Ubuntu', 'Helvetica', sans-serif;">
                   <input id="Jujuy" type="checkbox"/>Jujuy<br/>
                 </div>
-                <div style="col-md-3 col-sm-4 font-family: 'Ubuntu', 'Helvetica', sans-serif;">
+                <div style="font-family: 'Ubuntu', 'Helvetica', sans-serif;">
                   <input id="La Pampa" type="checkbox"/>La Pampa<br/>
                 </div>
-                <div style="col-md-3 col-sm-4 font-family: 'Ubuntu', 'Helvetica', sans-serif;">
+                <div style="font-family: 'Ubuntu', 'Helvetica', sans-serif;">
                   <input id="La Rioja" type="checkbox"/>La Rioja<br/>
                 </div>
               </div>
               <div class="col-md-3">
-                <div style="col-md-3 col-sm-4 font-family: 'Ubuntu', 'Helvetica', sans-serif;">
+                <div style="font-family: 'Ubuntu', 'Helvetica', sans-serif;">
                   <input id="Mendoza" type="checkbox"/>Mendoza<br/>
                 </div>
-                <div style="col-md-3 col-sm-4 font-family: 'Ubuntu', 'Helvetica', sans-serif;">
+                <div style="font-family: 'Ubuntu', 'Helvetica', sans-serif;">
                   <input id="Misiones" type="checkbox"/>Misiones<br/>
                 </div>
-                <div style="col-md-3 col-sm-4 font-family: 'Ubuntu', 'Helvetica', sans-serif;">
+                <div style="font-family: 'Ubuntu', 'Helvetica', sans-serif;">
                   <input id="Neuquén" type="checkbox"/>Neuquén<br/>
                 </div>
-                <div style="col-md-3 col-sm-4 font-family: 'Ubuntu', 'Helvetica', sans-serif;">
+                <div style="font-family: 'Ubuntu', 'Helvetica', sans-serif;">
                   <input id="Rí­o Negro" type="checkbox"/>Rí­o Negro<br/>
                 </div>
-                <div style="col-md-3 col-sm-4 font-family: 'Ubuntu', 'Helvetica', sans-serif;">
+                <div style="font-family: 'Ubuntu', 'Helvetica', sans-serif;">
                   <input id="Salta" type="checkbox"/>Salta<br/>
                 </div>
-                <div style="col-md-3 col-sm-4 font-family: 'Ubuntu', 'Helvetica', sans-serif;">
+                <div style="font-family: 'Ubuntu', 'Helvetica', sans-serif;">
                   <input id="San Juan" type="checkbox"/>San Juan<br/>
                 </div>
               </div>
               <div class="col-md-3">
-                <div style="col-md-3 col-sm-4 font-family: 'Ubuntu', 'Helvetica', sans-serif;">
+                <div style="font-family: 'Ubuntu', 'Helvetica', sans-serif;">
                   <input id="San Luis" type="checkbox"/>San Luis<br/>
                 </div>
-                <div style="col-md-3 col-sm-4 font-family: 'Ubuntu', 'Helvetica', sans-serif;">
+                <div style="font-family: 'Ubuntu', 'Helvetica', sans-serif;">
                   <input id="Santa Cruz" type="checkbox"/>Santa Cruz<br/>
                 </div>
-                <div style="col-md-3 col-sm-4 font-family: 'Ubuntu', 'Helvetica', sans-serif;">
+                <div style="font-family: 'Ubuntu', 'Helvetica', sans-serif;">
                   <input id="Santa Fe" type="checkbox"/>Santa Fe<br/>
                 </div>
-                <div style="col-md-3 col-sm-4 font-family: 'Ubuntu', 'Helvetica', sans-serif;">
+                <div style="font-family: 'Ubuntu', 'Helvetica', sans-serif;">
                   <input id="Santiago del Estero" type="checkbox"/>Santiago del Estero<br/>
                 </div>
-                <div style="col-md-3 col-sm-4 font-family: 'Ubuntu', 'Helvetica', sans-serif;">
+                <div style="font-family: 'Ubuntu', 'Helvetica', sans-serif;">
                   <input id="Tierra del Fuego" type="checkbox"/>Tierra del Fuego<br/>
                 </div>
-                <div style="col-md-3 col-sm-4 font-family: 'Ubuntu', 'Helvetica', sans-serif;">
+                <div style="font-family: 'Ubuntu', 'Helvetica', sans-serif;">
                   <input id="Tucumán" type="checkbox"/>Tucumán<br/>
                 </div>
               </div>
