@@ -28,3 +28,23 @@ var comboFill = function(url,value,text,cssid) {
                 $(cssid).html(opciones);
             });
        };
+
+// var comboFillv2 = function(array,value,text,cssid) {
+//             this.array = array;
+//             this.value = value;
+//             this.text = text;
+//             this.cssid = cssid;
+//             // console.log("entre al combo");
+//             // console.log(array);
+//             var opciones = "";
+//                 array.forEach(
+//                     function(item,index){
+//                         //var obj = array.data;
+//                         opciones = opciones + "<option value='"+array[index].id+"'>"+array[index].detalle+"</option>";
+//                     }
+//                 );
+//                 //agrego la opcion generica "--seleccionar--" al combo
+//                 opciones = opciones + '<option value="" selected="selected">--seleccionar--</option>';
+//                 $(cssid).html(opciones);
+            
+//        };

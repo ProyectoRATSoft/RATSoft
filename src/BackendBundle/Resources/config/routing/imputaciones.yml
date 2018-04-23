@@ -3,6 +3,11 @@ imputaciones_all:
     defaults: { _controller: BackendBundle:Imputaciones:all }
     methods: GET
 
+imputaciones_hash:
+    path: /hash
+    defaults: { _controller: BackendBundle:Imputaciones:getHash }
+    methods: GET
+
 imputaciones_prov:
     path: /prov/
     defaults: { _controller: BackendBundle:Imputaciones:allProv }

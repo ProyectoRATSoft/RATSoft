@@ -9,6 +9,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Validator\Constraints as Assert;
 use BackendBundle\Entity\TblComprobantes;
 use BackendBundle\Entity\TblTiposComp;
+use BackendBundle\Entity\TblHashes;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 
@@ -22,11 +23,59 @@ class ComprobantesController extends Controller
 	public function allAction(Request $request){
     	$em = $this->getDoctrine()->getManager();
 		$result = $em->getRepository("BackendBundle:TblComprobantes")->findAll();
+		$hash = $em->getRepository("BackendBundle:TblHashes")->findOneBy(
+			array(
+				"id" => "2"
+			)
+		);
 		$data = array(
 			'draw' => '',
 			'recordsTotal' => '',
 			'recordsFiltered' => '',
+			'hash' => $hash->getHash(),
 			'data' => $result,
+		);
+		$serializer = SerializerBuilder::create()->build();
+		$jsonResponse = $serializer->serialize($data, 'json');
+		return new Response($jsonResponse);		
+		
+	}
+
+	public function getHashAction(Request $request){
+    	$em = $this->getDoctrine()->getManager();
+		//$result = $em->getRepository("BackendBundle:TblProveedores")->findAll();
+		$hash = $em->getRepository("BackendBundle:TblHashes")->findOneBy(
+			array(
+				"id" => "2"
+			)
+		);
+		$data = array(
+			'draw' => '',
+			'recordsTotal' => '',
+			'recordsFiltered' => '',
+			'hash' => $hash->getHash(),
+			'data' => '',
+		);
+		$serializer = SerializerBuilder::create()->build();
+		$jsonResponse = $serializer->serialize($data, 'json');
+		return new Response($jsonResponse);		
+		
+	}
+
+	public function getTiposHashAction(Request $request){
+    	$em = $this->getDoctrine()->getManager();
+		//$result = $em->getRepository("BackendBundle:TblProveedores")->findAll();
+		$hash = $em->getRepository("BackendBundle:TblHashes")->findOneBy(
+			array(
+				"id" => "3"
+			)
+		);
+		$data = array(
+			'draw' => '',
+			'recordsTotal' => '',
+			'recordsFiltered' => '',
+			'hash' => $hash->getHash(),
+			'data' => '',
 		);
 		$serializer = SerializerBuilder::create()->build();
 		$jsonResponse = $serializer->serialize($data, 'json');
@@ -42,10 +91,16 @@ class ComprobantesController extends Controller
 	public function tiposAction(Request $request){
     	$em = $this->getDoctrine()->getManager();
 		$result = $em->getRepository("BackendBundle:TblTiposComp")->findAll();
+		$hash = $em->getRepository("BackendBundle:TblHashes")->findOneBy(
+			array(
+				"id" => "3"
+			)
+		);
 		$data = array(
 			'draw' => '',
 			'recordsTotal' => '',
 			'recordsFiltered' => '',
+			'hash' => $hash->getHash(),
 			'data' => $result,
 		);
 		$serializer = SerializerBuilder::create()->build();

@@ -8,6 +8,7 @@ use JMS\Serializer\SerializerBuilder;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Validator\Constraints as Assert;
 use BackendBundle\Entity\TblJurisdicciones;
+use BackendBundle\Entity\TblHashes;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 
@@ -21,10 +22,16 @@ class JurisdiccionesController extends Controller
 	public function allAction(Request $request){
     	$em = $this->getDoctrine()->getManager();
 		$result = $em->getRepository("BackendBundle:TblJurisdicciones")->findAll();
+		$hash = $em->getRepository("BackendBundle:TblHashes")->findOneBy(
+			array(
+				"id" => "5"
+			)
+		);
 		$data = array(
 			'draw' => '',
 			'recordsTotal' => '',
 			'recordsFiltered' => '',
+			'hash' => $hash->getHash(),
 			'data' => $result,
 		);
 		$serializer = SerializerBuilder::create()->build();
@@ -32,6 +39,28 @@ class JurisdiccionesController extends Controller
 		return new Response($jsonResponse);		
 		
 	}
+
+	public function getHashAction(Request $request){
+    	$em = $this->getDoctrine()->getManager();
+		//$result = $em->getRepository("BackendBundle:TblProveedores")->findAll();
+		$hash = $em->getRepository("BackendBundle:TblHashes")->findOneBy(
+			array(
+				"id" => "5"
+			)
+		);
+		$data = array(
+			'draw' => '',
+			'recordsTotal' => '',
+			'recordsFiltered' => '',
+			'hash' => $hash->getHash(),
+			'data' => '',
+		);
+		$serializer = SerializerBuilder::create()->build();
+		$jsonResponse = $serializer->serialize($data, 'json');
+		return new Response($jsonResponse);		
+		
+	}
+
 	public function newAction(Request $request) {
 
 		$respuesta = array (

@@ -3,6 +3,11 @@ iva_all:
     defaults: { _controller: FrontendBundle:Modulos:iva }
     methods: GET
 
+iva_hash:
+    path: /hash
+    defaults: { _controller: FrontendBundle:Modulos:iva }
+    methods: GET
+
 iva_index:
     path: /{id}
     defaults: { _controller: FrontendBundle:Modulos:iva }

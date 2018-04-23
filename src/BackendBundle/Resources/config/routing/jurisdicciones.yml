@@ -3,6 +3,11 @@ jurisdicciones_all:
     defaults: { _controller: BackendBundle:Jurisdicciones:all }
     methods: GET
 
+jurisdicciones_hash:
+    path: /hash
+    defaults: { _controller: BackendBundle:Jurisdicciones:getHash }
+    methods: GET
+
 jurisdicciones_new:
     path: /new
     defaults: { _controller: BackendBundle:Jurisdicciones:new }

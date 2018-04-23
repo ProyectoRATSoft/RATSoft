@@ -1,22 +1,9 @@
 <script>
   $(document).ready(function(){  
-    comboFill("/jurisdicciones","id","nombre","#nuevaProvincia");
-    comboFill("/iva","id","codigo","#nuevaSituacionIVA");
-    //comboFill("/imputaciones","id","nombre","#nuevaImputacion");
    
-    $.get("/iva",function(resp,estado,jqXHR){
-      var arrayResp = JSON.parse(resp);
-      window.arrayIva = arrayResp.data;
-    });
-    $("#nuevaSituacionIVA").change(function(){
-        console.log("me dio bola");
-        var option = $(this).find('option:selected').val();
-        window.arrayIva.forEach(function(item,index,arr){
-          if(option == item.id){
-            $('#nuevoIva').val(item.detalle);
-          }
-        })
-      });
+   window.arrayIva = new Array();
+   window.arrayJurisdicciones = new Array();
+   window.arrayImputaciones = new Array();
 
     $("#modal-razones").validate({
           rules: {
@@ -62,39 +49,217 @@
             
       });
 
-    $("#addEmpresa").click(function(){        
-        $("#modalAddEmpresa").modal();
-          //limpio los campos del modal
-        $("#modal-razones").validate().resetForm();       
-        //limpio los campos del modal
-        $('input#nuevoId').val('');
-        $('input#nuevoNombre').val('');        
-        $('select#nuevaProvincia').val('');
-        $('select#nuevaSituacionIVA').val('');
-        $('input#nuevoIva').val('');
-        $('input#nuevoCuit').val('');
-        //$('select#nuevaImputacion').val('');
-       //establecemos que botones corresponde poder verse  en este caso, como agregamos no hace falta editar ni borrar
-        $('button#newEmpresa').css("display", "");
-        $('button#editDatesEmpresa').css("display", "none");
-        $('button#deleteEmpresa').css("display", "none");
-             
+    $("#addEmpresa").click(function(){
+          
+          ///----- cbo iva----------
+          $.get("/iva/hash",function(resp,estado,jqXHR){
+                  var arrayResp = JSON.parse(resp);
+                  window.hashIva = arrayResp.hash;
+                  console.log(window.hashIva);
+                  console.log(parseInt(Cookies.get("hashIva"),10));
+                })
+                .done(function(){
+                  if ( sessionStorage.arrayIva === undefined || Cookies.get("hashIva") === undefined 
+                          ||   parseInt(Cookies.get("hashIva"),10) !== window.hashIva ) {
+                    console.log("no se encontro la cookie")
+                      $.ajax({
+                      type: "GET",
+                      url: "/iva",
+                      dataType: "json",
+                      //async: false
+                    })
+                    .done(function(respuesta){
+                      // console.log(respuesta.data);
+                      // console.log("--entre al done")
+                      window.arrayIva = respuesta.data;
+                      window.source  = [ ];
+                      window.mapping = { };
+                      window.mappingCuit = { };
+                      for(var i = 0; i < window.arrayIva.length; ++i) {
+                        window.source.push(window.arrayIva[i].detalle);
+                        window.mapping[window.arrayIva[i].detalle] = window.arrayIva[i].id;
+                        window.mappingCuit[window.arrayIva[i].detalle] = window.arrayIva[i].detalle;
+                      }
+                      var minutes = 120;
+                      var date = new Date();
+                      date.setTime(date.getTime() + (minutes * 60 * 1000));
+                      sessionStorage.arrayIva=JSON.stringify(window.arrayIva);
+                      Cookies.set("hashIva",hashIva);
+                    });
+                  }else{
+                    console.log("la encontré, es al pedo que la llame con ajax")
+                    arrayIva = JSON.parse(sessionStorage.arrayIva);
+                    window.source  = [ ];
+                    window.mapping = { };
+                    window.mappingCuit = { };
+                    for(var i = 0; i < window.arrayIva.length; ++i) {
+                      window.source.push(window.arrayIva[i].detalle);
+                      window.mapping[window.arrayIva[i].detalle] = window.arrayIva[i].id;
+                      window.mappingCuit[window.arrayIva[i].detalle] = window.arrayIva[i].detalle;
+                    }
+                  }
+                  var opciones = '<option value="" selected="selected">--seleccionar--</option>'; 
+                  for(var i=0; i < window.arrayIva.length; i++){
+                     opciones += '<option value="'+ window.arrayIva[i].id + '">' + window.arrayIva[i].detalle + '</option>';
+                  }
+                  $("#nuevaSituacionIVA").html(opciones); 
+                });
+          ///----- cbo /iva----------
+          ///----- cbo imputaciones----------
+             $.get("/imputaciones/hash",function(resp,estado,jqXHR){
+                var arrayResp = JSON.parse(resp);
+                window.hashImputaciones = arrayResp.hash;
+                console.log(window.hashImputaciones);
+                console.log(parseInt(Cookies.get("hashImputaciones"),10));
+              })
+              .done(function(){
+                if ( sessionStorage.arrayImputaciones === undefined || Cookies.get("hashImputaciones") === undefined 
+                        ||   parseInt(Cookies.get("hashImputaciones"),10) !== window.hashImputaciones ) {
+                  console.log("no se encontro la cookie")
+                    $.ajax({
+                    type: "GET",
+                    url: "/jurisdicciones",
+                    dataType: "json",
+                    //async: false
+                  })
+                  .done(function(respuesta){
+                    window.arrayImputaciones = respuesta.data;
+                    window.source  = [ ];
+                    window.mapping = { };
+                    window.mappingCuit = { };
+                    for(var i = 0; i < window.arrayImputaciones.length; ++i) {
+                      window.source.push(window.arrayImputaciones[i].nombre);
+                      window.mapping[window.arrayImputaciones[i].nombre] = window.arrayImputaciones[i].id;
+                      window.mappingCuit[window.arrayImputaciones[i].nombre] = window.arrayImputaciones[i].codigo;
+                    }
+                    var minutes = 120;
+                    var date = new Date();
+                    date.setTime(date.getTime() + (minutes * 60 * 1000));
+                    sessionStorage.arrayImputaciones=JSON.stringify(window.arrayImputaciones);
+                    Cookies.set("hashImputaciones",hashImputaciones);
+                  });
+                }else{
+                  console.log("la encontré, es al pedo que la llame con ajax")
+                  arrayImputaciones = JSON.parse(sessionStorage.arrayImputaciones);
+                  window.source  = [ ];
+                  window.mapping = { };
+                  window.mappingCuit = { };
+                  for(var i = 0; i < window.arrayImputaciones.length; ++i) {
+                    window.source.push(window.arrayImputaciones[i].nombre);
+                    window.mapping[window.arrayImputaciones[i].nombre] = window.arrayImputaciones[i].id;
+                    window.mappingCuit[window.arrayImputaciones[i].nombre] = window.arrayImputaciones[i].codigo;
+                  }
+                }
+                var opciones = '<option value="" selected="selected">--seleccionar--</option>';
+                for(var i=0; i < window.arrayImputaciones.length; i++){
+                // console.log(i);
+                   opciones += '<option value="'+ window.arrayImputaciones[i].id + '">' + window.arrayImputaciones[i].detalle + '</option>';
+                }
+                $("#nuevaImputacion").html(opciones);
+              });
+
+          ///----- cbo /imputaciones----------
+
+          ///----- cbo jurisdicciones----------
+           $.get("/jurisdicciones/hash",function(resp,estado,jqXHR){
+              var arrayResp = JSON.parse(resp);
+              window.hashJurisdicciones = arrayResp.hash;
+              // console.log(window.hashJurisdicciones);
+              // console.log(parseInt(Cookies.get("hashJurisdicciones"),10));
+            })
+            .done(function(){
+              if ( sessionStorage.arrayJurisdicciones === undefined || Cookies.get("hashJurisdicciones") === undefined 
+                      ||   parseInt(Cookies.get("hashJurisdicciones"),10) !== window.hashJurisdicciones ) {
+                
+                  $.ajax({
+                  type: "GET",
+                  url: "/jurisdicciones",
+                  dataType: "json",
+                  //async: false
+                })
+                .done(function(respuesta){
+                  window.arrayJurisdicciones = respuesta.data;
+                  window.source  = [ ];
+                  window.mapping = { };
+                  window.mappingCuit = { };
+                  for(var i = 0; i < window.arrayJurisdicciones.length; ++i) {
+                    window.source.push(window.arrayJurisdicciones[i].nombre);
+                    window.mapping[window.arrayJurisdicciones[i].nombre] = window.arrayJurisdicciones[i].id;
+                    window.mappingCuit[window.arrayJurisdicciones[i].nombre] = window.arrayJurisdicciones[i].cuit;
+                  }
+                  var minutes = 120;
+                  var date = new Date();
+                  date.setTime(date.getTime() + (minutes * 60 * 1000));
+                  sessionStorage.arrayJurisdicciones=JSON.stringify(window.arrayJurisdicciones);
+                  Cookies.set("hashJurisdicciones",hashJurisdicciones);
+                });
+              }else{
+                //console.log("la encontré, es al pedo que la llame con ajax")
+                arrayJurisdicciones = JSON.parse(sessionStorage.arrayJurisdicciones);
+                window.source  = [ ];
+                window.mapping = { };
+                window.mappingCuit = { };
+                for(var i = 0; i < window.arrayJurisdicciones.length; ++i) {
+                  window.source.push(window.arrayJurisdicciones[i].nombre);
+                  window.mapping[window.arrayJurisdicciones[i].nombre] = window.arrayJurisdicciones[i].id;
+                  window.mappingCuit[window.arrayJurisdicciones[i].nombre] = window.arrayJurisdicciones[i].codigo;
+                }
+              }
+
+              var opciones = '<option value="" selected="selected">--seleccionar--</option>';
+                  for(var i=0; i < window.arrayJurisdicciones.length; i++){
+                  // console.log(i);
+                     opciones += '<option value="'+ window.arrayJurisdicciones[i].id + '">' + window.arrayJurisdicciones[i].nombre + '</option>';
+                  }
+                  $("#nuevaProvincia").html(opciones);
+
+                  $("#modalAddEmpresa").modal();
+                  //limpio los campos del modal
+                  $("#modal-razones").validate().resetForm();       
+                  //limpio los campos del modal
+                  $('input#nuevoId').val('');
+                  $('input#nuevoNombre').val('');        
+                  $('select#nuevaProvincia').val('');
+                  $('select#nuevaSituacionIVA').val('');
+                  $('input#nuevoIva').val('');
+                  $('input#nuevoCuit').val('');
+                  //$('select#nuevaImputacion').val('');
+                  //establecemos que botones corresponde poder verse  en este caso, como agregamos no hace falta editar ni borrar
+                  $('button#newEmpresa').css("display", "");
+                  $('button#editDatesEmpresa').css("display", "none");
+                  $('button#deleteEmpresa').css("display", "none");
+            });    
+          ///----- cbo /jurisdicciones----------
+          // comboFill("/jurisdicciones","id","nombre","#nuevaProvincia");
+          // comboFill("/iva","id","codigo","#nuevaSituacionIVA");
+          // comboFill("/imputaciones","id","nombre","#nuevaImputacion");
+         
+          // $.get("/iva",function(resp,estado,jqXHR){
+          //   var arrayResp = JSON.parse(resp);
+          //   window.arrayIva = arrayResp.data;
+          // });
+          $("#nuevaSituacionIVA").change(function(){
+              //console.log("me dio bola");
+              var option = $(this).find('option:selected').val();
+              window.arrayIva.forEach(function(item,index,arr){
+                if(option == item.id){
+                  $('#nuevoIva').val(item.detalle);
+                }
+              })
+            });
+      
       });
 
      $("#newEmpresa").click(function(){
     //guardo los valores en cada variable                            
         if ($("#modal-razones").valid()){
-
-            console.log("entre?")
-
+            //console.log("entre?")
             var nombre = $('div.modal-body div.form-group #nuevoNombre').val();
             var jurisdiccion = $('div.modal-body div.form-group #nuevaProvincia').val();
             var iva = $('div.modal-body div.form-group #nuevaSituacionIVA').val();
             var cuit = $('div.modal-body div.form-group #nuevoCuit').val();
             //var imputacion = $('div.modal-body div.form-group #nuevaImputacion').val();
-
-    //realizo un post pasando la url correspondiente al backend, los datos previamente capturados y realizo la funcion correspondiente que me devolvera la respuesta.
-            
+            //realizo un post pasando la url correspondiente al backend, los datos previamente capturados y realizo la funcion correspondiente que me devolvera la respuesta.
             $.ajax({
               type: "POST",
               url: "/razonsocial/new",
@@ -111,25 +276,25 @@
             .done(function(respuesta){
               if(respuesta.status == 'OK'){
                 alert(respuesta.msg);
-                console.log(respuesta.data);
+                // console.log(respuesta.data);
               }else{
                 alert("ERROR \n Razon:" + respuesta.msg);
               }
               $.get("/imputaciones/prov",function(resp,estado,jqXHR){
                   var arrayResp = JSON.parse(resp);
                   window.arrayImputProv = arrayResp.data;
-                  console.log(window.arrayImputProv);
+                  //console.log(window.arrayImputProv);
               });
               $("#modalAddEmpresa").modal('toggle');
               //$("#modalAddCompra").modal('show'); // cambiar para venta
               $.get("/proveedores/hash",function(resp,estado,jqXHR){
                 var arrayResp = JSON.parse(resp);
                 window.hashProv = arrayResp.hash;
-                console.log(window.hashProv);
-                console.log(parseInt(Cookies.get("hashProv"),10));
+                // console.log(window.hashProv);
+                // console.log(parseInt(Cookies.get("hashProv"),10));
               })
               window.arrayproveedores = respuesta.data;
-              console.log(window.arrayproveedores);
+              //console.log(window.arrayproveedores);
               window.source  = [ ];
               window.mapping = { };
               window.mappingCuit = { };
@@ -145,8 +310,8 @@
               $('div.modal-body div.form-group #nuevaProvincia').val('');
               $('div.modal-body div.form-group #nuevaSituacionIVA').val('');
               $('div.modal-body div.form-group #nuevoCuit').val('');
-  			    //deberiamos mostrar algun mensaje tanto como de error, como de que todo salio bien. y luego recargar la grilla para que aparezca la nueva empresa en la tabla.
-  			    //alert(resp);
+    			    //deberiamos mostrar algun mensaje tanto como de error, como de que todo salio bien. y luego recargar la grilla para que aparezca la nueva empresa en la tabla.
+    			    //alert(resp);
             });
         }
       });

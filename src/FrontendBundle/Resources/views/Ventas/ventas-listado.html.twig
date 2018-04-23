@@ -86,7 +86,7 @@
 });
 </script>
 <!-- <script src="{{ asset('') }}"></script>  --> 
-<script>
+ <script>
   //con esto bloqueamos la pantalla cuando inicia alguna accion ajax..
   $(document).ajaxStart(function() {
             $.blockUI({ css: { 
@@ -109,17 +109,20 @@
     });
 
     window.arrayrespuesta = {{ respuesta|raw }};
-    console.log(arrayrespuesta);
     window.idEmpresa = {{ empresa|raw }};
-    console.log(idEmpresa);
+    window.arrayTiposComp = new Array();
+    window.arraycomprobantes = new Array();
+
       //cargamos los valores para el Combo Comprobantes que esta en el modal
-    comboFill("/comprobantes","id","detalle","#comprobante");
-    $.get("/comprobantes/tipos",function(resp,estado,jqXHR){
-        var arrayResp = JSON.parse(resp);
-        window.arrayTiposComp = arrayResp.data;
-      });
+
+    //comboFill("/comprobantes","id","detalle","#comprobante");
+    // $.get("/comprobantes/tipos",function(resp,estado,jqXHR){
+    //     var arrayResp = JSON.parse(resp);
+    //     window.arrayTiposComp = arrayResp.data;
+    //   });
 
     $('#tipoComprobante').change(function(){
+      console.log(arrayTiposComp);
       var option = $(this).find('option:selected').val();
       window.arrayTiposComp.forEach(function(item,index,arr){
         if(option == item.id){
@@ -204,106 +207,329 @@
     });
 
     $("#addVenta").click(function(){
-        //alert("entre");
-        $("#modal-ventas").modal();
-        $('#boton-new').css("display", "");
-        $('#boton-edit').css("display", "none");
-        $('#boton-del').css("display", "none");
+        $.get("/comprobantes/hash",function(resp,estado,jqXHR){
+          var arrayResp = JSON.parse(resp);
+          window.hashComp = arrayResp.hash;
+          console.log(window.hashComp);
+          console.log(parseInt(Cookies.get("hashComp"),10));
+        })
+        // Traemos la info de proveedores y lo metemos en el array luego armamos el mapping entre nombre y id de proveedor para poder usarlo en el ABM
+        .done(function(){
+          if ( sessionStorage.arraycomprobantes === undefined || Cookies.get("hashComp") === undefined ||   parseInt(Cookies.get("hashComp"),10) !== window.hashComp ) {
+            console.log("no se encontro la cookie")
+              $.ajax({
+              type: "GET",
+              url: "/comprobantes",
+              dataType: "json",
+              //async: false
+            })
+            .done(function(respuesta){
+              window.arraycomprobantes = respuesta.data;
+              window.source  = [ ];
+              window.mapping = { };
+              window.mappingCuit = { };
+              for(var i = 0; i < window.arraycomprobantes.length; ++i) {
+                window.source.push(window.arraycomprobantes[i].codigo);
+                window.mapping[window.arraycomprobantes[i].codigo] = window.arraycomprobantes[i].id;
+                window.mappingCuit[window.arraycomprobantes[i].codigo] = window.arraycomprobantes[i].codigo;
+              }
+              var minutes = 120;
+              var date = new Date();
+              date.setTime(date.getTime() + (minutes * 60 * 1000));
+              sessionStorage.arraycomprobantes=JSON.stringify(window.arraycomprobantes);
+              Cookies.set("hashComp",hashComp);
+            });
+          }else{
+            console.log("la encontré, es al pedo que la llame con ajax")
+            arraycomprobantes = JSON.parse(sessionStorage.arraycomprobantes);
+            window.source  = [ ];
+            window.mapping = { };
+            window.mappingCuit = { };
+            for(var i = 0; i < window.arraycomprobantes.length; ++i) {
+              window.source.push(window.arraycomprobantes[i].codigo);
+              window.mapping[window.arraycomprobantes[i].codigo] = window.arraycomprobantes[i].id;
+              window.mappingCuit[window.arraycomprobantes[i].codigo] = window.arraycomprobantes[i].codigo;
+            }
+          }
+          var opciones = '<option value="" selected="selected">--seleccionar--</option>';
+     
+          for(var i=0; i < window.arraycomprobantes.length; i++){
+          // console.log(i);
+             opciones += '<option value="'+ window.arraycomprobantes[i].id + '">' + window.arraycomprobantes[i].detalle + '</option>';
+          }
+          $("#comprobante").html(opciones);
 
-        $("#modal-formulario").validate().resetForm(); //con esto se limpia los campos que agrega el validator
-        $("#modal-formulario").find('.has-error').removeClass("has-error"); //limpia las clases has-error que pone los recuadros rojos
-        $("#modal-formulario").find('.has-success').removeClass("has-success");//limpia los recuadros verdes de los datos correctos ingresados
-        //Limpiamos el modal
-        $('empresaID').val('');
-        $("#fechaVenta").val('');
-        $("#periodo").val('');
-        $("#cuit").val('');
-        $('#nombre').val('');
-        $('#empresaID').val('');
-        $('#iva').val('');
-        $('#retGanancias').val('0');
-        $('#retIva ').val('0');
-        $('#retIibb').val('0');
-        $('#comprobante').val('');
-        $('#comprobanteNumero').val('');
-        $('#jurisdiccion').val('');
-        //con esto vaciamos el campo y en la siguiente linea cargado nuevamente el seleccionar disabled
-        $('#tipoComprobante').empty();
-        $('#tipoComprobante').prepend('<option disabled selected value>--Seleccionar--</option>');
-         $('#rubro').empty();
-        var opciones = "<option value='"+arrayrespuesta.empresa.rubro.id+"'>"+arrayrespuesta.empresa.rubro.nombre+"</option>";
-        $('#rubro').prepend(opciones);
-        $('#exento').val('0');
-        $('#nogravado').val('0');
-        $('#neto105').val('0');
-        $('#neto21').val('0');
-        $('#iva105').val('0');
-        $('#iva21').val('0');
-        $('#retGanancias').val('0');
-        $('#total').val('0');
-        $('#percepcion').val('0');
-        
-      });
+        });
+        //---------------------------HASH TIPO-----------------------------------//
+
+        $.get("/comprobantes/tiposhash",function(resp,estado,jqXHR){
+          var arrayResp = JSON.parse(resp);
+          window.hashTipoComp = arrayResp.hash;
+          console.log(window.hashTipoComp);
+          console.log(parseInt(Cookies.get("hashTipoComp"),10));
+        })
+        .done(function(){
+
+          if ( sessionStorage.arrayTiposComp === undefined || Cookies.get("hashTipoComp") === undefined 
+                  ||   parseInt(Cookies.get("hashTipoComp"),10) !== window.hashTipoComp ) {
+            console.log("no se encontro la cookie")
+              $.ajax({
+              type: "GET",
+              url: "/comprobantes/tipos",
+              dataType: "json",
+              //async: false
+            })
+            .done(function(respuesta){
+              // console.log(respuesta.data);
+              window.arrayTiposComp = respuesta.data;
+              window.source  = [ ];
+              window.mapping = { };
+              window.mappingCuit = { };
+              for(var i = 0; i < window.arrayTiposComp.length; ++i) {
+                window.source.push(window.arrayTiposComp[i].cod_comp);
+                window.mapping[window.arrayTiposComp[i].cod_comp] = window.arrayTiposComp[i].id;
+                window.mappingCuit[window.arrayTiposComp[i].cod_comp] = window.arrayTiposComp[i].cod_comp;
+              }
+              var minutes = 120;
+              var date = new Date();
+              date.setTime(date.getTime() + (minutes * 60 * 1000));
+              sessionStorage.arrayTiposComp=JSON.stringify(window.arrayTiposComp);
+              Cookies.set("hashTipoComp",hashTipoComp);
+              // console.log("array tipo de comprobantes");
+              // console.log(window.arrayTiposComp);
+            });
+          }else{
+            // console.log("la encontré, es al pedo que la llame con ajax")
+            arrayTiposComp = JSON.parse(sessionStorage.arrayTiposComp);
+            window.source  = [ ];
+            window.mapping = { };
+            window.mappingCuit = { };
+            for(var i = 0; i < window.arrayTiposComp.length; ++i) {              
+              window.source.push(window.arrayTiposComp[i].cod_comp);
+              window.mapping[window.arrayTiposComp[i].cod_comp] = window.arrayTiposComp[i].id;
+              window.mappingCuit[window.arrayTiposComp[i].cod_comp] = window.arrayTiposComp[i].cod_comp;
+            }
+          }
+          var opciones = '<option value="" selected="selected">--seleccionar--</option>';
+     
+          for(var i=0; i < window.arrayTiposComp.length; i++){
+          // console.log(i);
+             opciones += '<option value="'+ window.arrayTiposComp[i].id + '">' + window.arrayTiposComp[i].cod_comp + '</option>';
+          }
+          $("#tipoComprobante").html(opciones);
+          //--------------------------------------------------------------------------//
+          $("#modal-ventas").modal();
+          $('#boton-new').css("display", "");
+          $('#boton-edit').css("display", "none");
+          $('#boton-del').css("display", "none");
+
+          $("#modal-formulario").validate().resetForm(); //con esto se limpia los campos que agrega el validator
+          $("#modal-formulario").find('.has-error').removeClass("has-error"); //limpia las clases has-error que pone los recuadros rojos
+          $("#modal-formulario").find('.has-success').removeClass("has-success");//limpia los recuadros verdes de los datos correctos ingresados
+          //Limpiamos el modal
+          $('empresaID').val('');
+          $("#fechaVenta").val('');
+          $("#periodo").val('');
+          $("#cuit").val('');
+          $('#nombre').val('');
+          $('#empresaID').val('');
+          $('#iva').val('');
+          $('#retGanancias').val('0');
+          $('#retIva ').val('0');
+          $('#retIibb').val('0');
+          $('#comprobante').val('');
+          $('#comprobanteNumero').val('');
+          $('#jurisdiccion').val('');
+          //con esto vaciamos el campo y en la siguiente linea cargado nuevamente el seleccionar disabled
+          $('#tipoComprobante').empty();
+          $('#tipoComprobante').prepend('<option disabled selected value>--Seleccionar--</option>');
+           $('#rubro').empty();
+          var opciones = "<option value='"+arrayrespuesta.empresa.rubro.id+"'>"+arrayrespuesta.empresa.rubro.nombre+"</option>";
+          $('#rubro').prepend(opciones);
+          $('#exento').val('0');
+          $('#nogravado').val('0');
+          $('#neto105').val('0');
+          $('#neto21').val('0');
+          $('#iva105').val('0');
+          $('#iva21').val('0');
+          $('#retGanancias').val('0');
+          $('#total').val('0');
+          $('#percepcion').val('0');
+        });
+      });//-
 
     // Apartir de aca lo que hace el boron agregar para editar una compra
     $("#editVenta").click(function(){
-      $("#modal-ventas").modal();
-      $('#boton-new').css("display", "none");
-      $('#boton-edit').css("display", "");
-      $('#boton-del').css("display", "");
-      $("#modal-formulario").validate().resetForm(); //con esto se limpia los campos que agrega el validator
-      $("#modal-formulario").find('.has-error').removeClass("has-error"); //limpia las clases has-error que pone los recuadros rojos
-      $("#modal-formulario").find('.has-success').removeClass("has-success");//limpia los recuadros verdes de los datos correctos 
-      //cargamos el modal
-      window.idVenta = window.table.$("tr.active").find(".id-venta").text();
-      console.log(idVenta);
-      console.log(arrayrespuesta);
-        window.arrayrespuesta.data.forEach(function(item,index,arr){
-          if (item.id == idVenta){
-            console.log(item);
-            $('div.modal-body div.form-group #periodo').val( item.periodo_ano + "-" + ("0" + item.periodo_mes).slice( -2 )); // hay que mandarlo en formato YYYY-MM
-            var objFecha = new Date(item.fecha);
-            var realFecha = new Date(objFecha.getTime() + 86400000);
-            var fechaDia = realFecha.getDate();
-            var fechaMes = realFecha.getMonth() + 1;
-            var fechaAno = realFecha.getFullYear();
-            $("#fechaVenta").val(fechaAno + "-" + ("0" + fechaMes).slice(-2) + "-" + ("0" + fechaDia).slice(-2));
-            console.log(fechaAno + "-" + ("0" + fechaMes).slice(-2) + "-" + ("0" + fechaDia).slice(-2)); // hay que mandarlo en formato YYYY-MM-DD
-            
-            window.idProv = item.cliente.id;
-            $("#cuit").val(item.cliente.cuit);
-            $("#iva").val(item.cliente.iva.codigo);
-            $("#jurisdiccion").val(item.cliente.jurisdiccion.nombre);
-            $("#nombre").val(item.cliente.nombre);
-            $("#comprobanteNumero").val(item.nro_comprobante);
-            console.log(item.nro_comprobante);
-            $("#comprobante").val(item.cod_comprobante.id);
-            
-            var option = item.cod_comprobante.id;
-            var opciones = "<option value='' selected='selected'>--seleccionar--</option>";
-            window.arrayTiposComp.forEach(function(item,index,arr){
-              if(option == item.cod_comp.id){
-                opciones = opciones + "<option value='"+item.id+"'>"+item.tipo_comp+"</option>";
-              }
-            });
-            $("#tipoComprobante").html(opciones);
-            $("#tipoComprobante").val(item.tipo_comprobante.id);
-            $('#exento').val(item.neto_exento);
-            $('#nogravado').val(item.nogravado);
-            $('#neto105').val(item.neto105);
-            $('#neto21').val(item.neto21);
-            $('#iva105').val(item.iva105);
-            $('#iva21').val(item.iva21);
-            $('#retGanancias').val(item.ret_gan);
-            $('#total').val(item.total);
-            var opciones = "<option value='"+item.empresa.rubro.id+"'selected='selected'>"+item.empresa.rubro.nombre+"</option>";
-            $('#rubro').prepend(opciones);
-            $('#retIva').val(item.percepcion);
-            $('#retIibb').val(item.retencion);
+      $.get("/comprobantes/hash",function(resp,estado,jqXHR){
+        var arrayResp = JSON.parse(resp);
+        window.hashComp = arrayResp.hash;
+        //console.log(window.hashComp);
+        //console.log(parseInt(Cookies.get("hashComp"),10));
+      })
+      // Traemos la info de proveedores y lo metemos en el array luego armamos el mapping entre nombre y id de proveedor para poder usarlo en el ABM
+      .done(function(){
+        if ( sessionStorage.arraycomprobantes === undefined || Cookies.get("hashComp") === undefined ||   parseInt(Cookies.get("hashComp"),10) !== window.hashComp ) {
+          console.log("no se encontro la cookie")
+            $.ajax({
+            type: "GET",
+            url: "/comprobantes",
+            dataType: "json",
+            //async: false
+          })
+          .done(function(respuesta){
+            window.arraycomprobantes = respuesta.data;
+            //console.log("Estoy en el done!!!!!");
+            //console.log(arraycomprobantes);
+            window.source  = [ ];
+            window.mapping = { };
+            window.mappingCuit = { };
+            for(var i = 0; i < window.arraycomprobantes.length; ++i) {
+              window.source.push(window.arraycomprobantes[i].codigo);
+              window.mapping[window.arraycomprobantes[i].codigo] = window.arraycomprobantes[i].id;
+              window.mappingCuit[window.arraycomprobantes[i].codigo] = window.arraycomprobantes[i].codigo;
+            }
+            var minutes = 120;
+            var date = new Date();
+            date.setTime(date.getTime() + (minutes * 60 * 1000));
+            sessionStorage.arraycomprobantes=JSON.stringify(window.arraycomprobantes);
+            Cookies.set("hashComp",hashComp);
+          });
+        }else{
+          console.log("la encontré, es al pedo que la llame con ajax")
+          arraycomprobantes = JSON.parse(sessionStorage.arraycomprobantes);
+          window.source  = [ ];
+          window.mapping = { };
+          window.mappingCuit = { };
+          for(var i = 0; i < window.arraycomprobantes.length; ++i) {
+              window.source.push(window.arraycomprobantes[i].codigo);
+              window.mapping[window.arraycomprobantes[i].codigo] = window.arraycomprobantes[i].id;
+              window.mappingCuit[window.arraycomprobantes[i].codigo] = window.arraycomprobantes[i].codigo;
           }
-        });
+        }
+        //comboFillv2(window.arraycomprobantes,"id","detalle","#comprobante");
+        var opciones = '<option value="" selected="selected">--seleccionar--</option>';
+     
+        for(var i=0; i < window.arraycomprobantes.length; i++){
+          // console.log(i);
+             opciones += '<option value="'+ window.arraycomprobantes[i].id + '">' + window.arraycomprobantes[i].detalle + '</option>';
+          }
+          $("#comprobante").html(opciones);
       });
 
+      //tipos de comprobante
+      //---------------------------HASH TIPO-----------------------------------//
+
+        $.get("/comprobantes/tiposhash",function(resp,estado,jqXHR){
+          var arrayResp = JSON.parse(resp);
+          window.hashTipoComp = arrayResp.hash;
+          console.log(window.hashTipoComp);
+          console.log(parseInt(Cookies.get("hashTipoComp"),10));
+        })
+        .done(function(){
+
+          if ( sessionStorage.arrayTiposComp === undefined || Cookies.get("hashTipoComp") === undefined 
+                  ||   parseInt(Cookies.get("hashTipoComp"),10) !== window.hashTipoComp ) {
+            console.log("no se encontro la cookie")
+              $.ajax({
+              type: "GET",
+              url: "/comprobantes/tipos",
+              dataType: "json",
+              //async: false
+            })
+            .done(function(respuesta){
+              // console.log(respuesta.data);
+              window.arrayTiposComp = respuesta.data;
+              window.source  = [ ];
+              window.mapping = { };
+              window.mappingCuit = { };
+              for(var i = 0; i < window.arrayTiposComp.length; ++i) {
+                window.source.push(window.arrayTiposComp[i].cod_comp);
+                window.mapping[window.arrayTiposComp[i].cod_comp] = window.arrayTiposComp[i].id;
+                window.mappingCuit[window.arrayTiposComp[i].cod_comp] = window.arrayTiposComp[i].cod_comp;
+              }
+              var minutes = 120;
+              var date = new Date();
+              date.setTime(date.getTime() + (minutes * 60 * 1000));
+              sessionStorage.arrayTiposComp=JSON.stringify(window.arrayTiposComp);
+              Cookies.set("hashTipoComp",hashTipoComp);
+            });
+          }else{
+            arrayTiposComp = JSON.parse(sessionStorage.arrayTiposComp);
+            window.source  = [ ];
+            window.mapping = { };
+            window.mappingCuit = { };
+            for(var i = 0; i < window.arrayTiposComp.length; ++i) {              
+              window.source.push(window.arrayTiposComp[i].cod_comp);
+              window.mapping[window.arrayTiposComp[i].cod_comp] = window.arrayTiposComp[i].id;
+              window.mappingCuit[window.arrayTiposComp[i].cod_comp] = window.arrayTiposComp[i].cod_comp;
+            }
+          }
+          var opciones = '<option value="" selected="selected">--seleccionar--</option>';
+     
+          for(var i=0; i < window.arrayTiposComp.length; i++){
+             opciones += '<option value="'+ window.arrayTiposComp[i].id + '">' + window.arrayTiposComp[i].cod_comp + '</option>';
+          }
+          $("#tipoComprobante").html(opciones);
+          $("#modal-ventas").modal();
+          $('#boton-new').css("display", "none");
+          $('#boton-edit').css("display", "");
+          $('#boton-del').css("display", "");
+          $("#modal-formulario").validate().resetForm(); //con esto se limpia los campos que agrega el validator
+          $("#modal-formulario").find('.has-error').removeClass("has-error"); //limpia las clases has-error que pone los recuadros rojos
+          $("#modal-formulario").find('.has-success').removeClass("has-success");//limpia los recuadros verdes de los datos correctos 
+          //cargamos el modal
+          window.idVenta = window.table.$("tr.active").find(".id-venta").text();
+          window.arrayrespuesta.data.forEach(function(item,index,arr){
+              if (item.id == idVenta){
+                //console.log(item);
+                $('div.modal-body div.form-group #periodo').val( item.periodo_ano + "-" + ("0" + item.periodo_mes).slice( -2 )); // hay que mandarlo en formato YYYY-MM
+                var objFecha = new Date(item.fecha);
+                var realFecha = new Date(objFecha.getTime() + 86400000);
+                var fechaDia = realFecha.getDate();
+                var fechaMes = realFecha.getMonth() + 1;
+                var fechaAno = realFecha.getFullYear();
+                $("#fechaVenta").val(fechaAno + "-" + ("0" + fechaMes).slice(-2) + "-" + ("0" + fechaDia).slice(-2));
+                //console.log(fechaAno + "-" + ("0" + fechaMes).slice(-2) + "-" + ("0" + fechaDia).slice(-2)); // hay que mandarlo en formato YYYY-MM-DD
+                
+                window.idProv = item.cliente.id;
+                $("#cuit").val(item.cliente.cuit);
+                $("#iva").val(item.cliente.iva.codigo);
+                $("#jurisdiccion").val(item.cliente.jurisdiccion.nombre);
+                $("#nombre").val(item.cliente.nombre);
+                $("#comprobanteNumero").val(item.nro_comprobante);
+                $("#comprobante").val(item.cod_comprobante.id);
+                console.log(item.cod_comprobante.id);
+                var option = item.cod_comprobante.id;
+                var opciones = "<option value='' selected='selected'>--seleccionar--</option>";
+                window.arrayTiposComp.forEach(function(item,index,arr){
+                  if(option == item.cod_comp.id){
+                    opciones = opciones + "<option value='"+item.id+"'>"+item.tipo_comp+"</option>";
+                  }
+                });
+                $("#tipoComprobante").html(opciones);
+                $("#tipoComprobante").val(item.tipo_comprobante.id);
+
+                $('#exento').val(item.neto_exento);
+                $('#nogravado').val(item.nogravado);
+                $('#neto105').val(item.neto105);
+                $('#neto21').val(item.neto21);
+                $('#iva105').val(item.iva105);
+                $('#iva21').val(item.iva21);
+                $('#retGanancias').val(item.ret_gan);
+                $('#total').val(item.total);
+                var opcionesRubro = "<option value='"+item.empresa.rubro.id+"'selected='selected'>"+item.empresa.rubro.nombre+"</option>";
+                $('#rubro').prepend(opcionesRubro);
+                $('#retIva').val(item.percepcion);
+                $('#retIibb').val(item.retencion);
+              }
+            });
+          });
+
+        });
+        
+
+
+      
     $("#boton-edit").on('click',function(){
      if ($("#modal-formulario").valid()){  
       var objFecha = new Date($('#fechaVenta').val());
@@ -1095,7 +1321,7 @@ function goBack() {
                              
                 
 </script>
-
+ 
 {% endblock %}
 {% block body %}
   <!-- ACA EMPIEZO A TRABAJAR LA INTERFAZ Content Wrapper. Contains page content -->

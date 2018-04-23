@@ -3,9 +3,19 @@ comprobantes_all:
     defaults: { _controller: BackendBundle:Comprobantes:all }
     methods: GET
 
+comprobantes_getHash:
+    path: /hash
+    defaults: { _controller: BackendBundle:Comprobantes:getHash }
+    methods: GET
+    
 comprobantes_tipos:
     path: /tipos
     defaults: { _controller: BackendBundle:Comprobantes:tipos }
+    methods: GET
+
+comprobantes_getTiposHash:
+    path: /tiposhash
+    defaults: { _controller: BackendBundle:Comprobantes:getTiposHash }
     methods: GET
 
 comprobantes_newtipo:
